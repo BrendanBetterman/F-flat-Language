@@ -50,10 +50,17 @@ void Scanner::BufferChar(char c)
 
 Token Scanner::CheckReserved()
 {
-	if (tokenBuffer == "BEGIN") return BEGIN_SYM;
-	if (tokenBuffer == "END") return END_SYM;
+	if (tokenBuffer == "BOF") return BEGIN_SYM;
+	if (tokenBuffer == "EOF") return END_SYM;
 	if (tokenBuffer == "READ") return READ_SYM;
 	if (tokenBuffer == "WRITE") return WRITE_SYM;
+	/*
+	if (tokenBuffer == "int") return Integer;
+	if (tokenBuffer == "fake") return Real;
+	if (tokenBuffer == "bool") return Boolean;
+	if (tokenBuffer == "str") return String;
+	
+	*/
 	return ID;
 }
 
