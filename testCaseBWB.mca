@@ -1,0 +1,11 @@
+--Testing the comment section
+begin
+    --testing ; in comment
+    read(x);
+    
+    x := x + 56;
+    write(x);
+    --write("tset");
+    write("test");
+    write("Testing Expression list:: ",x);
+end

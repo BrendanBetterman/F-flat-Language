@@ -8,7 +8,7 @@
  
 	                           James L. Richards
 	                     Last Update: August 28, 2007
-						 Last Modified: Feb 14, 2022 -Xyphold
+					Last Modified: Feb 14, 2022 -Xyphold
 
 	The routines in this unit are based on those provided in the book 
 	"Crafting A Compiler" by Charles N. Fischer and Richard J. LeBlanc, Jr., 
