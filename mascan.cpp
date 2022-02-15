@@ -56,10 +56,10 @@ Token Scanner::CheckReserved()
 	if (tokenBuffer == "READ") return READ_SYM;
 	if (tokenBuffer == "WRITE") return WRITE_SYM;
 	/*
-	if (tokenBuffer == "int") return Integer;
-	if (tokenBuffer == "fake") return Real;
-	if (tokenBuffer == "bool") return Boolean;
-	if (tokenBuffer == "str") return String;
+	if (tokenBuffer == "int") return INT_LITERAL;
+	if (tokenBuffer == "fake") return REAL_LITERAL;
+	if (tokenBuffer == "bool") return Bool_LITERAL;
+	if (tokenBuffer == "str") return STR_LITERAL;
 	
 	*/
 	return ID;
@@ -122,6 +122,7 @@ Token Scanner::GetNextToken()
 				c = sourceFile.peek();
 			}
 			return CheckReserved();
+			//should return an alpha string so either string or booleans can use.
 		}
 		else if (isdigit(currentChar))
 		{                                // integer literal
@@ -134,6 +135,7 @@ Token Scanner::GetNextToken()
 				c = sourceFile.peek();
 			}
 			return INT_LITERAL;
+			//should return a value so the real and or int can use this token.
 		}
 		else if(currentChar == '"'){ //String literal
 			//BufferChar(currentChar);
