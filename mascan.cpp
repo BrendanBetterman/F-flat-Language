@@ -58,8 +58,14 @@ Token Scanner::CheckReserved()
 	/*
 	if (tokenBuffer == "int") return INT_LITERAL;
 	if (tokenBuffer == "fake") return REAL_LITERAL;
-	if (tokenBuffer == "bool") return Bool_LITERAL;
+	if (tokenBuffer == "bool") return BOOL_LITERAL;
 	if (tokenBuffer == "str") return STR_LITERAL;
+
+	if (tokenBuffer == "for") return FOR_SYM;
+	if (tokenBuffer == "fif") return IF_SYM;
+	if (tokenBuffer == "felse") return ELSE_SYM;
+	if (tokenBuffer == "fifend") return END_IF_SYM;
+
 	
 	*/
 	return ID;
