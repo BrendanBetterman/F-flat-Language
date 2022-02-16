@@ -20,12 +20,6 @@ Primitive-Data-Types
  
 Type ------- Identifier
 -----------------------
-Interger	int
-
-Real		fake
-
-Boolean	bool
-
 
 Char		(Doesn't exist)
 
@@ -44,17 +38,65 @@ String		str
 
 Array		[]
 
-Primitive INITs
--------------------------
+<Language Name> keywords: BOF
+________________
 
-int i = 0;    || int i; i = 0;
+Usage
+________________
 
-fake i = 0.0; || fake i; i= 0.0;
+* BOF: Begins the program.
 
-bool b = yay; || bool b; b = nay;
+<Language Name> keywords: EOF
+________________
+
+Usage
+________________
+
+* EOF: Ends the program.
+
+<Language Name> keywords: int
+________________
+
+Usage
+________________
+
+* int type: as the declaration of the type Integer
+
+<Language Name> keywords: fake
+________________
+
+Usage
+________________
+
+* fake type: as the declaration of the type Real
+
+<Language Name> keywords: str
+________________
+
+Usage
+________________
+
+* str type: as the declaration of the type String
+
+<Language Name> keywords: bool
+________________
+
+Usage
+________________
+
+* bool type: as the declaration of the type Boolean
+Syntax
+________________
+
+yay : true
+
+nay : false
+Explanation
+________________
+The boolean is denoated with with yay or nay and can be used in conditional statments. 
 
 
-str s; s = "hello world";
+
 
 
 
