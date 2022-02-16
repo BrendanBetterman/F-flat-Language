@@ -8,7 +8,7 @@ A basic Language developed by (badcafe)Sam , (baskanos)Brian, and (Xyphold)Brend
 &lt;Language Name&gt; keywords: BOF
 ------------------------------
 
-<h2>Usage</h2>
+<h3>Usage</h3>
 ________________
 
 * BOF: Begins the program.
@@ -16,7 +16,7 @@ ________________
 &lt;Language Name&gt; keywords: EOF
 ------------------------------
 
-<h2>Usage</h2>
+<h3>Usage</h3>
 ________________
 
 * EOF: Ends the program.
@@ -24,7 +24,7 @@ ________________
 &lt;Language Name&gt; keywords: int
 ------------------------------
 
-<h2>Usage</h2>
+<h3>Usage</h3>
 ________________
 
 * int type: as the declaration of the type Integer
@@ -32,7 +32,7 @@ ________________
 &lt;Language Name&gt; keywords: fake
 ------------------------------
 
-<h2>Usage</h2>
+<h3>Usage</h3>
 ________________
 
 * fake type: as the declaration of the type Real
@@ -40,7 +40,7 @@ ________________
 &lt;Language Name&gt; keywords: str
 ------------------------------
 
-<h2>Usage</h2>
+<h3>Usage</h3>
 ________________
 
 * str type: as the declaration of the type String
@@ -48,7 +48,7 @@ ________________
 &lt;Language Name&gt; keywords: bool
 ------------------------------
 
-<h2>Usage</h2>
+<h3>Usage</h3>
 ________________
 
 * bool type: as the declaration of the type Boolean
@@ -66,7 +66,7 @@ The boolean is denoated with with yay or nay and can be used in conditional stat
 &lt;Language Name&gt; keywords: fin
 ------------------------------
 
-<h2>Usage</h2>
+<h3>Usage</h3>
 ________________
 
 *fin &lt;int&gt; : This will prompt the user to enter a value.
@@ -102,7 +102,7 @@ fin uses white spaces as delimiters.
 &lt;Language Name&gt; keywords: fout
 ------------------------------
 
-<h2>Usage</h2>
+<h3>Usage</h3>
 ________________
 
 *fout &lt;int&gt;||&lt;str&gt;||&lt;fake&gt;||&lt;""&gt;: outputs to console
@@ -131,7 +131,7 @@ Note that fout doesn't new line.<br>
 &lt;Language Name&gt; keywords: foutln
 ------------------------------
 
-<h2>Usage</h2>
+<h3>Usage</h3>
 ________________
 
 *foutln &lt;int&gt;||&lt;fake&gt;||&lt;str&gt;||&lt;""&gt; : outputs enter var starting with new line.<br>
@@ -160,7 +160,7 @@ fout prints the new line before the statement.
 &lt;Language Name&gt; keywords: fif
 ------------------------------
 
-<h2>Usage</h2>
+<h3>Usage</h3>
 ________________
 *fif (condition)
 
@@ -185,7 +185,7 @@ ________________
 &lt;Language Name&gt; keywords: 
 ------------------------------
 
-<h2>Usage</h2>
+<h3>Usage</h3>
 ________________
 
 Syntax
