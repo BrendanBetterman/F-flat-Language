@@ -5,7 +5,7 @@ ______________________
 A basic Language developed by (badcafe)Sam , (baskanos)Brian, and (Xyphold)Brendan
  
 
-<Language Name> keywords: BOF
+&lt;Language Name&gt; keywords: BOF
 ------------------------------
 
 Usage
@@ -13,7 +13,7 @@ ________________
 
 * BOF: Begins the program.
 
-<Language Name> keywords: EOF
+&lt;Language Name&gt; keywords: EOF
 ------------------------------
 
 Usage
@@ -21,7 +21,7 @@ ________________
 
 * EOF: Ends the program.
 
-<Language Name> keywords: int
+&lt;Language Name&gt; keywords: int
 ------------------------------
 
 Usage
@@ -29,7 +29,7 @@ ________________
 
 * int type: as the declaration of the type Integer
 
-<Language Name> keywords: fake
+&lt;Language Name&gt; keywords: fake
 ------------------------------
 
 Usage
@@ -37,7 +37,7 @@ ________________
 
 * fake type: as the declaration of the type Real
 
-<Language Name> keywords: str
+&lt;Language Name&gt; keywords: str
 ------------------------------
 
 Usage
@@ -45,7 +45,7 @@ ________________
 
 * str type: as the declaration of the type String
 
-<Language Name> keywords: bool
+&lt;Language Name&gt; keywords: bool
 ------------------------------
 
 Usage
@@ -56,26 +56,25 @@ ________________
 Syntax
 ________________
 
-yay : true
-
-nay : false
+yay : true<br>
+nay : false<br>
 
 Explanation
 ________________
 The boolean is denoated with with yay or nay and can be used in conditional statments. 
 
-<Language Name> keywords: fin
+&lt;Language Name&gt; keywords: fin
 ------------------------------
 
 Usage
 ________________
 
-*fin <int> : This will prompt the user to enter a value.
+*fin &lt;int&gt; : This will prompt the user to enter a value.
 
 Syntax
 ________________
 
-fin &;ltint>,<int>;
+fin &lt;int&gt;,&lt;int&gt;;
 
 Explanation
 ________________
@@ -85,28 +84,28 @@ This allows the user of a program to enter their own values.
 Examples
 ________________
 
-:::PROGRAM:::
-int x;
-int y;
-fout "Enter two values";
-fin x,y;
-fout x,y;
-:::CONSOLE:::
-Enter two values 10 20 
-10 20
+:::PROGRAM:::<br>
+int x;<br>
+int y;<br>
+fout "Enter two values";<br>
+fin x,y;<br>
+fout x,y;<br>
+:::CONSOLE:::<br>
+Enter two values 10 20<br> 
+10 20<br>
 
 Notes
 ________________
 
 fin uses white spaces as delimiters.
 
-<Language Name> keywords: fout
+&lt;Language Name&gt; keywords: fout
 ------------------------------
 
 Usage
 ________________
 
-*fout <int>||<str>||<fake>||<"">: outputs to console
+*fout &lt;int&gt;||&lt;str&gt;||&lt;fake&gt;||&lt;""&gt;: outputs to console
 
 Explanation
 ________________
@@ -116,26 +115,26 @@ fout outputs the variable/Literal that its given.
 Examples
 ________________
 
-:::PROGRAM:::
-srt x;
-x = "helloworld";
-fout x,x;
-fout "hi";
-:::CONSOLE:::
-helloworldhelloworldhi
+:::PROGRAM:::<br>
+srt x;<br>
+x = "helloworld";<br>
+fout x,x;<br>
+fout "hi";<br>
+:::CONSOLE:::<br>
+helloworldhelloworldhi<br>
 
 Notes
 ________________
 
-Note that fout doesn't new line.
+Note that fout doesn't new line.<br>
 
-<Language Name> keywords: foutln
+&lt;Language Name&gt; keywords: foutln
 ------------------------------
 
 Usage
 ________________
 
-*foutln <int>||<fake>||<str>||<""> : outputs enter var starting with new line.
+*foutln &lt;int&gt;||&lt;fake&gt;||&lt;str&gt;||&lt;""&gt; : outputs enter var starting with new line.<br>
 
 
 Explanation
@@ -144,21 +143,21 @@ foutln outputs the entered literal/variable to the console.
 
 Examples
 ________________
-:::PROGRAM:::
-str x;
-x = "helloworld";
-foutln x;
-foutln x;
-:::CONSOLE:::
-
-helloworld
-helloworld
+:::PROGRAM:::<br>
+str x;<br>
+x = "helloworld";<br>
+foutln x;<br>
+foutln x;<br>
+:::CONSOLE:::<br>
+<br>
+helloworld<br>
+helloworld<br>
 
 Notes
 ________________
 fout prints the new line before the statement.
 
-<Language Name> keywords: fif
+&lt;Language Name&gt; keywords: fif
 ------------------------------
 
 Usage
@@ -171,19 +170,19 @@ fif is the tradisional if statement. if the condition is true it runs the code.
 
 Examples
 ________________
-:::PROGRAM:::
-fif (1 == 2)
-    fout "help";
-felse
-    fout "correct";
-fifend
-:::CONSOLE:::
-correct
+:::PROGRAM:::<br>
+fif (1 == 2)<br>
+    fout "help";<br>
+felse<br>
+    fout "correct";<br>
+fifend<br>
+:::CONSOLE:::<br>
+correct<br>
 
 Notes
 ________________
 
-<Language Name> keywords: 
+&lt;Language Name&gt; keywords: 
 ------------------------------
 
 Usage
