@@ -11,6 +11,7 @@ A basic Language developed by (badcafe)Sam , (baskanos)Brian, and (Xyphold)Brend
 <h3>Usage</h3><hr style="height:2px;color:gray">
 
 * BOF: Begins the program.
+<hr style="height:1px;color:lightgray">
 
 &lt;Language Name&gt; keywords: EOF
 ------------------------------
