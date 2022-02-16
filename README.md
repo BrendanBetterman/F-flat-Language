@@ -12,7 +12,7 @@ A basic Language developed by (badcafe)Sam , (baskanos)Brian, and (Xyphold)Brend
 
 * BOF: Begins the program.
 
-------------------------------
+____________________________
 
 &lt;Language Name&gt; keywords: EOF
 ------------------------------
