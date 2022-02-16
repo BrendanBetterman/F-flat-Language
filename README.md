@@ -48,8 +48,7 @@ ________________
 &lt;Language Name&gt; keywords: bool
 ------------------------------
 
-<h3>Usage</h3>
-________________
+<h3>Usage</h3><hr style="height:2px;color:gray">
 
 * bool type: as the declaration of the type Boolean
 
