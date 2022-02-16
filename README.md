@@ -75,7 +75,7 @@ ________________
 Syntax
 ________________
 
-fin <int>,<int>;
+fin &;ltint>,<int>;
 
 Explanation
 ________________
