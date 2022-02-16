@@ -38,6 +38,7 @@ ____________________________
 <h3>Usage</h3><hr style="height:2px;color:gray">
 
 * fake type: as the declaration of the type Real
+--------------------------------------
 
 &lt;Language Name&gt; keywords: str
 ------------------------------
@@ -45,6 +46,7 @@ ____________________________
 <h3>Usage</h3><hr style="height:2px;color:gray">
 
 * str type: as the declaration of the type String
+--------------------------------------
 
 &lt;Language Name&gt; keywords: bool
 ------------------------------
@@ -61,6 +63,7 @@ nay : false<br>
 <h3>Explanation</h3><hr style="height:2px;color:gray">
 ________________
 The boolean is denoated with with yay or nay and can be used in conditional statments. 
+--------------------------------------
 
 &lt;Language Name&gt; keywords: fin
 ------------------------------
@@ -94,6 +97,7 @@ Notes
 ________________
 
 fin uses white spaces as delimiters.
+--------------------------------------
 
 &lt;Language Name&gt; keywords: fout
 ------------------------------
@@ -121,6 +125,7 @@ Notes
 ________________
 
 Note that fout doesn't new line.<br>
+--------------------------------------
 
 &lt;Language Name&gt; keywords: foutln
 ------------------------------
@@ -149,6 +154,7 @@ helloworld<br>
 Notes
 ________________
 fout prints the new line before the statement.
+--------------------------------------
 
 &lt;Language Name&gt; keywords: fif
 ------------------------------
@@ -173,7 +179,7 @@ fifend<br>
 correct<br>
 
 Notes
-________________
+--------------------------------------
 
 &lt;Language Name&gt; keywords: 
 ------------------------------
