@@ -4,6 +4,7 @@ Custom LL(1) language
 ______________________ 
 A basic Language developed by (badcafe)Sam , (baskanos)Brian, and (Xyphold)Brendan
  
+ <hr style="height:2px;color:blue">
 
 F♭ keywords: BOF
 ------------------------------
