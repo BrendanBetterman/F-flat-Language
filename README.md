@@ -62,7 +62,6 @@ yay : true<br>
 nay : false<br>
 
 <h3>Explanation</h3><hr style="height:2px;color:gray">
-________________
 The boolean is denoated with with yay or nay and can be used in conditional statments. 
 --------------------------------------
 
@@ -81,9 +80,7 @@ fin &lt;int&gt;,&lt;int&gt;;
 
 This allows the user of a program to enter their own values.
 
-Examples
-________________
-
+<h3>Examples</h3><hr style="height:2px;color:gray">
 :::PROGRAM:::<br>
 int x;<br>
 int y;<br>
@@ -94,8 +91,7 @@ fout x,y;<br>
 Enter two values 10 20<br> 
 10 20<br>
 
-Notes
-________________
+<h3>Notes</h3><hr style="height:2px;color:gray">
 
 fin uses white spaces as delimiters.
 --------------------------------------
@@ -111,8 +107,7 @@ F♭ keywords: fout
 
 fout outputs the variable/Literal that its given. 
 
-Examples
-________________
+<h3>Examples</h3><hr style="height:2px;color:gray">
 
 :::PROGRAM:::<br>
 srt x;<br>
@@ -122,7 +117,7 @@ fout "hi";<br>
 :::CONSOLE:::<br>
 helloworldhelloworldhi<br>
 
-Notes
+<h3>Notes</h3><hr style="height:2px;color:gray">
 ________________
 
 Note that fout doesn't new line.<br>
@@ -140,7 +135,7 @@ F♭ keywords: foutln
 
 foutln outputs the entered literal/variable to the console.
 
-Examples
+<h3>Examples</h3><hr style="height:2px;color:gray">
 ________________
 :::PROGRAM:::<br>
 str x;<br>
@@ -152,7 +147,7 @@ foutln x;<br>
 helloworld<br>
 helloworld<br>
 
-Notes
+<h3>Notes</h3><hr style="height:2px;color:gray">
 ________________
 fout prints the new line before the statement.
 --------------------------------------
@@ -168,8 +163,7 @@ F♭ keywords: fif
 
 fif is the tradisional if statement. if the condition is true it runs the code.
 
-Examples
-________________
+<h3>Examples</h3><hr style="height:2px;color:gray">
 :::PROGRAM:::<br>
 fif (1 == 2)<br>
     fout "help";<br>
@@ -179,8 +173,53 @@ fifend<br>
 :::CONSOLE:::<br>
 correct<br>
 
-Notes
+<h3>Notes</h3><hr style="height:2px;color:gray">
 --------------------------------------
+
+F♭ keywords: for
+------------------------------
+
+<h3>Usage</h3><hr style="height:2px;color:gray">
+*for ndex; condition; increment
+*endfor
+
+<h3>Explanation</h3><hr style="height:2px;color:gray">
+The for loop increments the program until the condition is met.
+
+<h3>Examples</h3><hr style="height:2px;color:gray">
+:::PROGRAM:::<br>
+int i;<br>
+for i =0; i&lt;3 i++<br>
+    fout "helloworld";<br>
+    fout i;<br>
+endfor<br>
+:::CONSOLE:::<br>
+helloworld0;<br>
+helloworld1;<br>
+helloworld2;<br>
+
+F♭ keywords: while
+------------------------------
+
+<h3>Usage</h3><hr style="height:2px;color:gray">
+*while condition;
+*endwhile
+
+<h3>Explanation</h3><hr style="height:2px;color:gray">
+The while loop increments the program until the condition is met.
+
+<h3>Examples</h3><hr style="height:2px;color:gray">
+:::PROGRAM:::<br>
+int i = 0;<br>
+while i&lt;3 <br>
+    fout "helloworld";<br>
+    fout i;<br>
+    i++;
+endwhile<br>
+:::CONSOLE:::<br>
+helloworld0;<br>
+helloworld1;<br>
+helloworld2;<br>
 
 F♭ keywords: 
 ------------------------------
@@ -191,14 +230,11 @@ F♭ keywords:
 
 <h3>Explanation</h3><hr style="height:2px;color:gray">
 
-Functions
-________________
+<h3>Functions</h3><hr style="height:2px;color:gray">
 
-Examples
-________________
+<h3>Examples</h3><hr style="height:2px;color:gray">
 
-Notes
-________________
+<h3>Notes</h3><hr style="height:2px;color:gray">
 
 
 ______________________
