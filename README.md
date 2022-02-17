@@ -1,11 +1,11 @@
 # compiler
 Custom LL(1) language 
-♭
+
 ______________________ 
 A basic Language developed by (badcafe)Sam , (baskanos)Brian, and (Xyphold)Brendan
  
 
-&lt;Language Name&gt; keywords: BOF
+F♭ keywords: BOF
 ------------------------------
 
 <h3>Usage</h3><hr style="height:2px;color:gray">
@@ -14,7 +14,7 @@ A basic Language developed by (badcafe)Sam , (baskanos)Brian, and (Xyphold)Brend
 
 ____________________________
 
-&lt;Language Name&gt; keywords: EOF
+F♭ keywords: EOF
 ------------------------------
 
 <h3>Usage</h3><hr style="height:2px;color:gray">
@@ -23,7 +23,7 @@ ____________________________
 
 ------------------------------
 
-&lt;Language Name&gt; keywords: int
+F♭ keywords: int
 ------------------------------
 
 <h3>Usage</h3><hr style="height:2px;color:gray">
@@ -32,7 +32,7 @@ ____________________________
 
 --------------------------------------
 
-&lt;Language Name&gt; keywords: fake
+F♭ keywords: fake
 ------------------------------
 
 <h3>Usage</h3><hr style="height:2px;color:gray">
@@ -40,7 +40,7 @@ ____________________________
 * fake type: as the declaration of the type Real
 --------------------------------------
 
-&lt;Language Name&gt; keywords: str
+F♭ keywords: str
 ------------------------------
 
 <h3>Usage</h3><hr style="height:2px;color:gray">
@@ -48,7 +48,7 @@ ____________________________
 * str type: as the declaration of the type String
 --------------------------------------
 
-&lt;Language Name&gt; keywords: bool
+F♭ keywords: bool
 ------------------------------
 
 <h3>Usage</h3><hr style="height:2px;color:gray">
@@ -65,7 +65,7 @@ ________________
 The boolean is denoated with with yay or nay and can be used in conditional statments. 
 --------------------------------------
 
-&lt;Language Name&gt; keywords: fin
+F♭ keywords: fin
 ------------------------------
 
 <h3>Usage</h3><hr style="height:2px;color:gray">
@@ -99,7 +99,7 @@ ________________
 fin uses white spaces as delimiters.
 --------------------------------------
 
-&lt;Language Name&gt; keywords: fout
+F♭ keywords: fout
 ------------------------------
 
 <h3>Usage</h3><hr style="height:2px;color:gray">
@@ -127,7 +127,7 @@ ________________
 Note that fout doesn't new line.<br>
 --------------------------------------
 
-&lt;Language Name&gt; keywords: foutln
+F♭ keywords: foutln
 ------------------------------
 
 <h3>Usage</h3>
@@ -156,7 +156,7 @@ ________________
 fout prints the new line before the statement.
 --------------------------------------
 
-&lt;Language Name&gt; keywords: fif
+F♭ keywords: fif
 ------------------------------
 
 <h3>Usage</h3><hr style="height:2px;color:gray">
@@ -181,7 +181,7 @@ correct<br>
 Notes
 --------------------------------------
 
-&lt;Language Name&gt; keywords: 
+F♭ keywords: 
 ------------------------------
 
 <h3>Usage</h3><hr style="height:2px;color:gray">
