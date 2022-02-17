@@ -180,8 +180,8 @@ F♭ keywords: for
 ------------------------------
 
 <h3>Usage</h3><hr style="height:2px;color:gray">
-*for ndex; condition; increment
-*endfor
+*for index; condition; increment;<br>
+*endfor;<br>
 
 <h3>Explanation</h3><hr style="height:2px;color:gray">
 The for loop increments the program until the condition is met.
@@ -202,8 +202,8 @@ F♭ keywords: while
 ------------------------------
 
 <h3>Usage</h3><hr style="height:2px;color:gray">
-*while condition;
-*endwhile
+*while condition;<br>
+*endwhile;<br>
 
 <h3>Explanation</h3><hr style="height:2px;color:gray">
 The while loop increments the program until the condition is met.
