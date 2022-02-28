@@ -68,6 +68,16 @@ char Scanner::NextChar(){
 }
 
 // -----------------
-// --   Private   --
+// --   public   --
 // -----------------
 
+Token Scanner::GetNextToken(){
+    char currentChar, c;
+    ClearBuffer();
+    currentChar= NextChar();
+    while (!sourceFile.eof())
+    {
+        /* code */
+    }
+    
+}
