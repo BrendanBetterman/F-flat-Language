@@ -77,7 +77,7 @@ Token Scanner::GetNextToken(){
     currentChar= NextChar();
     while (!sourceFile.eof())
     {
-        /* code */
+        /* code either switch statment or if wall */
     }
     
 }
