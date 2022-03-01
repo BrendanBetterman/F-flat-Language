@@ -1,0 +1,13 @@
+//Test Cases for f flat
+BOF
+int i;
+int k= 12;
+k = k*10;
+fin(i);
+fout(k,i);
+fif(k == i)
+    fout("equals");
+felse
+    fout("not");
+fendif
+EOF
