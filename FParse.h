@@ -10,9 +10,9 @@
 #include <string>
 using namespace std;
 
-#include "_____.h" // scanner class definition
+#include "FScan.h" // scanner class definition
 
-#include "_____.h" // code generator class definition
+#include "FCodeGen.h" // code generator class definition
 
 class Parser
 {
