@@ -78,6 +78,27 @@ Token Scanner::GetNextToken(){
     while (!sourceFile.eof())
     {
         /* code either switch statment or if wall */
+		if(isspace(currentChar)){
+			currentChar = Nextchar();
+		}else if(isalpha(currentChar)){
+			BufferChar(currentChar);
+			while (isalnum(c) || c == '_'){
+				currentChar = NextChar();
+				BufferChar(currentChar);
+				c= sourceFile.peek();
+			}
+			return CheckReserved();
+		}else if(isdigit(currentChar)){
+			//Fakes and Ints
+			BufferChar(currentChar);
+			c = sourceFile.peek();
+			while (isdigit(c)){
+				currentChar = NextChar();
+				BufferChar(currentChar);
+				c= sourceFile.peek();
+			}
+			return INT_LITERAL;
+		}
     }
     
 }
