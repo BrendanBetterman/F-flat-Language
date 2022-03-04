@@ -154,9 +154,18 @@ Token Scanner::GetNextToken(){
 									BufferChar(currentChar);
 									c= sourceFile.peek();
 								}
-								return FAKE_LITERAL;
+								if(isdigit(currentChar)){
+									return FAKE_LITERAL;
+								}else{
+									LexicalError(currentChar);
+								}
+							}else{
+								//Non Science
 							}
 
+						}else{
+							//No digit after .
+							LexicalError(currentChar);
 						}
 					}else{
 						return INT_LITERAL;
