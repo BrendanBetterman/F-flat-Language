@@ -89,6 +89,7 @@ Token Scanner::GetNextToken(){
 			}
 			return CheckReserved();
 		}else if(isdigit(currentChar)){
+
 			//Fakes and Ints
 			BufferChar(currentChar);
 			c = sourceFile.peek();
@@ -98,7 +99,10 @@ Token Scanner::GetNextToken(){
 				c= sourceFile.peek();
 			}
 			return INT_LITERAL;
+		}else if(currentChar == '('){
+			return LPAREN;
 		}
+
     }
     
 }
