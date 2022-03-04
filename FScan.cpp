@@ -78,37 +78,97 @@ Token Scanner::GetNextToken(){
     while (!sourceFile.eof())
     {
         /* code either switch statment or if wall */
+		if(isspace(currentChar)){
+			currentChar = Nextchar();
+		}
 		switch(currentChar){
 			case '(':
 				return LPAREN;
 			case ')':
 				return RPAREN;
-			
+			case ';':
+				return SEMICOLON;
+			case '+':
+				return ADD_OP;
+			case '-':
+				return SUB_OP;
+			case '/':
+				return DIV_OP;
+			case '*':
+				return MUL_OP;
+			case '%':
+				return MOD_OP;
+			case ',':
+				return COMMA;
+			case '=':
+				//special case
+				if (sourceFile.peek() == '='){
+					return CMP_OP;
+				}else{
+					return ASSIGN_OP;
+				}
+				break;
+			default:
+				if(isalpha(currentChar)){
+					BufferChar(currentChar);
+					while (isalnum(c) || c == '_' || c == ':'){
+						currentChar = NextChar();
+						BufferChar(currentChar);
+						c= sourceFile.peek();
+					}
+					return CheckReserved();
+				}else if(isdigit(currentChar)){
+
+					//Fakes and Ints
+					BufferChar(currentChar);
+					c = sourceFile.peek();
+					while (isdigit(c)){
+						currentChar = NextChar();
+						BufferChar(currentChar);
+						c= sourceFile.peek();
+					}
+					if(c =='.'){
+						//fake stuff
+						currentChar = NextChar();
+						BufferChar(currentChar);
+						c= sourceFile.peek();
+						while(isdigit(c)){
+							currentChar = NextChar();
+							BufferChar(currentChar);
+							c= sourceFile.peek();
+						}
+						if(isdigit(currentChar)){
+							//check if something is after the . example 1.0e
+							c= sourceFile.peek();
+							if(c=='e' || c =='E'){
+								currentChar = NextChar();
+								BufferChar(currentChar);
+								c= sourceFile.peek();
+								if(c=='-'){
+									currentChar = NextChar();
+									BufferChar(currentChar);
+									c= sourceFile.peek();
+								}
+								while (isdigit(c)){
+									currentChar = NextChar();
+									BufferChar(currentChar);
+									c= sourceFile.peek();
+								}
+								return FAKE_LITERAL;
+							}
+
+						}
+					}else{
+						return INT_LITERAL;
+					}
+
+
+				}else{
+					LexicalError(currentChar);
+				}
 
 		}
-		if(isspace(currentChar)){
-			currentChar = Nextchar();
-		}else if(isalpha(currentChar)){
-			BufferChar(currentChar);
-			while (isalnum(c) || c == '_'){
-				currentChar = NextChar();
-				BufferChar(currentChar);
-				c= sourceFile.peek();
-			}
-			return CheckReserved();
-		}else if(isdigit(currentChar)){
-
-			//Fakes and Ints
-			BufferChar(currentChar);
-			c = sourceFile.peek();
-			while (isdigit(c)){
-				currentChar = NextChar();
-				BufferChar(currentChar);
-				c= sourceFile.peek();
-			}
-			return INT_LITERAL;
-		}
-
+		
     }
     
 }
