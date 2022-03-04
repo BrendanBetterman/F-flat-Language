@@ -101,6 +101,8 @@ Token Scanner::GetNextToken(){
 			return INT_LITERAL;
 		}else if(currentChar == '('){
 			return LPAREN;
+		}else if(currentChar == ')'){
+			return RPAREN;
 		}
 
     }
