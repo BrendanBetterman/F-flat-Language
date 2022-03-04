@@ -78,6 +78,14 @@ Token Scanner::GetNextToken(){
     while (!sourceFile.eof())
     {
         /* code either switch statment or if wall */
+		switch(currentChar){
+			case '(':
+				return LPAREN;
+			case ')':
+				return RPAREN;
+			
+
+		}
 		if(isspace(currentChar)){
 			currentChar = Nextchar();
 		}else if(isalpha(currentChar)){
@@ -99,10 +107,6 @@ Token Scanner::GetNextToken(){
 				c= sourceFile.peek();
 			}
 			return INT_LITERAL;
-		}else if(currentChar == '('){
-			return LPAREN;
-		}else if(currentChar == ')'){
-			return RPAREN;
 		}
 
     }
