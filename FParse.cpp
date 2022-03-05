@@ -93,7 +93,7 @@ void Parser::DecTail()
 		Match(ASSIGN_OP);
 		Literal();
 		// code.ProcessLiteral();
-		cout << "Add OP";
+		cout << "Assign OP";
 		break;
 	case LSTAPLE:
 	case SEMICOLON:
@@ -172,6 +172,7 @@ void Parser::FactorTail()
 		MultOp();
 		Primary();
 		// code.GenInfix();
+		cout << "Mul or div";
 		FactorTail();
 		break;
 	case AND_SYM:
@@ -204,6 +205,7 @@ void Parser::Primary()
 	case BOOL_LITERAL:
 		Literal();
 		// code.ProcessLiteral();
+		cout << "Process Literal";
 		break;
 	case ID:
 		Variable();
@@ -265,6 +267,7 @@ void Parser::Factor()
 {
 	Primary();
 	// code.GenInfix();
+	cout << "Get infix";
 	FactorTail();
 }
 
@@ -476,6 +479,7 @@ void Parser::ItemListTail()
 		Match(COMMA);
 		Expression();
 		// code.WriteExpr();
+		cout << "write Expr";
 		ItemListTail();
 		break;
 	case RPAREN:
@@ -489,6 +493,7 @@ void Parser::ItemList()
 {
 	Expression();
 	// code.WriteExpr();
+	cout << "write expr";
 	ItemListTail();
 }
 
@@ -532,6 +537,7 @@ void Parser::VarListTail()
 		Match(COMMA);
 		Variable();
 		// code.ReadValue();
+		cout << "Read value";
 		VarListTail();
 		break;
 	case RPAREN:
@@ -545,6 +551,7 @@ void Parser::VarList()
 {
 	Variable();
 	// code.ReadValue();
+	cout << "Read Value";
 	VarListTail();
 }
 
@@ -565,6 +572,7 @@ void Parser::FoutlnStmt()
 	Match(FOUTLN_SYM);
 	Match(LPAREN);
 	// code.NewLine();
+	cout << "fout new line";
 	ItemList();
 	Match(RPAREN);
 	Match(SEMICOLON);
@@ -594,6 +602,7 @@ void Parser::AssignStmt()
 	Match(ASSIGN_OP);
 	Expression();
 	// code.Assign();
+	cout << "Assignment op";
 	Match(SEMICOLON);
 }
 
@@ -603,6 +612,7 @@ void Parser::Declaration()
 	Match(ID);
 	DecTail();
 	// code.ProcessID();
+	cout << "Processed ID";
 	Match(SEMICOLON);
 }
 
@@ -715,10 +725,12 @@ void Parser::StmtList()
 void Parser::Program()
 {
 	// code.Start();
+	cout << "Started";
 	Match(BEGIN_SYM);
 	StmtList();
 	Match(END_SYM);
 	// code.Finish();
+	cout << "Finished";
 }
 
 void Parser::SystemGoal()
