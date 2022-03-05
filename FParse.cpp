@@ -354,7 +354,7 @@ void Parser::Negation()
 		Relational();
 		break;
 	case AND_SYM:
-	case NOT_SYM:
+	//case NOT_SYM:
 	case RPAREN:
 	case SEMICOLON:
 		break;

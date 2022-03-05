@@ -11,6 +11,6 @@ class CodeGen{
     public:
     CodeGen();
 
-}
+};
 
 #endif

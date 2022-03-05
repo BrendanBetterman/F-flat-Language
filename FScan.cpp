@@ -28,16 +28,16 @@ void Scanner::BufferChar(char c){
 Token Scanner::CheckReserved(){
     if(tokenBuffer == "BOF") return BEGIN_SYM;
 	if (tokenBuffer == "EOF") return END_SYM;
-	if (tokenBuffer == "READ") return READ_SYM;
-	if (tokenBuffer == "WRITE") return WRITE_SYM;
+	if (tokenBuffer == "READ") return FIN_SYM;
+	if (tokenBuffer == "WRITE") return FOUT_SYM;
 	if (tokenBuffer == "int") return INT_LITERAL;
-	if (tokenBuffer == "fake") return REAL_LITERAL;
+	if (tokenBuffer == "fake") return FAKE_LITERAL;
 	if (tokenBuffer == "bool") return BOOL_LITERAL;
 	if (tokenBuffer == "str") return STR_LITERAL;
 	if (tokenBuffer == "for") return FOR_SYM;
-	if (tokenBuffer == "fif") return IF_SYM;
-	if (tokenBuffer == "felse") return ELSE_SYM;
-	if (tokenBuffer == "fifend") return END_IF_SYM;
+	if (tokenBuffer == "fif") return FIF_SYM;
+	if (tokenBuffer == "felse") return FELSE_SYM;
+	if (tokenBuffer == "fifend") return FENDIF_SYM;
 
     return ID;
 }
