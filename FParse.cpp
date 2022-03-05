@@ -39,8 +39,11 @@ Token Parser::NextToken()
 
 void Parser::Match(Token t)
 {
-	if (t != NextToken())
+	
+	if (t != NextToken()){
+	cout << "no token";
 		SyntaxError(t, "");
+	}
 	else
 		tokenAvailable = false;
 }
@@ -697,6 +700,7 @@ void Parser::StmtTail()
 
 void Parser::Statement()
 {
+	cout << "statement";
 	switch (NextToken())
 	{
 	case FIN_SYM:
@@ -733,6 +737,7 @@ void Parser::Program()
 	// code.Start();
 	cout << "Started";
 	Match(BEGIN_SYM);
+	cout <<"started";
 	StmtList();
 	Match(END_SYM);
 	// code.Finish();

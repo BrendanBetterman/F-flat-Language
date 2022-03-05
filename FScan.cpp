@@ -29,19 +29,21 @@ void Scanner::BufferChar(char c){
 }
 
 Token Scanner::CheckReserved(){
+	cout << tokenBuffer<<"\n";
     if(tokenBuffer == "BOF") return BEGIN_SYM;
 	if (tokenBuffer == "EOF") return END_SYM;
-	if (tokenBuffer == "READ") return FIN_SYM;
-	if (tokenBuffer == "WRITE") return FOUT_SYM;
-	if (tokenBuffer == "int") return INT_LITERAL;
-	if (tokenBuffer == "fake") return FAKE_LITERAL;
-	if (tokenBuffer == "bool") return BOOL_LITERAL;
-	if (tokenBuffer == "str") return STR_LITERAL;
-	if (tokenBuffer == "for") return FOR_SYM;
-	if (tokenBuffer == "fif") return FIF_SYM;
-	if (tokenBuffer == "felse") return FELSE_SYM;
-	if (tokenBuffer == "fifend") return FENDIF_SYM;
-
+	if (tokenBuffer == "FIN") return FIN_SYM;
+	if (tokenBuffer == "FOUT") return FOUT_SYM;
+	if (tokenBuffer == "FOUTLN") return FOUTLN_SYM;
+	if (tokenBuffer == "INT") return INT_SYM;
+	if (tokenBuffer == "FAKE") return FAKE_LITERAL;
+	if (tokenBuffer == "BOOL") return BOOL_LITERAL;
+	if (tokenBuffer == "STR") return STR_LITERAL;
+	if (tokenBuffer == "FOR") return FOR_SYM;
+	if (tokenBuffer == "FIF") return FIF_SYM;
+	if (tokenBuffer == "FELSE") return FELSE_SYM;
+	if (tokenBuffer == "FENDIF") return FENDIF_SYM;
+	cout << "not reserved"<<"\n";
     return ID;
 }
 void Scanner::ClearBuffer(){
@@ -80,6 +82,7 @@ Token Scanner::GetNextToken(){
     currentChar= NextChar();
     while (!sourceFile.eof())
     {
+		
         /* code either switch statment or if wall */
 		if(isspace(currentChar)){
 			currentChar = NextChar();
@@ -112,13 +115,19 @@ Token Scanner::GetNextToken(){
 				}
 				break;
 			default:
+			break;
+		}
 				if(isalpha(currentChar)){
 					BufferChar(currentChar);
+					
+					c= sourceFile.peek();
 					while (isalnum(c) || c == '_' || c == ':'){
 						currentChar = NextChar();
 						BufferChar(currentChar);
 						c= sourceFile.peek();
+
 					}
+					
 					return CheckReserved();
 				}else if(isdigit(currentChar)){
 
@@ -179,7 +188,7 @@ Token Scanner::GetNextToken(){
 					LexicalError(currentChar);
 				}
 
-		}
+		
 		
     }
     
