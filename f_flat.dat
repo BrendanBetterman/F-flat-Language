@@ -1,0 +1,142 @@
+*parser,fgmstvx     f_flat Grammar 2022
+*tokens
+"$eof$"             EOF_SYM.
+"BOF"               BEGIN_SYM.
+"bool"              BOOL_SYM.
+"do"                DO_SYM.
+"endfor"            ENDFOR_SYM.
+"endwhile"          ENDWHILE_SYM.
+"EOF"               END_SYM.
+"fake"              FAKE_SYM.
+"felse"             FELSE_SYM.
+"fendif"            FENDIF_SYM.
+"fif"               FIF_SYM.
+"fin"               FIN_SYM.
+"for"               FOR_SYM.
+"fout"              FOUT_SYM.
+"foutln"            FOUTLN_SYM.
+"fwhile"            FWHILE_SYM.
+"f!"                NOT_SYM.
+"f&"                AND_SYM.
+"f|"                NOT_SYM.
+"int"               INT_SYM.
+"nay"               NAY_SYM.
+"str"               STR_SYM.
+"while"             WHILE_SYM.
+"yay"               YAY_SYM.
+"["                 LSTAPLE.
+"]"                 RSTAPLE.
+"("                 LBANANA. 
+")"                 RBANANA.
+";"                 SEMICOLON.
+","                 COMMA.
+"="                 ASSIGN_OP.
+"+"                 PLUS_OP. 
+"-"                 MINUS_OP.
+"*"                 MULT_OP.
+"/"                 REALDIV_OP.
+"<"                 LT_OP.
+"<="                LE_OP.
+">"                 GT_OP.
+">="                GE_OP.
+"=="                EQ_OP.
+"!="                NE_OP.
+"ID"                ID.
+"INT_LIT"           INT_LIT.
+"FAKE_LIT"          FAKE_LIT.
+"STRING_LIT"        STRING_LIT.
+"BOOL_LIT"          BOOL_LIT.
+[Start]
+[Finish]
+[Assign]
+[ReadValue]
+[WriteExpr]
+[NewLine]
+[ProcessOp]
+[GenInfix]
+[ProcessLiteral]
+[ProcessID]
+*grammar
+<program>           [Start] "BOF" <stmt_list> "EOF" [Finish]
+<stmt_list>         <statement> <stmt_tail>
+<stmt_tail>         <statement> <stmt_tail>
+                  | ""
+<statement>         <simple_stmt>  
+                  | <struct_stmt>
+                  | <declaration>
+<simple_stmt>       <assign_stmt>
+                  | <fin_stmt>
+                  | <fout_stmt>
+                  | <foutln_stmt>
+<assign_stmt>       <variable> "=" <expression> [Assign] ";"
+<fin_stmt>         "fin" "(" <var_list> ")" ";"
+<var_list>          <variable> [ReadValue] <var_list_tail>
+<var_list_tail>     "," <variable> [ReadValue] <var_list_tail>
+                  | ""
+<variable>          "ID" <variable_tail> 
+<variable_tail>     "[" <expression> "]"
+                  | ""
+<fout_stmt>        "fout" "(" <item_list> ")" ";"
+<foutln_stmt>      "foutln" "(" [NewLine] <item_list> ")" ";"
+<item_list>         <expression> [WriteExpr] <item_list_tail>  
+<item_list_tail>    "," <expression> [WriteExpr] <item_list_tail>
+                  | ""
+<struct_stmt>       <fif_stmt>
+                  | <while_stmt>
+                  | <do_fwhile_stmt>
+                  | <for_stmt>
+<fif_stmt>        "fif" "(" <condition> ")" <stmt_list> <felse_clause> "fendif"
+<felse_clause>    "felse" <stmt_list>
+                  | ""
+<do_fwhile_stmt>   "do" <stmt_list> "fwhile" "(" <condition> ")" 
+<while_stmt>      "while" "(" <condition> ")" <stmt_list> "endwhile"
+<for_stmt>        "for" "(" <var_init> "=" <expression> ";" <condition> ";"  <variable> "=" <expression> ")" <stmt_list> "endfor" 
+<var_init>         "int" "ID"
+                  | <variable>
+<condition>         <and_cond> <cond_tail>
+<cond_tail>         "f|"  <and_cond>
+                  | ""
+<and_cond>         <negation> <and_tail>
+<and_tail>         "f&"  <negation> <and_tail>
+                  | ""
+<negation>         "f!" <relational>
+                  | ""
+<relational>      <expression> <rel_tail>
+<rel_tail>         <rel_op>  <expression>
+                  | ""
+<expression>        <factor> <expr_tail>
+<expr_tail>         <add_op> <factor> <expr_tail>
+                  | ""
+<factor>            <primary> [GenInfix] <factor_tail>
+<factor_tail>       <mult_op> <primary> [GenInfix] <factor_tail>
+                  | ""
+<primary>           <literal> [processLiteral]
+                  | <variable>
+                  | "(" <condition> ")" 
+<type>              "int" 
+                  | "bool"
+                  | "fake"
+                  |  "str"
+<literal>           "INT_LIT" 
+                  | "BOOL_LIT"
+                  | "FAKE_LIT"
+                  | "STRING_LIT" 
+<mult_op>           "*" 
+                  | "/"
+<add_op>            "+" 
+                  | "-"
+<rel_op>            "<" 
+                  | "<=" 
+                  | ">" 
+                  | ">=" 
+                  | "==" 
+                  | "!="
+<declaration>       <type>  "ID" <dec_tail> [ProcessID] ";"
+<dec_tail>          "=" <literal> [ProcessLiteral]
+                  | <var_dec_tail>  <var_dec_list_tail>
+<var_dec_list>      <var_dec>  <var_dec_list_tail>
+<var_dec_list_tail>  "," <var_dec> <var_dec_list_tail>
+                  | ""
+<var_dec>         "ID" <var_dec_tail> 
+<var_dec_tail>      "[" "INT_LIT" "]"
+                  | ""
