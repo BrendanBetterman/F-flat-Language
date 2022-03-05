@@ -4,13 +4,13 @@ FLAGS = -std=c++0x
 
 all:   fflat 
 
-fflat: fflat.cpp Fparse.o Fscan.o Fcode.o
-	$(CXX) $(FLAGS) Fparse.o Fscan.o FCodeGen.o fflat.cpp -o fflat
+fflat: fflat.cpp FParse.o FScan.o Fcode.o
+	$(CXX) $(FLAGS) FParse.o FScan.o FCodeGen.o fflat.cpp -o fflat
 
-Fparse.o: FParse.cpp
+FParse.o: FParse.cpp
 	$(CXX) $(FLAGS) -c FParse.cpp
 
-Fscan.o: FScan.cpp
+FScan.o: FScan.cpp
 	$(CXX) $(FLAGS) -c FScan.cpp
 
 FCodeGen.o: FCodeGen.cpp

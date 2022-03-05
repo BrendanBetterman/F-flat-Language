@@ -9,9 +9,9 @@ ifstream sourceFile; // source program
 ofstream outFile,    // object program
          listFile;   // compiler listing
 
-#include "Fscan.h"   // scanner component definition 
-#include "Fparse.h"	 // parser component definition
-#include "FcodeGen.h"   // code generator component definition
+#include "FScan.h"   // scanner component definition 
+#include "FParse.h"	 // parser component definition
+#include "FCodeGen.h"   // code generator component definition
 
                      // GLOBAL COMPONENT OBJECTS
 Scanner scan;        // scanner

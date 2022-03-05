@@ -8,7 +8,12 @@
 #include <string>
 using namespace std;
 
+#include "FScan.h"
 #include "FParse.h"
+#include "FCodeGen.h"
+
+extern Scanner scan;
+extern CodeGen code;
 
 Parser::Parser()
 {
@@ -25,6 +30,7 @@ Token Parser::NextToken()
 {
 	if (!tokenAvailable)
 	{
+		
 		savedToken = scan.GetNextToken();
 		tokenAvailable = true;
 	}
