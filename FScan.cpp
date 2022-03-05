@@ -3,6 +3,9 @@
 #include <string>
 using namespace std;
 
+extern ifstream sourceFile;
+extern ofstream outFile, listFile;
+
 #include "FScan.h"
 
 // -----------------
