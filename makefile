@@ -4,7 +4,7 @@ FLAGS = -std=c++0x
 
 all:   fflat 
 
-fflat: fflat.cpp FParse.o FScan.o Fcode.o
+fflat: fflat.cpp FParse.o FScan.o FCodeGen.o
 	$(CXX) $(FLAGS) FParse.o FScan.o FCodeGen.o fflat.cpp -o fflat
 
 FParse.o: FParse.cpp

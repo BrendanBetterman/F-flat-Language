@@ -82,7 +82,7 @@ Token Scanner::GetNextToken(){
     {
         /* code either switch statment or if wall */
 		if(isspace(currentChar)){
-			currentChar = Nextchar();
+			currentChar = NextChar();
 		}
 		switch(currentChar){
 			case '(':
