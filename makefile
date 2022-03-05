@@ -5,16 +5,16 @@ FLAGS = -std=c++0x
 all:   fflat 
 
 fflat: fflat.cpp Fparse.o Fscan.o Fcode.o
-	$(CXX) $(FLAGS) Fparse.o Fscan.o Fcode.o fflat.cpp -o fflat
+	$(CXX) $(FLAGS) Fparse.o Fscan.o FCodeGen.o fflat.cpp -o fflat
 
-fparse.o: fparse.cpp
-	$(CXX) $(FLAGS) -c fparse.cpp
+Fparse.o: FParse.cpp
+	$(CXX) $(FLAGS) -c FParse.cpp
 
-fscan.o: fscan.cpp
-	$(CXX) $(FLAGS) -c fscan.cpp
+Fscan.o: FScan.cpp
+	$(CXX) $(FLAGS) -c FScan.cpp
 
-fcode.o: fcode.cpp
-	$(CXX) $(FLAGS) -c fcode.cpp
+FCodeGen.o: FCodeGen.cpp
+	$(CXX) $(FLAGS) -c FCodeGen.cpp
 
 clobber:
 	rm -f *.o *.exe *.lis *.obj core micro sam macc trace.txt
