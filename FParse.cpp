@@ -74,7 +74,7 @@ void Parser::VarDecTail()
 	{
 	case LSTAPLE:
 		Match(LSTAPLE);
-		Match(INT_LIT);
+		Match(INT_LITERAL);
 		Match(RSTAPLE);
 		break;
 	case SEMICOLON:
@@ -93,6 +93,7 @@ void Parser::DecTail()
 		Match(ASSIGN_OP);
 		Literal();
 		// code.ProcessLiteral();
+		cout << "Add OP";
 		break;
 	case LSTAPLE:
 	case SEMICOLON:
@@ -130,17 +131,17 @@ void Parser::Literal()
 {
 	switch (NextToken())
 	{
-	case INT_LIT:
-		Match(INT_LIT);
+	case INT_LITERAL:
+		Match(INT_LITERAL);
 		break;
-	case BOOL_LIT:
-		Match(BOOL_LIT);
+	case BOOL_LITERAL:
+		Match(BOOL_LITERAL);
 		break;
-	case FAKE_LIT:
-		Match(FAKE_LIT);
+	case FAKE_LITERAL:
+		Match(FAKE_LITERAL);
 		break;
-	case STRING_LIT:
-		Match(STRING_LIT);
+	case STR_LITERAL:
+		Match(STR_LITERAL);
 		break;
 	default:
 		SyntaxError(NextToken(), "");
@@ -151,11 +152,11 @@ void Parser::MultOp()
 {
 	switch (NextToken())
 	{
-	case MULT_OP:
-		Match(MULT_OP);
+	case MUL_OP:
+		Match(MUL_OP);
 		break;
-	case REALDIV_OP:
-		Match(REALDIV_OP);
+	case DIV_OP:
+		Match(DIV_OP);
 		break;
 	default:
 		SyntaxError(NextToken(), "");
@@ -166,8 +167,8 @@ void Parser::FactorTail()
 {
 	switch (NextToken())
 	{
-	case MULT_OP:
-	case REALDIV_OP:
+	case MUL_OP:
+	case DIV_OP: //Real Div
 		MultOp();
 		Primary();
 		// code.GenInfix();
@@ -176,11 +177,11 @@ void Parser::FactorTail()
 	case AND_SYM:
 	case NOT_SYM:
 	case RSTAPLE:
-	case RBANANA:
+	case RPAREN:
 	case SEMICOLON:
 	case COMMA:
-	case PLUS_OP:
-	case MINUS_OP:
+	case ADD_OP:
+	case SUB_OP:
 	case LT_OP:
 	case LE_OP:
 	case GT_OP:
@@ -197,20 +198,20 @@ void Parser::Primary()
 {
 	switch (NextToken())
 	{
-	case INT_LIT:
-	case FAKE_LIT:
-	case STRING_LIT:
-	case BOOL_LIT:
+	case INT_LITERAL:
+	case FAKE_LITERAL:
+	case STR_LITERAL:
+	case BOOL_LITERAL:
 		Literal();
 		// code.ProcessLiteral();
 		break;
 	case ID:
 		Variable();
 		break;
-	case LBANANA:
-		Match(LBANANA);
+	case LPAREN:
+		Match(LPAREN);
 		Condition();
-		Match(RBANANA);
+		Match(RPAREN);
 		break;
 	default:
 		SyntaxError(NextToken(), "");
@@ -221,11 +222,11 @@ void Parser::AddOp()
 {
 	switch (NextToken())
 	{
-	case PLUS_OP:
-		Match(PLUS_OP);
+	case ADD_OP:
+		Match(ADD_OP);
 		break;
-	case MINUS_OP:
-		Match(MINUS_OP);
+	case SUB_OP:
+		Match(SUB_OP);
 		break;
 	default:
 		SyntaxError(NextToken(), "");
@@ -236,8 +237,8 @@ void Parser::ExprTail()
 {
 	switch (NextToken())
 	{
-	case PLUS_OP:
-	case MINUS_OP:
+	case ADD_OP:
+	case SUB_OP:
 		AddOp();
 		Factor();
 		ExprTail();
@@ -245,7 +246,7 @@ void Parser::ExprTail()
 	case AND_SYM:
 	case NOT_SYM:
 	case RSTAPLE:
-	case RBANANA:
+	case RPAREN:
 	case SEMICOLON:
 	case COMMA:
 	case LT_OP:
@@ -309,7 +310,7 @@ void Parser::RelTail()
 		break;
 	case AND_SYM:
 	case NOT_SYM:
-	case RBANANA:
+	case RPAREN:
 	case SEMICOLON:
 		break;
 	default:
@@ -333,7 +334,7 @@ void Parser::AndTail()
 		AndTail();
 		break;
 	case NOT_SYM:
-	case RBANANA:
+	case RPAREN:
 	case SEMICOLON:
 		break;
 	default:
@@ -351,7 +352,7 @@ void Parser::Negation()
 		break;
 	case AND_SYM:
 	case NOT_SYM:
-	case RBANANA:
+	case RPAREN:
 	case SEMICOLON:
 		break;
 	default:
@@ -367,7 +368,7 @@ void Parser::CondTail()
 		Match(NOT_SYM);
 		AndCond();
 		break;
-	case RBANANA:
+	case RPAREN:
 	case SEMICOLON:
 		break;
 	default:
@@ -421,7 +422,7 @@ void Parser::Condition()
 void Parser::ForStmt()
 {
 	Match(FOR_SYM);
-	Match(LBANANA);
+	Match(LPAREN);
 	VarInit();
 	Match(ASSIGN_OP);
 	Expression();
@@ -431,7 +432,7 @@ void Parser::ForStmt()
 	Variable();
 	Match(ASSIGN_OP);
 	Expression();
-	Match(RBANANA);
+	Match(RPAREN);
 	StmtList();
 	Match(ENDFOR_SYM);
 }
@@ -441,17 +442,17 @@ void Parser::DoFwhileStmt()
 	Match(DO_SYM);
 	StmtList();
 	Match(FWHILE_SYM);
-	Match(LBANANA);
+	Match(LPAREN);
 	Condition();
-	Match(RBANANA);
+	Match(RPAREN);
 }
 
 void Parser::WhileStmt()
 {
 	Match(WHILE_SYM);
-	Match(LBANANA);
+	Match(LPAREN);
 	Condition();
-	Match(RBANANA);
+	Match(RPAREN);
 	StmtList();
 	Match(ENDWHILE_SYM);
 }
@@ -459,9 +460,9 @@ void Parser::WhileStmt()
 void Parser::FifStmt()
 {
 	Match(FIF_SYM);
-	Match(LBANANA);
+	Match(LPAREN);
 	Condition();
-	Match(RBANANA);
+	Match(RPAREN);
 	StmtList();
 	FelseClause();
 	Match(FENDIF_SYM);
@@ -477,7 +478,7 @@ void Parser::ItemListTail()
 		// code.WriteExpr();
 		ItemListTail();
 		break;
-	case RBANANA:
+	case RPAREN:
 		break;
 	default:
 		SyntaxError(NextToken(), "");
@@ -503,14 +504,14 @@ void Parser::VariableTail()
 	case AND_SYM:
 	case NOT_SYM:
 	case RSTAPLE:
-	case RBANANA:
+	case RPAREN:
 	case SEMICOLON:
 	case COMMA:
 	case ASSIGN_OP:
-	case PLUS_OP:
-	case MINUS_OP:
-	case MULT_OP:
-	case REALDIV_OP:
+	case ADD_OP:
+	case SUB_OP:
+	case MUL_OP:
+	case DIV_OP:
 	case LT_OP:
 	case LE_OP:
 	case GT_OP:
@@ -533,7 +534,7 @@ void Parser::VarListTail()
 		// code.ReadValue();
 		VarListTail();
 		break;
-	case RBANANA:
+	case RPAREN:
 		break;
 	default:
 		SyntaxError(NextToken(), "");
@@ -562,28 +563,28 @@ void Parser::Variable()
 void Parser::FoutlnStmt()
 {
 	Match(FOUTLN_SYM);
-	Match(LBANANA);
+	Match(LPAREN);
 	// code.NewLine();
 	ItemList();
-	Match(RBANANA);
+	Match(RPAREN);
 	Match(SEMICOLON);
 }
 
 void Parser::FoutStmt()
 {
 	Match(FOUT_SYM);
-	Match(LBANANA);
+	Match(LPAREN);
 	ItemList();
-	Match(RBANANA);
+	Match(RPAREN);
 	Match(SEMICOLON);
 }
 
 void Parser::FinStmt()
 {
 	Match(FIN_SYM);
-	Match(LBANANA);
+	Match(LPAREN);
 	VarList();
-	Match(RBANANA);
+	Match(RPAREN);
 	Match(SEMICOLON);
 }
 
