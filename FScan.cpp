@@ -132,14 +132,18 @@ Token Scanner::GetNextToken(){
 				return COMMA;
 			case '>':
 				c = sourceFile.peek();
-				if ( c == '=')
+				if ( c == '='){
+					currentChar = NextChar();
 					return GE_OP;
+				}	
 				else			
 					return GT_OP;
 			case '<':
 			    c = sourceFile.peek();
-				if ( c == '=' )
+				if ( c == '=' ){
+					currentChar = NextChar();
 					return LE_OP;
+				}
 				else
 					return LT_OP;
 			case '=':
@@ -153,8 +157,11 @@ Token Scanner::GetNextToken(){
 				break;
 			case '!':
 				c = sourceFile.peek();
-				if ( c == '=')
+				if ( c == '='){
+					currentChar = NextChar();
 					return NE_OP;
+				}
+				
 			case '[':
 				return LSTAPLE;
 		    case ']':
