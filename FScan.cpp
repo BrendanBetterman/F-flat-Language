@@ -130,7 +130,7 @@ Token Scanner::GetNextToken(){
 				c = sourceFile.peek();
 				if ( c == '=')
 					return GE_OP;
-                else			
+				else			
 					return GT_OP;
 			case '<':
 			    c = sourceFile.peek();
