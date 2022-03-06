@@ -1,10 +1,11 @@
 BOF
-int i;
+//int i;
 int k= 12;
 k = k*10;
 fin(i);
 fout(k,i);
-fif(k == i)
+
+fif(test)
     fout("equals");
 felse
     fout("not");

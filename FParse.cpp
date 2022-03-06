@@ -41,7 +41,7 @@ void Parser::Match(Token t)
 {
 	
 	if (t != NextToken()){
-	cout << "no token";
+	cout << "no token\n";
 		SyntaxError(t, "");
 	}
 	else
@@ -102,7 +102,7 @@ void Parser::DecTail()
 		Match(ASSIGN_OP);
 		Literal();
 		// code.ProcessLiteral();
-		cout << "Assign OP";
+		cout << "Assign OP\n";
 		break;
 	case LSTAPLE:
 	case SEMICOLON:
@@ -181,7 +181,7 @@ void Parser::FactorTail()
 		MultOp();
 		Primary();
 		// code.GenInfix();
-		cout << "Mul or div";
+		cout << "Mul or div\n";
 		FactorTail();
 		break;
 	case AND_SYM:
@@ -214,7 +214,7 @@ void Parser::Primary()
 	case BOOL_LITERAL:
 		Literal();
 		// code.ProcessLiteral();
-		cout << "Process Literal";
+		cout << "Process Literal\n";
 		break;
 	case ID:
 		Variable();
@@ -276,7 +276,7 @@ void Parser::Factor()
 {
 	Primary();
 	// code.GenInfix();
-	cout << "Get infix";
+	cout << "Get infix\n";
 	FactorTail();
 }
 
@@ -488,7 +488,7 @@ void Parser::ItemListTail()
 		Match(COMMA);
 		Expression();
 		// code.WriteExpr();
-		cout << "write Expr";
+		cout << "write Expr\n";
 		ItemListTail();
 		break;
 	case RPAREN:
@@ -502,7 +502,7 @@ void Parser::ItemList()
 {
 	Expression();
 	// code.WriteExpr();
-	cout << "write expr";
+	cout << "write expr\n";
 	ItemListTail();
 }
 
@@ -534,6 +534,7 @@ void Parser::VariableTail()
 	case NE_OP:
 		break;
 	default:
+		
 		SyntaxError(NextToken(), "");
 	}
 }
@@ -546,7 +547,7 @@ void Parser::VarListTail()
 		Match(COMMA);
 		Variable();
 		// code.ReadValue();
-		cout << "Read value";
+		cout << "Read value\n";
 		VarListTail();
 		break;
 	case RPAREN:
@@ -560,7 +561,7 @@ void Parser::VarList()
 {
 	Variable();
 	// code.ReadValue();
-	cout << "Read Value";
+	cout << "Read Value\n";
 	VarListTail();
 }
 
@@ -581,7 +582,7 @@ void Parser::FoutlnStmt()
 	Match(FOUTLN_SYM);
 	Match(LPAREN);
 	// code.NewLine();
-	cout << "fout new line";
+	cout << "fout new line\n";
 	ItemList();
 	Match(RPAREN);
 	Match(SEMICOLON);
@@ -611,7 +612,7 @@ void Parser::AssignStmt()
 	Match(ASSIGN_OP);
 	Expression();
 	// code.Assign();
-	cout << "Assignment op";
+	cout << "Assignment op\n";
 	Match(SEMICOLON);
 }
 
@@ -621,7 +622,7 @@ void Parser::Declaration()
 	Match(ID);
 	DecTail();
 	// code.ProcessID();
-	cout << "Processed ID";
+	cout << "Processed ID\n";
 	Match(SEMICOLON);
 }
 
@@ -700,7 +701,7 @@ void Parser::StmtTail()
 
 void Parser::Statement()
 {
-	cout << "statement";
+	cout << "statement\n";
 	switch (NextToken())
 	{
 	case FIN_SYM:
@@ -735,13 +736,13 @@ void Parser::StmtList()
 void Parser::Program()
 {
 	// code.Start();
-	cout << "Started";
+	cout << "Started\n";
 	Match(BEGIN_SYM);
-	cout <<"started";
+	cout <<"started\n";
 	StmtList();
 	Match(END_SYM);
 	// code.Finish();
-	cout << "Finished";
+	cout << "Finished\n";
 }
 
 void Parser::SystemGoal()

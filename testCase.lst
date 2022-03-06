@@ -8,12 +8,14 @@
  the MACC2 virtual computer.
  ___________________________________________
 
- March 05, 2022 at 01:29 PM
+ March 06, 2022 at 08:14 AM
  Source file: testCase.flat
 
  LINE #
      1  BOF
-     2  int i;
+     2  //int i;
+ *** Lex Error: '
+' ignored at position 0 on line #3.
      3  int k= 12;
      4  k = k*10;
      5  fin(i);

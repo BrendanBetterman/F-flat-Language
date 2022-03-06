@@ -99,17 +99,41 @@ Token Scanner::GetNextToken(){
 			case '-':
 				return SUB_OP;
 			case '/':
-				return DIV_OP;
+				
+				if(sourceFile.peek()=='/'){
+					//comment
+					
+					currentChar=NextChar();
+					do{
+						currentChar = NextChar();
+						cout << currentChar;
+					}while (currentChar != '\n');
+					break;
+				}else if(sourceFile.peek()=='*'){
+					//multiLine
+					currentChar=NextChar();
+					do
+						currentChar = NextChar();
+					while (currentChar == '*' && sourceFile.peek() == '/');
+					break;
+				}else{
+					return DIV_OP;
+				}
+				
 			case '*':
 				return MUL_OP;
 			case '%':
 				return MOD_OP;
 			case ',':
 				return COMMA;
+			case '>':
+				return GT_OP;
 			case '=':
 				//special case
+				cout<<"here\n";
 				if (sourceFile.peek() == '='){
-					return CMP_OP;
+					currentChar=NextChar();
+					return EQ_OP;
 				}else{
 					return ASSIGN_OP;
 				}
@@ -129,6 +153,32 @@ Token Scanner::GetNextToken(){
 					}
 					
 					return CheckReserved();
+				}else if (currentChar == '"'){
+					//input:  "hello \"world\""
+					//output: hello "world"
+					//Reasoning: SAM has a different escape char.
+					c = sourceFile.peek();
+					char last = '"';
+					cout << "in \"";
+					while (!(c == '"') || (last == '\\')){
+						if (c == '\n'){
+							//here we could add multiline strings
+							//formating reasons.
+							break;//remove break for multi line
+						}else{
+							currentChar = NextChar();
+							if(c == '\\' && last != '\\'){
+								//escapes the escape char
+							}else{
+								BufferChar(currentChar);
+							}
+							last = c;
+							c= sourceFile.peek();
+						}
+					}
+					currentChar = NextChar();
+					cout << tokenBuffer;
+					return STR_LITERAL;
 				}else if(isdigit(currentChar)){
 
 					//Fakes and Ints
