@@ -36,13 +36,15 @@ Token Scanner::CheckReserved(){
 	if (tokenBuffer == "FOUT") return FOUT_SYM;
 	if (tokenBuffer == "FOUTLN") return FOUTLN_SYM;
 	if (tokenBuffer == "INT") return INT_SYM;
-	if (tokenBuffer == "FAKE") return FAKE_LITERAL;
-	if (tokenBuffer == "BOOL") return BOOL_LITERAL;
-	if (tokenBuffer == "STR") return STR_LITERAL;
+	if (tokenBuffer == "FAKE") return FAKE_SYM;
+	if (tokenBuffer == "BOOL") return BOOL_SYM;
+	if (tokenBuffer == "STR") return STR_SYM;
 	if (tokenBuffer == "FOR") return FOR_SYM;
 	if (tokenBuffer == "FIF") return FIF_SYM;
 	if (tokenBuffer == "FELSE") return FELSE_SYM;
 	if (tokenBuffer == "FENDIF") return FENDIF_SYM;
+	if (tokenBuffer == "NAY") return BOOL_LITERAL;
+	if (tokenBuffer == "YAY") return BOOL_LITERAL;
 	cout << "not reserved"<<"\n";
     return ID;
 }
@@ -100,7 +102,6 @@ Token Scanner::GetNextToken(){
 				return SUB_OP;
 			case '/':
 				//cout << sourceFile.peek();
-				cout << "\n\ncomment";
 				if(sourceFile.peek()=='/'){
 					//comment
 					
@@ -143,7 +144,6 @@ Token Scanner::GetNextToken(){
 					return LT_OP;
 			case '=':
 				//special case
-				cout<<"here\n";
 				if (sourceFile.peek() == '='){
 					currentChar=NextChar();
 					return EQ_OP;
@@ -172,7 +172,7 @@ Token Scanner::GetNextToken(){
 					//Reasoning: SAM has a different escape char.
 					c = sourceFile.peek();
 					char last = '"';
-					cout << "in \"";
+					
 					while (!(c == '"') || (last == '\\')){
 						if (c == '\n'){
 							//here we could add multiline strings
