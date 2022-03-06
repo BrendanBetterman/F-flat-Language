@@ -151,6 +151,10 @@ Token Scanner::GetNextToken(){
 					return ASSIGN_OP;
 				}
 				break;
+			case '[':
+				return LSTAPLE;
+		    case ']':
+				return RSTAPLE;
 			default:
 			break;
 		}
