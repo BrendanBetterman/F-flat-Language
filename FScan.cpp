@@ -99,22 +99,25 @@ Token Scanner::GetNextToken(){
 			case '-':
 				return SUB_OP;
 			case '/':
-				
+				//cout << sourceFile.peek();
+				cout << "\n\ncomment";
 				if(sourceFile.peek()=='/'){
 					//comment
 					
 					currentChar=NextChar();
 					do{
 						currentChar = NextChar();
-						cout << currentChar;
 					}while (currentChar != '\n');
 					break;
 				}else if(sourceFile.peek()=='*'){
 					//multiLine
 					currentChar=NextChar();
-					do
+					do{
 						currentChar = NextChar();
-					while (currentChar == '*' && sourceFile.peek() == '/');
+						
+					}while (currentChar != '*' && sourceFile.peek() != '/');
+					currentChar = NextChar();//ignores *
+					currentChar = NextChar();//ignores / 
 					break;
 				}else{
 					return DIV_OP;

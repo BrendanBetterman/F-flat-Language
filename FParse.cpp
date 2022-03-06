@@ -427,6 +427,7 @@ void Parser::FelseClause()
 
 void Parser::Condition()
 {
+	cout << "Condition";
 	AndCond();
 	CondTail();
 }

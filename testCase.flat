@@ -5,9 +5,9 @@ k = k*10;
 fin(i);
 fout(k,i);
 
-fif(test)
+/*fif(k == i)
     fout("equals");
 felse
     fout("not");
-fendif
+fendif*/
 EOF

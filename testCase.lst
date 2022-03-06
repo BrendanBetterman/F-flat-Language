@@ -8,7 +8,7 @@
  the MACC2 virtual computer.
  ___________________________________________
 
- March 06, 2022 at 08:14 AM
+ March 06, 2022 at 09:45 AM
  Source file: testCase.flat
 
  LINE #
@@ -20,3 +20,13 @@
      4  k = k*10;
      5  fin(i);
      6  fout(k,i);
+     7  
+ *** Lex Error: '
+' ignored at position 0 on line #8.
+     8  /*fif(k == i)
+     9      fout("equals");
+    10  felse
+    11      fout("not");
+    12  fendif*/
+ *** Lex Error: '
+' ignored at position 0 on line #13.
