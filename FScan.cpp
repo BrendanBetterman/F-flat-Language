@@ -127,7 +127,17 @@ Token Scanner::GetNextToken(){
 			case ',':
 				return COMMA;
 			case '>':
-				return GT_OP;
+				c = sourceFile.peek();
+				if ( c == '=')
+					return GE_OP;
+                else			
+					return GT_OP;
+			case '<':
+			    c = sourceFile.peek();
+				if ( c == '=' )
+					return LE_OP;
+				else
+					return LT_OP;
 			case '=':
 				//special case
 				cout<<"here\n";
