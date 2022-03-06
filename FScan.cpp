@@ -151,6 +151,10 @@ Token Scanner::GetNextToken(){
 					return ASSIGN_OP;
 				}
 				break;
+			case '!':
+				c = sourceFile.peek();
+				if ( c == '=')
+					return NE_OP;
 			case '[':
 				return LSTAPLE;
 		    case ']':
