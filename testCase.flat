@@ -5,6 +5,8 @@ k = k*10;
 fin(i);
 fout(k,i);
 str string = "test\"";
+bool test = nay;
+fake new = 1.0e-10;
 /*fif(k == i)
     fout("equals");
 felse
