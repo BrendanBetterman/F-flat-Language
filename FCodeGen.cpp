@@ -13,6 +13,7 @@ extern Scanner scan; //Global scanner
 CodeGen::CodeGen(){
     
 }
+//Privates
 void CodeGen::CheckId(const string & s)
 {
 	if (!LookUp(s))  // variable not declared yet
@@ -30,3 +31,5 @@ bool CodeGen::LookUp(const string & s)
 
 	return false;
 }
+//publics
+
