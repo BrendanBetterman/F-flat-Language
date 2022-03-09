@@ -1,6 +1,7 @@
 #ifndef CODEGEN
 #define CODEGEN
 #include <string>
+#include <vector>
 using namespace std;
 
 #include "FScan.h"
@@ -16,6 +17,15 @@ class CodeGen{
     public:
     CodeGen();
 
+
+
+    private:
+    vector<string> symbolTable;
+
+    void CheckId(const string & s);
+    void Enter(const string & s);
+
+    bool LookUp(const string & s);
 };
 
 #endif
