@@ -4,12 +4,9 @@
 #include <vector>
 using namespace std;
 
-extern ifstream sourceFile;
-extern ofstream outFile, listFile;
+#include "FScan.h"
 
-#include "FScan.h"
-#include "FScan.h"
-extern Scanner scan;
+
 enum OpKind {PLUS, MINUS,MULT,DIV,MOD};
 
 struct OpRec // information about an operator
