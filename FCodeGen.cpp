@@ -32,4 +32,7 @@ bool CodeGen::LookUp(const string & s)
 	return false;
 }
 //publics
+void Assign(const ExprRec & target, const ExprRec & source){
 
+
+}
