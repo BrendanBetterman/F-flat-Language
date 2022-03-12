@@ -36,3 +36,9 @@ void Assign(const ExprRec & target, const ExprRec & source){
 //needs to check if its an int fake boolean or string
 
 }
+void CodeGen::ProcessId(ExprRec& e)
+{
+	CheckId(scan.tokenBuffer);
+	e.kind = ID_EXPR;
+	e.name = scan.tokenBuffer;
+}

@@ -13,7 +13,15 @@ struct OpRec // information about an operator
 {
 	OpKind op; // operator type
 };
+enum ExprKind { ID_EXPR, LITERAL_EXPR, TEMP_EXPR, LITERAL_STR };
 
+struct ExprRec // information about a constant, variable, or
+               // an intermediate (temporary) result
+{
+   ExprKind kind;   // operand type
+   string   name;   // used when kind is ID_EXPR or TEMP_EXPR
+   int      val;    // used when kind is LITERAL_EXPR
+};
 
 class CodeGen{
     public:
@@ -28,6 +36,8 @@ class CodeGen{
     void Enter(const string & s);
 
     bool LookUp(const string & s);
+    void ProcessId(ExprRec& e);
+
 };
 
 #endif
