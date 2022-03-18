@@ -24,7 +24,7 @@ Scanner::Scanner(){
 
 void Scanner::BufferChar(char c){
     if(tokenBuffer.length() < ID_STRING_LEN){
-        tokenBuffer += toupper(c);
+        tokenBuffer += c;
     }
 }
 
@@ -32,19 +32,34 @@ Token Scanner::CheckReserved(){
 	cout << tokenBuffer<<"\n";
     if(tokenBuffer == "BOF") return BEGIN_SYM;
 	if (tokenBuffer == "EOF") return END_SYM;
-	if (tokenBuffer == "FIN") return FIN_SYM;
-	if (tokenBuffer == "FOUT") return FOUT_SYM;
-	if (tokenBuffer == "FOUTLN") return FOUTLN_SYM;
-	if (tokenBuffer == "INT") return INT_SYM;
-	if (tokenBuffer == "FAKE") return FAKE_SYM;
-	if (tokenBuffer == "BOOL") return BOOL_SYM;
-	if (tokenBuffer == "STR") return STR_SYM;
-	if (tokenBuffer == "FOR") return FOR_SYM;
-	if (tokenBuffer == "FIF") return FIF_SYM;
-	if (tokenBuffer == "FELSE") return FELSE_SYM;
-	if (tokenBuffer == "FENDIF") return FENDIF_SYM;
-	if (tokenBuffer == "NAY") return BOOL_LITERAL;
-	if (tokenBuffer == "YAY") return BOOL_LITERAL;
+	if (tokenBuffer == "fin") return FIN_SYM;
+	if (tokenBuffer == "fout") return FOUT_SYM;
+	if (tokenBuffer == "foutln") return FOUTLN_SYM;
+	if (tokenBuffer == "int") return INT_SYM;
+	if (tokenBuffer == "fake") return FAKE_SYM;
+	if (tokenBuffer == "bool") return BOOL_SYM;
+	if (tokenBuffer == "str") return STR_SYM;
+	if (tokenBuffer == "for") return FOR_SYM;
+	if (tokenBuffer == "fif") return FIF_SYM;
+	if (tokenBuffer == "felse") return FELSE_SYM;
+	if (tokenBuffer == "fendif") return FENDIF_SYM;
+	if (tokenBuffer == "nay") return BOOL_LITERAL;
+	if (tokenBuffer == "yay") return BOOL_LITERAL;
+	//missing reserves
+	if(tokenBuffer == "do") return DO_SYM;
+	if(tokenBuffer == "endfor") return ENDFOR_SYM;
+	if(tokenBuffer == "fwhile") return FWHILE_SYM;
+	if(tokenBuffer == "endWhile") return ENDWHILE_SYM;
+	if(tokenBuffer == "while") return WHILE_SYM;
+	
+	if(tokenBuffer == "f!") return NOT_SYM;
+	if(tokenBuffer == "f&") return AND_SYM;
+	//if(tokenBuffer == "f|") return ;
+	/*
+	f!
+	f&
+	f|
+	*/
 	cout << "not reserved"<<"\n";
     return ID;
 }
