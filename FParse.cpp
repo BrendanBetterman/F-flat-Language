@@ -103,6 +103,7 @@ void Parser::DecTail()
 		Literal();
 		// code.ProcessLiteral();
 		cout << "Assign OP\n";
+		cout << scan.tokenBuffer;
 		break;
 	case LSTAPLE:
 	case SEMICOLON:

@@ -227,6 +227,9 @@ Token Scanner::GetNextToken(){
 							BufferChar(currentChar);
 							c= sourceFile.peek();
 						}
+						if(c == '.'){
+							LexicalError(currentChar);
+						}
 						if(isdigit(currentChar)){
 							//check if something is after the . example 1.0e
 							c= sourceFile.peek();
@@ -251,6 +254,7 @@ Token Scanner::GetNextToken(){
 								}
 							}else{
 								//Non Science
+								return FAKE_LITERAL;
 							}
 
 						}else{
