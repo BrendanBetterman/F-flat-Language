@@ -1,3 +1,5 @@
-.o
-.lst
-.asm
+#Ignore Compiled o
+*.o
+#ignore compiled fflat files
+*.lst
+*.asm
