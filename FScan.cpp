@@ -54,7 +54,7 @@ Token Scanner::CheckReserved(){
 	
 	if(tokenBuffer == "f!") return NOT_SYM;
 	if(tokenBuffer == "f&") return AND_SYM;
-	//if(tokenBuffer == "f|") return ;
+	if(tokenBuffer == "f|") return OR_SYM;
 	/*
 	f!
 	f&
@@ -188,11 +188,10 @@ Token Scanner::GetNextToken(){
 					BufferChar(currentChar);
 					
 					c= sourceFile.peek();
-					while (isalnum(c) || c == '_' || c == ':'){
+					while (isalnum(c) || c == '_' || c == ':' || '&' ||'|' || '!'){
 						currentChar = NextChar();
 						BufferChar(currentChar);
 						c= sourceFile.peek();
-
 					}
 					
 					return CheckReserved();
