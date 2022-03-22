@@ -13,7 +13,7 @@ extern Scanner scan; //Global scanner
 CodeGen::CodeGen(){
     
 }
-//Privates
+//-------Private-Methods-------
 void CodeGen::CheckId(const string & s)
 {
 	if (!LookUp(s))  // variable not declared yet
@@ -31,9 +31,122 @@ bool CodeGen::LookUp(const string & s)
 
 	return false;
 }
-//publics
-void Assign(const ExprRec & target, const ExprRec & source){
+//--------Public-Methods--------
+void CodeGen::Start()
+{
+
+}
+void CodeGen::Finish()
+{
+
+}
+void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
+{
 //needs to check if its an int fake boolean or string
+
+}
+void CodeGen::ReadValue(const ExprRec & InVal)
+{
+
+}
+void CodeGen::ProcessVariable()
+{
+
+}
+void CodeGen::WriteExpr(const ExprRec & outExpr)
+{
+
+}
+void CodeGen::NewLine()
+{
+
+}
+//---fif---
+void CodeGen::ProcessIf()
+{
+
+}
+void CodeGen::ProcessEndIf()
+{
+
+}
+void CodeGen::ProcessElse()
+{
+
+}
+//---do-while---
+void CodeGen::ProcessDo()
+{
+
+}
+void CodeGen::ProcessEndFwhile()
+{
+
+}
+//---while---
+void CodeGen::ProcessWhile()
+{
+
+}
+void CodeGen::ProcessWhileCond()
+{
+
+}
+void CodeGen::ProcessEndWhile()
+{
+
+}
+//---for-loop---
+void CodeGen::InitLoopCtrl()
+{
+
+}
+void CodeGen::ProcessForCond()
+{
+
+}
+void CodeGen::LoopUpdate()
+{
+
+}
+void CodeGen::ProcessEndFor()
+{
+
+}
+//---Conditions---
+void CodeGen::SetOrCond()
+{
+
+}
+void CodeGen::SetAndCond()
+{
+
+}
+void CodeGen::SetNotCond()
+{
+
+}
+//---Ops---
+void CodeGen::ProcessRelOp()
+{
+
+}
+void CodeGen::SetRelCond()
+{
+
+}
+void CodeGen::ProcessOp(OpRec& o)
+{
+
+}
+
+void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2, ExprRec& e)
+{
+
+}
+
+void CodeGen::ProcessMulOp()
+{
 
 }
 void CodeGen::ProcessId(ExprRec& e)
@@ -42,3 +155,18 @@ void CodeGen::ProcessId(ExprRec& e)
 	e.kind = ID_EXPR;
 	e.name = scan.tokenBuffer;
 }
+void CodeGen::ProcessLiteralInit(ExprRec& e)
+{
+
+}
+
+/*
+void CodeGen::ProcessLiteral(ExprRec& e)
+{
+
+}
+void CodeGen::ProcessStringLiteral(ExprRec& e)
+{
+
+}
+*/

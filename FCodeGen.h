@@ -26,7 +26,52 @@ struct ExprRec // information about a constant, variable, or
 class CodeGen{
     public:
     CodeGen();
+    void Start();
+    void Finish();
 	void Assign(const ExprRec & target, const ExprRec & source);
+    void ReadValue(const ExprRec & InVal);
+    void ProcessVariable();
+    void WriteExpr(const ExprRec & outExpr);
+    void NewLine();
+
+    void ProcessIf();
+    void ProcessEndIf();
+    void ProcessElse();
+
+    void ProcessDo();
+    void ProcessEndFwhile();
+
+    void ProcessWhile();
+    void ProcessWhileCond();
+    void ProcessEndWhile();
+
+    void InitLoopCtrl();
+    void ProcessForCond();
+    void LoopUpdate();
+    void ProcessEndFor();
+
+    void SetOrCond();
+    void SetAndCond();
+    void SetNotCond();
+
+    void ProcessRelOp();
+    void SetRelCond();
+    void ProcessOp(OpRec& o);
+
+    void GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2, ExprRec& e);
+
+    void ProcessMulOp();
+    void ProcessId(ExprRec& e);
+    void ProcessLiteralInit(ExprRec& e);
+
+    //void ProcessLitFake(ExprRec& e);
+    //void ProcessStringLiteral(ExprRec& e);
+
+
+
+
+
+
 
 
     private:
@@ -36,7 +81,7 @@ class CodeGen{
     void Enter(const string & s);
 
     bool LookUp(const string & s);
-    void ProcessId(ExprRec& e);
+
 
 };
 
