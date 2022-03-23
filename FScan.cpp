@@ -125,6 +125,7 @@ Token Scanner::GetNextToken(){
 				return SUB_OP;
 			case '/':
 				//cout << sourceFile.peek();
+				
 				if(sourceFile.peek()=='/'){
 					//comment
 					
@@ -132,16 +133,18 @@ Token Scanner::GetNextToken(){
 					do{
 						currentChar = NextChar();
 					}while (currentChar != '\n');
+					//needs to return no op
 					break;
 				}else if(sourceFile.peek()=='*'){
 					//multiLine
 					currentChar=NextChar();
 					do{
 						currentChar = NextChar();
-						
+						cout << currentChar;
 					}while (currentChar != '*' && sourceFile.peek() != '/');
 					currentChar = NextChar();//ignores *
 					currentChar = NextChar();//ignores / 
+					//needs to return no op
 					break;
 				}else{
 					return DIV_OP;

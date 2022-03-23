@@ -82,6 +82,9 @@ private:
 
     bool LookUp(const string & s);
 
+    void ExtractExpr(const ExprRec & e, string& s);
+
+    void Generate(const string & s1, const string & s2, const string & s3);
 
 };
 

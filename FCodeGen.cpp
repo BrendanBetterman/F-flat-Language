@@ -32,6 +32,27 @@ bool CodeGen::LookUp(const string & s)
 
 	return false;
 }
+void CodeGen::ExtractExpr(const ExprRec & e, string& s){
+
+}
+void CodeGen::Generate(const string & s1, const string & s2, const string & s3){
+	/*
+	listFile.width(20);
+	listFile << ' ' << s1;
+	outFile << s1;
+	if (s2.length() > 0)
+	{
+		listFile << s2;
+		outFile << s2;
+		if (s3.length() > 0)
+		{
+			listFile << ',' << s3;
+			outFile << ',' << s3;
+		}
+	}
+	listFile << endl;
+	outFile << endl;*/
+}
 //--------Public-Methods--------
 void CodeGen::Start()
 {
@@ -56,7 +77,14 @@ void CodeGen::ProcessVariable()
 }
 void CodeGen::WriteExpr(const ExprRec & outExpr)
 {
-
+	if(outExpr.kind == LITERAL_STR){
+		//wrtie string
+	}
+	if(outExpr.kind == LITERAL_INT){
+		string s;
+		ExtractExpr(outExpr, s);
+		Generate("WRI		", s, "");
+	}
 }
 void CodeGen::NewLine()
 {

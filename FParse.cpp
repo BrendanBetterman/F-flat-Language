@@ -52,7 +52,7 @@ void Parser::Match(Token t)
 	}
 	else{
 		tokenAvailable = false;
-		cerr<< "token got\n";
+		//cerr<< "token got\n";
 	}
 	
 		
@@ -499,8 +499,8 @@ void Parser::ItemListTail()
 	case COMMA:
 		Match(COMMA);
 		Expression();
-		// code.WriteExpr();
-		cout << "write Expr\n";
+		//code.WriteExpr();
+		//cout << "write Expr\n";
 		ItemListTail();
 		break;
 	case RPAREN:
@@ -512,8 +512,10 @@ void Parser::ItemListTail()
 
 void Parser::ItemList()
 {
+	ExprRec expr;
+	//Expression(expr);
 	Expression();
-	// code.WriteExpr();
+	code.WriteExpr(expr);
 	cout << "write expr\n";
 	ItemListTail();
 }
@@ -577,8 +579,24 @@ void Parser::VarList()
 	VarListTail();
 }
 
-void Parser::Expression()
+void Parser::Expression()//ExprRec& result
 {
+	/*ExprRec leftOperand, rightOperand;
+	OpRec op;
+
+	Primary(result);
+	for (;;){
+		if(NextToken() == ADD_OP || NextToken()== SUB_OP){
+			leftOperand.kind = result.kind;
+			leftOperand.val = result.val;
+			leftOperand.name = result.name;
+			AddOp(op);
+			Primary(rightOperand);
+			code.GenInfix(leftOperand, op, rightOperand, result);
+		}else{
+			return;
+		}
+	}*/
 	Factor();
 	ExprTail();
 }
@@ -751,7 +769,7 @@ void Parser::Program()
 	//code.Start();
 	cout << "Started\n";
 	Match(BEGIN_SYM);
-	cout << "started\n";
+	//cout << "started\n";
 	StmtList();
 	Match(END_SYM);
 	//code.Finish();
