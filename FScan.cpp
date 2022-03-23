@@ -189,9 +189,11 @@ Token Scanner::GetNextToken(){
 					
 					c= sourceFile.peek();
 					while (isalnum(c) || c == '_' || c == ':' || '&' ||'|' || '!'){
+						if (c=='\n')break;
 						currentChar = NextChar();
 						BufferChar(currentChar);
 						c= sourceFile.peek();
+						cerr << currentChar;
 					}
 					
 					return CheckReserved();

@@ -1,6 +1,7 @@
 BOF
-//int i;
 int k= 12;
+int k =;
+//hello
 k = k*10;
 fin(i);
 fout(k,i);

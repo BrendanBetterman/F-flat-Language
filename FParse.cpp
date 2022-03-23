@@ -32,6 +32,7 @@ Token Parser::NextToken()
 	{
 		
 		savedToken = scan.GetNextToken();
+		cerr << "test";
 		tokenAvailable = true;
 	}
 	return savedToken;
@@ -39,13 +40,18 @@ Token Parser::NextToken()
 
 void Parser::Match(Token t)
 {
-	
+	cerr << "match\n";
+
 	if (t != NextToken()){
-	cout << "no token\n";
+	cerr << "no token\n";
 		SyntaxError(t, "");
 	}
-	else
+	else{
 		tokenAvailable = false;
+		cerr<< "token got\n";
+	}
+	cerr << "here";
+		
 }
 
 
@@ -623,7 +629,7 @@ void Parser::Declaration()
 	Type();
 	Match(ID);
 	DecTail();
-	// code.ProcessID();
+	//code.ProcessID();
 	cout << "Processed ID\n";
 	Match(SEMICOLON);
 }
@@ -737,13 +743,14 @@ void Parser::StmtList()
 
 void Parser::Program()
 {
-	// code.Start();
+	
+	//code.Start();
 	cout << "Started\n";
 	Match(BEGIN_SYM);
-	cout <<"started\n";
+	cout << "started\n";
 	StmtList();
 	Match(END_SYM);
-	// code.Finish();
+	//code.Finish();
 	cout << "Finished\n";
 }
 
