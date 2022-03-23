@@ -22,6 +22,7 @@ Parser::Parser()
 
 void Parser::SyntaxError(Token t, string msg)
 {
+	cout << scan.lineNumber;
 	cout << "Syntax Error: " + msg << endl;
 	exit(1); // abort on any syntax error
 }
@@ -32,7 +33,7 @@ Token Parser::NextToken()
 	{
 		
 		savedToken = scan.GetNextToken();
-		cerr << "test";
+		
 		tokenAvailable = true;
 	}
 	return savedToken;
@@ -40,7 +41,7 @@ Token Parser::NextToken()
 
 void Parser::Match(Token t)
 {
-	cerr << "match\n";
+	
 
 	if (t != NextToken()){
 	cerr << "no token\n";
@@ -50,7 +51,7 @@ void Parser::Match(Token t)
 		tokenAvailable = false;
 		cerr<< "token got\n";
 	}
-	cerr << "here";
+	
 		
 }
 

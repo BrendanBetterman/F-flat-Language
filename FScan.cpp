@@ -88,6 +88,14 @@ char Scanner::NextChar(){
 		lineBuffer += c;
 	return c;
 }
+bool Scanner::AcceptedChar(char c){
+	
+	char NotAccepted[] ={'(',')','[',']','{','}','+','=','-','*','&','|'};
+	for (int i = 0; i < 11; i++){
+		if(c==NotAccepted[i]) return false;
+	}
+	return true;
+}
 
 // -----------------
 // --   public   --
@@ -186,14 +194,16 @@ Token Scanner::GetNextToken(){
 		}
 				if(isalpha(currentChar)){
 					BufferChar(currentChar);
-					
 					c= sourceFile.peek();
-					while (isalnum(c) || c == '_' || c == ':' || '&' ||'|' || '!'){
-						if (c=='\n')break;
+					while ((isalnum(c) && AcceptedChar(c))){
+						if (c=='\n' || c == ' ' ){
+							NextChar();
+							if(c =='\n')lineNumber++;
+							break;}
 						currentChar = NextChar();
 						BufferChar(currentChar);
 						c= sourceFile.peek();
-						cerr << currentChar;
+						
 					}
 					
 					return CheckReserved();
@@ -206,6 +216,8 @@ Token Scanner::GetNextToken(){
 					
 					while (!(c == '"') || (last == '\\')){
 						if (c == '\n'){
+							lineNumber++;
+							//currentChar = NextChar();
 							//here we could add multiline strings
 							//formating reasons.
 							break;//remove break for multi line

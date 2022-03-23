@@ -49,5 +49,7 @@ private:
     void LexicalError(char& c);
 
     char NextChar();
+
+	bool AcceptedChar(char c);
 };
 #endif
