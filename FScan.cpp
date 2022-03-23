@@ -301,5 +301,4 @@ Token Scanner::GetNextToken(){
 		
 		
     }
-    
 }
