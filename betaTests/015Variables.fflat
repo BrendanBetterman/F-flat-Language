@@ -1,0 +1,22 @@
+^^ 015Variables.fflat
+^^
+^^ Variables, constants, and input/output.
+
+BOF
+	int  iVal1, iVal2;
+	
+	foutln( "Reading and Writing Variables and Constants");
+	foutln( "Enter two integers: ");
+	fin( iVal1, iVal2);
+	foutln( "\n==> ", iVal1, ",", iVal2);
+	
+	fake rVal1, rVal2;
+	foutln( "\nEnter two real numbers: ");
+	instream( rVal1, rVal2);
+	foutln( "\n==> ", rVal1, ",", rVal2);
+	foutln( "\n");
+	
+	foutln( "int constants: ", 37, 7805, 685); 
+	foutln( "real constants: ", 3.8405, "  ", 3.8405e+2, "  ", 3.8405E-3); 
+	foutln( "\n");
+EOF

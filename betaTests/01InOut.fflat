@@ -1,0 +1,20 @@
+^^ 01InOut.fflat
+^^ 
+^^ Input/output testing.
+
+BOF
+	int   x0, x1;
+	
+	foutln( "\n\n", 1, " \"start\" ", 8.5, "*");
+	newline;
+	foutln( "\nEnter two integers: ");
+	foutln("\n");
+
+	float  y0, y1; 
+	fin( x0, x1);
+	foutln( x1, x0);
+	foutln( "Enter two real numbers: ");
+	fin( y0, y1);
+	foutln( y1, " ", y0);
+	foutln("\n");
+EOF

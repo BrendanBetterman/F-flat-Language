@@ -1,0 +1,7 @@
+\^  00simple.fflat
+^\
+^^  One of the simplest f_flat programs possible.
+
+BOF
+fout( 8 );
+EOF
