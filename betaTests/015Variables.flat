@@ -12,7 +12,7 @@ BOF
 	
 	fake rVal1, rVal2;
 	foutln( "\nEnter two real numbers: ");
-	instream( rVal1, rVal2);
+	fin( rVal1, rVal2);
 	foutln( "\n==> ", rVal1, ",", rVal2);
 	foutln( "\n");
 	
