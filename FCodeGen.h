@@ -5,6 +5,7 @@
 using namespace std;
 
 #include "FScan.h"
+#include "FSymbol.h"
 
 
 enum OpKind {PLUS, MINUS,MULT,DIV,MOD};
@@ -24,7 +25,8 @@ struct ExprRec // information about a constant, variable, or
 };
 
 class CodeGen{
-    public:
+
+public:
     CodeGen();
     void Start();
     void Finish();
@@ -68,14 +70,12 @@ class CodeGen{
     //void ProcessStringLiteral(ExprRec& e);
 
 
+private:
 
-
-
-
-
-
-    private:
     vector<string> symbolTable;
+    //vector<Symbol> intTable;
+    //vector<Symbol> fakeTable;
+    //vector<Symbol> stringTable;
 
     void CheckId(const string & s);
     void Enter(const string & s);
