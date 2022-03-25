@@ -1,4 +1,3 @@
 BOF
-fout(1);
-int house = 0;
+fout(1+2);
 EOF

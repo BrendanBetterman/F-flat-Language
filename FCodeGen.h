@@ -80,7 +80,7 @@ private:
 
     void CheckId(const string & s);
     void Enter(const string & s);
-
+    void IntToAlpha(int val, string& str);
     bool LookUp(const string & s);
 
     void ExtractExpr(const ExprRec & e, string& s);

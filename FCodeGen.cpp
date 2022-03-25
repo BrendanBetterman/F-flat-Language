@@ -33,8 +33,50 @@ bool CodeGen::LookUp(const string & s)
 
 	return false;
 }
-void CodeGen::ExtractExpr(const ExprRec & e, string& s){
+void CodeGen::IntToAlpha(int val, string& str)
+{
+	int k;
+	char temp;
 
+	str = "";
+	if (val == 0) str = "0";
+	while (val > 0)
+	{
+		str.append(1, (char)(val % 10 + (int)'0'));
+		val /= 10;
+	}
+	k = int(str.length());
+	for (int i = 0; i < k/2; i++)
+	{
+		temp = str[i];
+		str[i] = str[k-i-1];
+		str[k-i-1] = temp;
+	}
+}
+void CodeGen::ExtractExpr(const ExprRec & e, string& s){
+	string t;
+	int k, n;
+
+	switch (e.kind)
+	{
+	case ID_EXPR:
+	case TEMP_EXPR:  // operand form: +k(R15)
+		s = e.name;
+		n = 0;
+		while (symbolTable[n] != s) n++;
+		k = 2 * n;  // offset: 2 bytes per variable
+		IntToAlpha(k, t);
+		s = "+" + t + "(R15)";
+		break;
+	case LITERAL_INT:
+		IntToAlpha(e.val, t);
+		s = "#" + t;
+	case LITERAL_STR:
+		break;
+		//s = "+" + to_string(StringSamDistance(stringTable.size()-1))+ "(R14)";
+		//s ="+" + to_string(StringSamDistance(stringTable.size()-1)) +"(R14)";
+		
+	}
 }
 void CodeGen::Generate(const string & s1, const string & s2, const string & s3){
 	
@@ -87,7 +129,9 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 	}
 	//if(outExpr.kind == LITERAL_INT){
 		string s;
+		
 		ExtractExpr(outExpr, s);
+		cout << s << "test";
 		Generate("WRI		", s, "");
 	//}
 }
@@ -199,7 +243,9 @@ void CodeGen::ProcessLiteral(ExprRec& e)
 {
 	switch(e.kind){
 		case LITERAL_INT:
+			//cout << scan.tokenBuffer.data();
 			e.val = atoi(scan.tokenBuffer.data());
+			//cout << e.val;
 			break;
 		case LITERAL_STR:
 			//push to string table.

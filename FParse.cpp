@@ -106,12 +106,13 @@ void Parser::VarDecTail()
 
 void Parser::DecTail()
 {
+	ExprRec expr;
 	switch (NextToken())
 	{
 	case ASSIGN_OP:
 		Match(ASSIGN_OP);
 		Literal();
-		// code.ProcessLiteral();
+		code.ProcessLiteral(expr);
 		cout << "Assign OP\n";
 		cout << scan.tokenBuffer;
 		break;
@@ -185,12 +186,13 @@ void Parser::MultOp()
 
 void Parser::FactorTail()
 {
+	ExprRec expr;
 	switch (NextToken())
 	{
 	case MUL_OP:
 	case DIV_OP: //Real Div
 		MultOp();
-		Primary();
+		Primary(expr);
 		// code.GenInfix();
 		cout << "Mul or div\n";
 		FactorTail();
@@ -215,34 +217,34 @@ void Parser::FactorTail()
 	}
 }
 
-void Parser::Primary()//ExprRec& result
+void Parser::Primary(ExprRec& result)
 {
-	ExprRec expr;
+	
 	
 	switch (NextToken())
 	{
 	case INT_LITERAL:
-		expr.kind = LITERAL_INT;
+		result.kind = LITERAL_INT;
 		Literal();
-		code.ProcessLiteral(expr);
+		code.ProcessLiteral(result);
 		cout << "Process Literal\n";
 		break;
 	case FAKE_LITERAL:
-		expr.kind = LITERAL_FAKE;
+		result.kind = LITERAL_FAKE;
 		Literal();
-		code.ProcessLiteral(expr);
+		code.ProcessLiteral(result);
 		cout << "Process Literal\n";
 		break;
 	case STR_LITERAL:
-		expr.kind = LITERAL_STR;
+		result.kind = LITERAL_STR;
 		Literal();
-		code.ProcessLiteral(expr);
+		code.ProcessLiteral(result);
 		cout << "Process Literal\n";
 		break;
 	case BOOL_LITERAL:
-		expr.kind = LITERAL_BOOL;
+		result.kind = LITERAL_BOOL;
 		Literal();
-		code.ProcessLiteral(expr);
+		code.ProcessLiteral(result);
 		cout << "Process Literal\n";
 		break;
 	case ID:
@@ -258,15 +260,17 @@ void Parser::Primary()//ExprRec& result
 	}
 }
 
-void Parser::AddOp()
+void Parser::AddOp(OpRec& op)
 {
 	switch (NextToken())
 	{
 	case ADD_OP:
 		Match(ADD_OP);
+		code.ProcessOp(op);
 		break;
 	case SUB_OP:
 		Match(SUB_OP);
+		code.ProcessOp(op);
 		break;
 	default:
 		SyntaxError(NextToken(), "");
@@ -275,11 +279,12 @@ void Parser::AddOp()
 
 void Parser::ExprTail()
 {
+	OpRec op;
 	switch (NextToken())
 	{
 	case ADD_OP:
 	case SUB_OP:
-		AddOp();
+		AddOp(op);
 		Factor();
 		ExprTail();
 		break;
@@ -303,8 +308,9 @@ void Parser::ExprTail()
 
 void Parser::Factor()
 {
-	Primary();
-	// code.GenInfix();
+	ExprRec expr;
+	Primary(expr);
+	//code.GenInfix();
 	cout << "Get infix\n";
 	FactorTail();
 }
@@ -338,6 +344,7 @@ void Parser::RelOp()
 
 void Parser::RelTail()
 {
+	ExprRec expr;
 	switch (NextToken())
 	{
 	case LT_OP:
@@ -347,7 +354,7 @@ void Parser::RelTail()
 	case EQ_OP:
 	case NE_OP:
 		RelOp();
-		Expression();
+		Expression(expr);
 		break;
 	case AND_SYM:
 	case NOT_SYM:
@@ -361,7 +368,8 @@ void Parser::RelTail()
 
 void Parser::Relational()
 {
-	Expression();
+	ExprRec expr;
+	Expression(expr);
 	RelTail();
 }
 
@@ -463,17 +471,18 @@ void Parser::Condition()
 
 void Parser::ForStmt()
 {
+	ExprRec expr;
 	Match(FOR_SYM);
 	Match(LPAREN);
 	VarInit();
 	Match(ASSIGN_OP);
-	Expression();
+	Expression(expr);
 	Match(SEMICOLON);
-	Condition();
+	//Condition(expr);
 	Match(SEMICOLON);
-	Variable();
+	//Variable(expr);
 	Match(ASSIGN_OP);
-	Expression();
+	Expression(expr);
 	Match(RPAREN);
 	StmtList();
 	Match(ENDFOR_SYM);
@@ -512,12 +521,13 @@ void Parser::FifStmt()
 
 void Parser::ItemListTail()
 {
+	ExprRec expr;
 	switch (NextToken())
 	{
 	case COMMA:
 		Match(COMMA);
-		Expression();
-		//code.WriteExpr();
+		Expression(expr);
+		code.WriteExpr(expr);
 		//cout << "write Expr\n";
 		ItemListTail();
 		break;
@@ -531,8 +541,8 @@ void Parser::ItemListTail()
 void Parser::ItemList()
 {
 	ExprRec expr;
-	//Expression(expr);
-	Expression();
+	Expression(expr);
+
 	code.WriteExpr(expr);
 	cout << "write expr\n";
 	ItemListTail();
@@ -540,11 +550,12 @@ void Parser::ItemList()
 
 void Parser::VariableTail()
 {
+	ExprRec expr;
 	switch (NextToken())
 	{
 	case LSTAPLE:
 		Match(LSTAPLE);
-		Expression();
+		Expression(expr);
 		Match(RSTAPLE);
 		break;
 	case AND_SYM:
@@ -597,9 +608,9 @@ void Parser::VarList()
 	VarListTail();
 }
 
-void Parser::Expression()//ExprRec& result
+void Parser::Expression(ExprRec& result)//
 {
-	/*ExprRec leftOperand, rightOperand;
+	ExprRec leftOperand, rightOperand;
 	OpRec op;
 
 	Primary(result);
@@ -614,7 +625,7 @@ void Parser::Expression()//ExprRec& result
 		}else{
 			return;
 		}
-	}*/
+	}
 	Factor();
 	ExprTail();
 }
@@ -659,7 +670,7 @@ void Parser::AssignStmt()
 	ExprRec identifier, expr;
 	Variable();
 	Match(ASSIGN_OP);
-	Expression();
+	Expression(expr);
 	code.Assign(identifier, expr);
 	
 	cout << "Assignment op\n";

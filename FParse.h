@@ -51,9 +51,9 @@ private:
 
 	void FactorTail();
 
-	void Primary();
+	void Primary(ExprRec& result);
 
-	void AddOp();
+	void AddOp(OpRec& op);
 
 	void ExprTail();
 
@@ -97,8 +97,8 @@ private:
 
 	void VarList();
 
-	//void Expression(ExprRec& result);
-	void Expression();
+	void Expression(ExprRec& result);
+	//void Expression();
 
 	void Variable();
 
