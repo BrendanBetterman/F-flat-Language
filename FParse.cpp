@@ -678,10 +678,11 @@ void Parser::AssignStmt()
 
 void Parser::Declaration()
 {
+	ExprRec expr;
 	Type();
 	Match(ID);
 	DecTail();
-	//code.ProcessID();
+	code.ProcessId(expr);
 	cout << "Processed ID\n";
 	Match(SEMICOLON);
 }
@@ -796,18 +797,19 @@ void Parser::StmtList()
 void Parser::Program()
 {
 	
-	//code.Start();
+	code.Start();
 	cout << "Started\n";
 	Match(BEGIN_SYM);
-	//cout << "started\n";
+	
 	StmtList();
 	Match(END_SYM);
 	//code.Finish();
-	cout << "Finished\n";
+	//cout << "Finished\n";
 }
 
 void Parser::SystemGoal()
 {
 	Program();
 	Match(EOF_SYM);
+	code.Finish();
 }

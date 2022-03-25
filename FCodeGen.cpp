@@ -102,7 +102,9 @@ void CodeGen::Generate(const string & s1, const string & s2, const string & s3){
 //--------Public-Methods--------
 void CodeGen::Start()
 {
-
+	Generate("LDA		", "R15", "INTS");
+	//Generate load address for STRS BOOLS fakes
+	//R14 , R13, R12
 }
 void CodeGen::Finish()
 {
@@ -113,16 +115,18 @@ void CodeGen::Finish()
 	//repeat this chunk for fakes, bools, strings
 	//keep in mind the differnt sizes of registers
 	Generate("LABEL		", "INTS","");
-	IntToAlpha(int(2*)(intTable.size()+1)),s);
+	IntToAlpha(int(2*(intTable.size()+1)),s);
 	Generate("SKIP		", s, "");
 	//
-	outFile.close();
 	
+	outFile.close();
+
 
 }
 void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 {
 //needs to check if its an int fake boolean or string
+	
 	string s;
 	ExtractExpr(source, s);
 	Generate("LD		", "R0", s);
@@ -146,7 +150,6 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 		string s;
 		
 		ExtractExpr(outExpr, s);
-		cout << s << "test";
 		Generate("WRI		", s, "");
 	}
 }
@@ -268,6 +271,12 @@ void CodeGen::ProcessLiteral(ExprRec& e)
 		case LITERAL_BOOL:
 			break;
 		case LITERAL_FAKE:
+			break;
+		case ID_EXPR:
+			cout << "expr";
+			break;
+		case TEMP_EXPR:
+			cout << "temp expr";
 			break;
 		default:
 			cout <<"default";

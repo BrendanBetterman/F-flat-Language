@@ -300,8 +300,6 @@ Token Scanner::GetNextToken(){
 				}else{
 					LexicalError(currentChar);
 				}
-
-		
-		
     }
+	return EOF_SYM;
 }
