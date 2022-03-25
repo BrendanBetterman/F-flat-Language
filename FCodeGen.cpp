@@ -23,13 +23,16 @@ void CodeGen::CheckId(const string & s)
 }
 void CodeGen::Enter(const string & s)
 {
+	//fakes, bools and ints
 	symbolTable.push_back(s);
 }
 bool CodeGen::LookUp(const string & s)
 {
-	for (unsigned i = 0; i < symbolTable.size(); i++)
-	if (symbolTable[i] == s)
-		return true;
+	//loop through all symbol tables int bool string fake
+	for (unsigned i =0; i < intTable.size(); i++)
+		if (intTable[i].label == s)
+			return true;
+	
 
 	return false;
 }
@@ -103,6 +106,18 @@ void CodeGen::Start()
 }
 void CodeGen::Finish()
 {
+	string s;
+	listFile.width(6);
+	listFile << ++scan.lineNumber << " " << scan.lineBuffer << endl;
+	Generate("HALT		", "", "");
+	//repeat this chunk for fakes, bools, strings
+	//keep in mind the differnt sizes of registers
+	Generate("LABEL		", "INTS","");
+	IntToAlpha(int(2*)(intTable.size()+1)),s);
+	Generate("SKIP		", s, "");
+	//
+	outFile.close();
+	
 
 }
 void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
@@ -127,13 +142,13 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 	if(outExpr.kind == LITERAL_STR){
 		//wrtie string
 	}
-	//if(outExpr.kind == LITERAL_INT){
+	if(outExpr.kind == LITERAL_INT){
 		string s;
 		
 		ExtractExpr(outExpr, s);
 		cout << s << "test";
 		Generate("WRI		", s, "");
-	//}
+	}
 }
 void CodeGen::NewLine()
 {

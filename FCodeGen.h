@@ -5,7 +5,7 @@
 using namespace std;
 
 #include "FScan.h"
-#include "FSymbol.h"
+
 
 
 enum OpKind {PLUS, MINUS,MULT,DIV,MOD};
@@ -22,6 +22,11 @@ struct ExprRec // information about a constant, variable, or
    ExprKind kind;   // operand type
    string   name;   // used when kind is ID_EXPR or TEMP_EXPR
    int      val;    // used when kind is LITERAL_EXPR
+};
+struct Symbol{
+    ExprKind kind;
+    int off;
+    string label;
 };
 
 class CodeGen{
@@ -74,6 +79,7 @@ public:
 private:
 
     vector<string> symbolTable;
+    vector<Symbol> intTable;
     //vector<Symbol> intTable;
     //vector<Symbol> fakeTable;
     //vector<Symbol> stringTable;
