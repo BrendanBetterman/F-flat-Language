@@ -60,7 +60,7 @@ Token Scanner::CheckReserved(){
 	f&
 	f|
 	*/
-	cout << "not reserved"<<"\n";
+	//cout << "not reserved"<<"\n";
     return ID;
 }
 void Scanner::ClearBuffer(){
@@ -140,7 +140,7 @@ Token Scanner::GetNextToken(){
 					currentChar=NextChar();
 					do{
 						currentChar = NextChar();
-						cout << currentChar;
+						//cout << currentChar;
 					}while (currentChar != '*' && sourceFile.peek() != '/');
 					currentChar = NextChar();//ignores *
 					currentChar = NextChar();//ignores / 
@@ -236,7 +236,7 @@ Token Scanner::GetNextToken(){
 						}
 					}
 					currentChar = NextChar();
-					cout << tokenBuffer;
+					//cout << tokenBuffer;
 					return STR_LITERAL;
 				}else if(isdigit(currentChar)){
 

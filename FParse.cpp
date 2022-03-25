@@ -127,21 +127,25 @@ void Parser::DecTail()
 	}
 }
 
-void Parser::Type()
+void Parser::Type(ExprRec& expr)
 {
 	switch (NextToken())
 	{
 	case INT_SYM:
 		Match(INT_SYM);
+		expr.kind=LITERAL_INT;
 		break;
 	case BOOL_SYM:
 		Match(BOOL_SYM);
+		expr.kind = LITERAL_BOOL;
 		break;
 	case FAKE_SYM:
 		Match(FAKE_SYM);
+		expr.kind = LITERAL_FAKE;
 		break;
 	case STR_SYM:
 		Match(STR_SYM);
+		expr.kind = LITERAL_STR;
 		break;
 	default:
 		SyntaxError(NextToken(), "");
@@ -248,11 +252,11 @@ void Parser::Primary(ExprRec& result)
 		cout << "Process Literal\n";
 		break;
 	case ID:
-		Variable();
+		Variable(result);
 		break;
 	case LPAREN:
 		Match(LPAREN);
-		Condition();
+		Condition(result);
 		Match(RPAREN);
 		break;
 	default:
@@ -310,7 +314,7 @@ void Parser::Factor()
 {
 	ExprRec expr;
 	Primary(expr);
-	//code.GenInfix();
+	//code.GenInfix(expr);
 	cout << "Get infix\n";
 	FactorTail();
 }
@@ -433,6 +437,7 @@ void Parser::AndCond()
 
 void Parser::VarInit()
 {
+	ExprRec expr;
 	switch (NextToken())
 	{
 	case INT_SYM:
@@ -440,7 +445,7 @@ void Parser::VarInit()
 		Match(ID);
 		break;
 	case ID:
-		Variable();
+		Variable(expr);
 		break;
 	default:
 		SyntaxError(NextToken(), "");
@@ -462,7 +467,7 @@ void Parser::FelseClause()
 	}
 }
 
-void Parser::Condition()
+void Parser::Condition(ExprRec& expr)
 {
 	cout << "Condition";
 	AndCond();
@@ -478,9 +483,9 @@ void Parser::ForStmt()
 	Match(ASSIGN_OP);
 	Expression(expr);
 	Match(SEMICOLON);
-	//Condition(expr);
+	Condition(expr);
 	Match(SEMICOLON);
-	//Variable(expr);
+	Variable(expr);
 	Match(ASSIGN_OP);
 	Expression(expr);
 	Match(RPAREN);
@@ -490,19 +495,21 @@ void Parser::ForStmt()
 
 void Parser::DoFwhileStmt()
 {
+	ExprRec expr;
 	Match(DO_SYM);
 	StmtList();
 	Match(FWHILE_SYM);
 	Match(LPAREN);
-	Condition();
+	Condition(expr);
 	Match(RPAREN);
 }
 
 void Parser::WhileStmt()
 {
+	ExprRec expr;
 	Match(WHILE_SYM);
 	Match(LPAREN);
-	Condition();
+	Condition(expr);
 	Match(RPAREN);
 	StmtList();
 	Match(ENDWHILE_SYM);
@@ -510,9 +517,10 @@ void Parser::WhileStmt()
 
 void Parser::FifStmt()
 {
+	ExprRec expr;
 	Match(FIF_SYM);
 	Match(LPAREN);
-	Condition();
+	Condition(expr);
 	Match(RPAREN);
 	StmtList();
 	FelseClause();
@@ -583,11 +591,12 @@ void Parser::VariableTail()
 
 void Parser::VarListTail()
 {
+	ExprRec expr;
 	switch (NextToken())
 	{
 	case COMMA:
 		Match(COMMA);
-		Variable();
+		Variable(expr);
 		// code.ReadValue();
 		cout << "Read value\n";
 		VarListTail();
@@ -601,7 +610,8 @@ void Parser::VarListTail()
 
 void Parser::VarList()
 {
-	Variable();
+	ExprRec expr;
+	Variable(expr);
 	// code.ReadValue();
 	cout << "Read Value\n";
 	VarListTail();
@@ -629,7 +639,7 @@ void Parser::Expression(ExprRec& result)//
 	ExprTail();
 }
 
-void Parser::Variable()
+void Parser::Variable(ExprRec& expr)
 {
 	Match(ID);
 	VariableTail();
@@ -667,7 +677,7 @@ void Parser::FinStmt()
 void Parser::AssignStmt()
 {
 	ExprRec identifier, expr;
-	Variable();
+	Variable(expr);
 	Match(ASSIGN_OP);
 	Expression(expr);
 	code.Assign(identifier, expr);
@@ -679,7 +689,7 @@ void Parser::AssignStmt()
 void Parser::Declaration()
 {
 	ExprRec expr;
-	Type();
+	Type(expr);
 	Match(ID);
 	DecTail();
 	code.ProcessId(expr);

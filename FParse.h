@@ -43,7 +43,7 @@ private:
 
 	void DecTail();
 
-	void Type();
+	void Type(ExprRec& expr);
 
 	void Literal();
 
@@ -77,7 +77,7 @@ private:
 
 	void FelseClause();
 
-	void Condition();
+	void Condition(ExprRec& expr);
 
 	void ForStmt();
 
@@ -100,7 +100,7 @@ private:
 	void Expression(ExprRec& result);
 	//void Expression();
 
-	void Variable();
+	void Variable(ExprRec& expr);
 
 	void FoutlnStmt();
 

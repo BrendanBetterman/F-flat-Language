@@ -77,7 +77,7 @@ public:
 
 
 private:
-
+    int maxTemp;
     vector<string> symbolTable;
     vector<Symbol> intTable;
     //vector<Symbol> intTable;
@@ -90,7 +90,8 @@ private:
     bool LookUp(const string & s);
 
     void ExtractExpr(const ExprRec & e, string& s);
-
+    string ExtractOP(const OpRec & o);
+    string GetTemp();
     void Generate(const string & s1, const string & s2, const string & s3);
 
 };

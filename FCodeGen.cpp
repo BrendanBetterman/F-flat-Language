@@ -13,7 +13,7 @@ extern ofstream outFile, listFile;
 extern Scanner scan; //Global scanner
 
 CodeGen::CodeGen(){
-    
+    maxTemp =0;
 }
 //-------Private-Methods-------
 void CodeGen::CheckId(const string & s)
@@ -66,18 +66,21 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 	case TEMP_EXPR:  // operand form: +k(R15)
 		s = e.name;
 		n = 0;
+		
 		while (symbolTable[n] != s) n++;
 		k = 2 * n;  // offset: 2 bytes per variable
 		IntToAlpha(k, t);
 		s = "+" + t + "(R15)";
 		break;
 	case LITERAL_INT:
+		cout <<"lit int\n";
 		IntToAlpha(e.val, t);
 		s = "#" + t;
 	case LITERAL_STR:
 		break;
 		//s = "+" + to_string(StringSamDistance(stringTable.size()-1))+ "(R14)";
 		//s ="+" + to_string(StringSamDistance(stringTable.size()-1)) +"(R14)";
+	//WIP case for bool and fakes
 		
 	}
 }
@@ -103,6 +106,7 @@ void CodeGen::Generate(const string & s1, const string & s2, const string & s3){
 void CodeGen::Start()
 {
 	Generate("LDA		", "R15", "INTS");
+	//WIP
 	//Generate load address for STRS BOOLS fakes
 	//R14 , R13, R12
 }
@@ -117,7 +121,7 @@ void CodeGen::Finish()
 	Generate("LABEL		", "INTS","");
 	IntToAlpha(int(2*(intTable.size()+1)),s);
 	Generate("SKIP		", s, "");
-	//
+	//WIP Need tables for str bool and fake
 	
 	outFile.close();
 
@@ -143,6 +147,7 @@ void CodeGen::ProcessVariable()
 }
 void CodeGen::WriteExpr(const ExprRec & outExpr)
 {
+	//WIP .kind of lit str bool and fake
 	if(outExpr.kind == LITERAL_STR){
 		//wrtie string
 	}
@@ -235,10 +240,55 @@ void CodeGen::ProcessOp(OpRec& o)
 {
 
 }
+string CodeGen::GetTemp(){
+	string s;
+	static string t;
+	t = "Temp&";
+	IntToAlpha(++maxTemp, s);
+	t += s;
+	CheckId(t);
+	return t;
+}
+string ExtractOp(const OpRec& o){
+	switch(o.op){
+		case PLUS:
+			return "IA		";
+		case MINUS:
+			return "IS		";
+		//WIP
+		//find sam instructions for mul div mod
+	}	
 
+}
 void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2, ExprRec& e)
 {
+	string s;
+	if(e1.kind == ID_EXPR && e2.kind == ID_EXPR){
+		e.kind = ID_EXPR;
+		switch(op.op){
+			case PLUS:
+				e.val = e1.val + e2.val;
+				break;
+			case MINUS:
+				e.val = e1.val - e2.val;
+			case MULT:
+				e.val = e1.val * e2.val;
+			case DIV:
+				e.val = e1.val / e2.val;
+			case MOD:
+				e.val = e1.val % e2.val;
+		}
+	}else{
+		e.kind = TEMP_EXPR;
+		e.name = GetTemp();
+		ExtractExpr(e1,s);
+		Generate("LD		","R0",s);
+		ExtractExpr(e2, s);
+		Generate(ExtractOp(op), "R0", s);
+		ExtractExpr(e, s);
+		Generate("STO       ", "R0", s);
 
+	}
 }
 
 void CodeGen::ProcessMulOp()
@@ -248,7 +298,8 @@ void CodeGen::ProcessMulOp()
 void CodeGen::ProcessId(ExprRec& e)
 {
 	CheckId(scan.tokenBuffer);
-	e.kind = ID_EXPR;
+	//e.kind = ID_EXPR;
+	cout << scan.tokenBuffer;
 	e.name = scan.tokenBuffer;
 }
 void CodeGen::ProcessLiteralInit(ExprRec& e)
