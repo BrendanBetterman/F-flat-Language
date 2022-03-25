@@ -137,7 +137,7 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 }
 void CodeGen::NewLine()
 {
-
+	Generate("WRNL		", "", "");
 }
 //---fif---
 void CodeGen::ProcessIf()

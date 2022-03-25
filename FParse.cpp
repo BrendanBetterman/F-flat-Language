@@ -528,7 +528,7 @@ void Parser::ItemListTail()
 		Match(COMMA);
 		Expression(expr);
 		code.WriteExpr(expr);
-		//cout << "write Expr\n";
+		
 		ItemListTail();
 		break;
 	case RPAREN:
@@ -544,7 +544,6 @@ void Parser::ItemList()
 	Expression(expr);
 
 	code.WriteExpr(expr);
-	cout << "write expr\n";
 	ItemListTail();
 }
 
@@ -640,8 +639,8 @@ void Parser::FoutlnStmt()
 {
 	Match(FOUTLN_SYM);
 	Match(LPAREN);
-	// code.NewLine();
-	cout << "fout new line\n";
+	code.NewLine();
+	//cout << "fout new line\n";
 	ItemList();
 	Match(RPAREN);
 	Match(SEMICOLON);
