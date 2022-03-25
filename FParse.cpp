@@ -215,7 +215,7 @@ void Parser::FactorTail()
 	}
 }
 
-void Parser::Primary()
+void Parser::Primary()//ExprRec& result
 {
 	switch (NextToken())
 	{
@@ -638,10 +638,12 @@ void Parser::FinStmt()
 
 void Parser::AssignStmt()
 {
+	ExprRec identifier, expr;
 	Variable();
 	Match(ASSIGN_OP);
 	Expression();
-	// code.Assign();
+	code.Assign(identifier, expr);
+	
 	cout << "Assignment op\n";
 	Match(SEMICOLON);
 }

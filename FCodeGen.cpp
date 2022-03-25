@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -36,7 +37,7 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 
 }
 void CodeGen::Generate(const string & s1, const string & s2, const string & s3){
-	/*
+	
 	listFile.width(20);
 	listFile << ' ' << s1;
 	outFile << s1;
@@ -51,7 +52,7 @@ void CodeGen::Generate(const string & s1, const string & s2, const string & s3){
 		}
 	}
 	listFile << endl;
-	outFile << endl;*/
+	outFile << endl;
 }
 //--------Public-Methods--------
 void CodeGen::Start()
@@ -65,7 +66,11 @@ void CodeGen::Finish()
 void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 {
 //needs to check if its an int fake boolean or string
-
+	string s;
+	ExtractExpr(source, s);
+	Generate("LD		", "R0", s);
+	ExtractExpr(target, s);
+	Generate("STO		", "R0", s);
 }
 void CodeGen::ReadValue(const ExprRec & InVal)
 {
@@ -80,11 +85,11 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 	if(outExpr.kind == LITERAL_STR){
 		//wrtie string
 	}
-	if(outExpr.kind == LITERAL_INT){
+	//if(outExpr.kind == LITERAL_INT){
 		string s;
 		ExtractExpr(outExpr, s);
 		Generate("WRI		", s, "");
-	}
+	//}
 }
 void CodeGen::NewLine()
 {
