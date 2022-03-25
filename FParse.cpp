@@ -217,14 +217,32 @@ void Parser::FactorTail()
 
 void Parser::Primary()//ExprRec& result
 {
+	ExprRec expr;
+	
 	switch (NextToken())
 	{
 	case INT_LITERAL:
-	case FAKE_LITERAL:
-	case STR_LITERAL:
-	case BOOL_LITERAL:
+		expr.kind = LITERAL_INT;
 		Literal();
-		// code.ProcessLiteral();
+		code.ProcessLiteral(expr);
+		cout << "Process Literal\n";
+		break;
+	case FAKE_LITERAL:
+		expr.kind = LITERAL_FAKE;
+		Literal();
+		code.ProcessLiteral(expr);
+		cout << "Process Literal\n";
+		break;
+	case STR_LITERAL:
+		expr.kind = LITERAL_STR;
+		Literal();
+		code.ProcessLiteral(expr);
+		cout << "Process Literal\n";
+		break;
+	case BOOL_LITERAL:
+		expr.kind = LITERAL_BOOL;
+		Literal();
+		code.ProcessLiteral(expr);
 		cout << "Process Literal\n";
 		break;
 	case ID:

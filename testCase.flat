@@ -1,3 +1,4 @@
 BOF
 fout(1);
+int house = 0;
 EOF

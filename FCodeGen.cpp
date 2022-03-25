@@ -194,11 +194,27 @@ void CodeGen::ProcessLiteralInit(ExprRec& e)
 
 }
 
-/*
+
 void CodeGen::ProcessLiteral(ExprRec& e)
 {
-
+	switch(e.kind){
+		case LITERAL_INT:
+			e.val = atoi(scan.tokenBuffer.data());
+			break;
+		case LITERAL_STR:
+			//push to string table.
+			break;
+		case LITERAL_BOOL:
+			break;
+		case LITERAL_FAKE:
+			break;
+		default:
+			cout <<"default";
+			break;
+	}
+	
 }
+/*
 void CodeGen::ProcessStringLiteral(ExprRec& e)
 {
 

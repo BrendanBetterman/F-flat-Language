@@ -65,6 +65,7 @@ public:
     void ProcessMulOp();
     void ProcessId(ExprRec& e);
     void ProcessLiteralInit(ExprRec& e);
+    void ProcessLiteral(ExprRec& e);
 
     //void ProcessLitFake(ExprRec& e);
     //void ProcessStringLiteral(ExprRec& e);
