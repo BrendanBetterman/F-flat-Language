@@ -1,5 +1,6 @@
 BOF
 foutln(2);
 int k =0;
+fake i = 0.0;
 k=0;
 EOF

@@ -813,8 +813,7 @@ void Parser::Program()
 	
 	StmtList();
 	Match(END_SYM);
-	//code.Finish();
-	//cout << "Finished\n";
+	
 }
 
 void Parser::SystemGoal()
