@@ -32,6 +32,11 @@ bool CodeGen::LookUp(const string & s)
 	for (unsigned i =0; i < intTable.size(); i++)
 		if (intTable[i].label == s)
 			return true;
+   // for (unsigned j = 0; j < fakeTable.size(); j++)
+    //    if (fakeTable[j].label = s)
+    //        return true;
+
+
 	
 
 	return false;
@@ -55,6 +60,21 @@ void CodeGen::IntToAlpha(int val, string& str)
 		str[i] = str[k-i-1];
 		str[k-i-1] = temp;
 	}
+}
+void CodeGen::FakeToAlpha(float val, string& str)
+{
+
+    str = "";
+
+    cout << "\nFakeToAlpha\n";
+
+    string fakeStr(std::to_string(val));
+
+    str = fakeStr;
+    cout << str;
+
+
+
 }
 void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 	string t;
@@ -81,6 +101,13 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 		//s = "+" + to_string(StringSamDistance(stringTable.size()-1))+ "(R14)";
 		//s ="+" + to_string(StringSamDistance(stringTable.size()-1)) +"(R14)";
 	//WIP case for bool and fakes
+    case BOOL_LITERAL:
+        break;
+    case FAKE_LITERAL:
+        cout << "---literal fake\n";
+        FakeToAlpha(e.valF, t);
+        s = "#" + t;
+        break;
 		
 	}
 }
@@ -122,7 +149,14 @@ void CodeGen::Finish()
 	IntToAlpha(int(2*(intTable.size()+1)),s);
 	Generate("SKIP		", s, "");
 	//WIP Need tables for str bool and fake
-	
+    //bools 2nd
+
+    Generate("LABEL     ", "FAKES", "");
+    IntToAlpha(int(4*(fakeTable.size()+1)),s);
+    Generate("SKIP      ", s, "");
+
+
+
 	outFile.close();
 
 
@@ -157,6 +191,12 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 		ExtractExpr(outExpr, s);
 		Generate("WRI		", s, "");
 	}
+    if (outExpr.kind == LITERAL_FAKE){
+        string f;
+        cout << "/nWriteExpr .kind = LITERAL_FAKE\n";
+        ExtractExpr(outExpr, f);
+        Generate("WRF       ", f, "");
+    }
 }
 void CodeGen::NewLine()
 {
@@ -322,6 +362,9 @@ void CodeGen::ProcessLiteral(ExprRec& e)
 		case LITERAL_BOOL:
 			break;
 		case LITERAL_FAKE:
+            cout << scan.tokenBuffer.data();
+            e.valF = atoi(scan.tokenBuffer.data());
+            cout << e.valF;
 			break;
 		case ID_EXPR:
 			cout << "expr";

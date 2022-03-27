@@ -22,6 +22,9 @@ struct ExprRec // information about a constant, variable, or
    ExprKind kind;   // operand type
    string   name;   // used when kind is ID_EXPR or TEMP_EXPR
    int      val;    // used when kind is LITERAL_EXPR
+   float    valF;   // used when kind is LITERAL_FAKE
+
+
 };
 struct Symbol{
     ExprKind kind;
@@ -80,13 +83,14 @@ private:
     int maxTemp;
     vector<string> symbolTable;
     vector<Symbol> intTable;
-    //vector<Symbol> intTable;
-    //vector<Symbol> fakeTable;
+    vector<Symbol> boolTable;
+    vector<Symbol> fakeTable;
     //vector<Symbol> stringTable;
 
     void CheckId(const string & s);
     void Enter(const string & s);
     void IntToAlpha(int val, string& str);
+    void FakeToAlpha(float val, string& str);
     bool LookUp(const string & s);
 
     void ExtractExpr(const ExprRec & e, string& s);
