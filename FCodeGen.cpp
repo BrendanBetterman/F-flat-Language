@@ -133,6 +133,7 @@ void CodeGen::Generate(const string & s1, const string & s2, const string & s3){
 void CodeGen::Start()
 {
 	Generate("LDA		", "R15", "INTS");
+	Generate("LDA		", "R14", "FAKES");
 	//WIP
 	//Generate load address for STRS BOOLS fakes
 	//R14 , R13, R12
@@ -145,15 +146,15 @@ void CodeGen::Finish()
 	Generate("HALT		", "", "");
 	//repeat this chunk for fakes, bools, strings
 	//keep in mind the differnt sizes of registers
-	Generate("LABEL		", "INTS","");
+	Generate("LABEL	", "INTS","");
 	IntToAlpha(int(2*(intTable.size()+1)),s);
-	Generate("SKIP		", s, "");
+	Generate("SKIP	", s, "");
 	//WIP Need tables for str bool and fake
     //bools 2nd
 
-    Generate("LABEL     ", "FAKES", "");
+    Generate("LABEL	", "FAKES", "");
     IntToAlpha(int(4*(fakeTable.size()+1)),s);
-    Generate("SKIP      ", s, "");
+    Generate("SKIP	", s, "");
 
 
 
