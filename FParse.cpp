@@ -231,25 +231,25 @@ void Parser::Primary(ExprRec& result)
 		result.kind = LITERAL_INT;
 		Literal();
 		code.ProcessLiteral(result);
-		cout << "Process Literal\n";
+		cout << "Process Literal INT\n";
 		break;
 	case FAKE_LITERAL:
 		result.kind = LITERAL_FAKE;
 		Literal();
 		code.ProcessLiteral(result);
-		cout << "Process Literal\n";
+		cout << "Process Literal Fake\n";
 		break;
 	case STR_LITERAL:
 		result.kind = LITERAL_STR;
 		Literal();
 		code.ProcessLiteral(result);
-		cout << "Process Literal\n";
+		cout << "Process Literal STR\n";
 		break;
 	case BOOL_LITERAL:
 		result.kind = LITERAL_BOOL;
 		Literal();
 		code.ProcessLiteral(result);
-		cout << "Process Literal\n";
+		cout << "Process Literal Bool\n";
 		break;
 	case ID:
 		Variable(result);
@@ -404,7 +404,7 @@ void Parser::Negation()
 		Relational();
 		break;
 	case AND_SYM:
-	//case NOT_SYM:
+
 	case RPAREN:
 	case SEMICOLON:
 		break;
@@ -454,11 +454,12 @@ void Parser::VarInit()
 
 void Parser::FelseClause()
 {
+	ExprRec expr;
 	switch (NextToken())
 	{
 	case FELSE_SYM:
 		Match(FELSE_SYM);
-		StmtList();
+		StmtList(expr);
 		break;
 	case FENDIF_SYM:
 		break;
@@ -489,7 +490,7 @@ void Parser::ForStmt()
 	Match(ASSIGN_OP);
 	Expression(expr);
 	Match(RPAREN);
-	StmtList();
+	StmtList(expr);
 	Match(ENDFOR_SYM);
 }
 
@@ -497,7 +498,7 @@ void Parser::DoFwhileStmt()
 {
 	ExprRec expr;
 	Match(DO_SYM);
-	StmtList();
+	StmtList(expr);
 	Match(FWHILE_SYM);
 	Match(LPAREN);
 	Condition(expr);
@@ -511,7 +512,7 @@ void Parser::WhileStmt()
 	Match(LPAREN);
 	Condition(expr);
 	Match(RPAREN);
-	StmtList();
+	StmtList(expr);
 	Match(ENDWHILE_SYM);
 }
 
@@ -522,7 +523,7 @@ void Parser::FifStmt()
 	Match(LPAREN);
 	Condition(expr);
 	Match(RPAREN);
-	StmtList();
+	StmtList(expr);
 	FelseClause();
 	Match(FENDIF_SYM);
 }
@@ -612,7 +613,7 @@ void Parser::VarList()
 {
 	ExprRec expr;
 	Variable(expr);
-	// code.ReadValue();
+	code.ReadValue(expr);
 	cout << "Read Value\n";
 	VarListTail();
 }
@@ -674,9 +675,9 @@ void Parser::FinStmt()
 	Match(SEMICOLON);
 }
 
-void Parser::AssignStmt()
+void Parser::AssignStmt(ExprRec& expr)
 {
-	ExprRec identifier, expr;
+	ExprRec identifier;
 	Variable(expr);
 	Match(ASSIGN_OP);
 	Expression(expr);
@@ -718,12 +719,12 @@ void Parser::StructStmt()
 	}
 }
 
-void Parser::SimpleStmt()
+void Parser::SimpleStmt(ExprRec& expr)
 {
 	switch (NextToken())
 	{
 	case ID:
-		AssignStmt();
+		AssignStmt(expr);
 		break;
 	case FIN_SYM:
 		FinStmt();
@@ -739,7 +740,7 @@ void Parser::SimpleStmt()
 	}
 }
 
-void Parser::StmtTail()
+void Parser::StmtTail(ExprRec& expr)
 {
 	switch (NextToken())
 	{
@@ -755,8 +756,8 @@ void Parser::StmtTail()
 	case STR_SYM:
 	case WHILE_SYM:
 	case ID:
-		Statement();
-		StmtTail();
+		Statement(expr);
+		StmtTail(expr);
 		break;
 	case ENDFOR_SYM:
 	case ENDWHILE_SYM:
@@ -770,7 +771,7 @@ void Parser::StmtTail()
 	}
 }
 
-void Parser::Statement()
+void Parser::Statement(ExprRec& expr)
 {
 	cout << "statement\n";
 	switch (NextToken())
@@ -779,7 +780,7 @@ void Parser::Statement()
 	case FOUT_SYM:
 	case FOUTLN_SYM:
 	case ID:
-		SimpleStmt();
+		SimpleStmt(expr);
 		break;
 	case DO_SYM:
 	case FIF_SYM:
@@ -798,10 +799,10 @@ void Parser::Statement()
 	}
 }
 
-void Parser::StmtList()
+void Parser::StmtList(ExprRec& expr)
 {
-	Statement();
-	StmtTail();
+	Statement(expr);
+	StmtTail(expr);
 }
 
 void Parser::Program()
@@ -810,8 +811,8 @@ void Parser::Program()
 	code.Start();
 	cout << "Started\n";
 	Match(BEGIN_SYM);
-	
-	StmtList();
+	ExprRec expr;
+	StmtList(expr);
 	Match(END_SYM);
 	
 }

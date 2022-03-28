@@ -23,8 +23,6 @@ struct ExprRec // information about a constant, variable, or
    string   name;   // used when kind is ID_EXPR or TEMP_EXPR
    int      val;    // used when kind is LITERAL_EXPR
    float    valF;   // used when kind is LITERAL_FAKE
-
-
 };
 struct Symbol{
     ExprKind kind;

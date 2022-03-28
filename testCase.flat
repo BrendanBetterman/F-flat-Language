@@ -1,6 +1,5 @@
 BOF
-foutln(2);
-int k =0;
-fake i = 0.0;
-k=0;
+fout("0");
+fake k = 3.344;
+k=4.3;
 EOF

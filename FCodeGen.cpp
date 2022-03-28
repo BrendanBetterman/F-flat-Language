@@ -83,10 +83,11 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 	switch (e.kind)
 	{
 	case ID_EXPR:
+		//cout<<"id expr";
 	case TEMP_EXPR:  // operand form: +k(R15)
 		s = e.name;
 		n = 0;
-		
+		//cout<<"temp";
 		while (symbolTable[n] != s) n++;
 		k = 2 * n;  // offset: 2 bytes per variable
 		IntToAlpha(k, t);
@@ -96,7 +97,9 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 		cout <<"lit int\n";
 		IntToAlpha(e.val, t);
 		s = "#" + t;
+		break;
 	case LITERAL_STR:
+		cout<<"str";
 		break;
 		//s = "+" + to_string(StringSamDistance(stringTable.size()-1))+ "(R14)";
 		//s ="+" + to_string(StringSamDistance(stringTable.size()-1)) +"(R14)";
@@ -165,12 +168,27 @@ void CodeGen::Finish()
 void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 {
 //needs to check if its an int fake boolean or string
-	
 	string s;
-	ExtractExpr(source, s);
-	Generate("LD		", "R0", s);
-	ExtractExpr(target, s);
-	Generate("STO		", "R0", s);
+	switch(source.kind){
+		case LITERAL_INT:
+			cout<< "assign int";
+			ExtractExpr(source, s);
+			Generate("LD		", "R14", s);
+			ExtractExpr(target, s);
+			Generate("STO		", "R0", s);
+			break;
+		case LITERAL_FAKE:
+			cout<<"assign fake";
+			ExtractExpr(source, s);
+			Generate("LD		", "R13", s);
+			ExtractExpr(target, s);
+			Generate("STO		", "R2", s);
+			ExtractExpr(target, s);
+			Generate("STO		", "R3", s);//+2
+			break;
+	}
+	
+	
 }
 void CodeGen::ReadValue(const ExprRec & InVal)
 {
@@ -291,6 +309,7 @@ string CodeGen::GetTemp(){
 	return t;
 }
 string ExtractOp(const OpRec& o){
+	//needs it for floats and floats and ints
 	switch(o.op){
 		case PLUS:
 			return "IA		";
@@ -351,6 +370,7 @@ void CodeGen::ProcessLiteralInit(ExprRec& e)
 
 void CodeGen::ProcessLiteral(ExprRec& e)
 {
+	string s;
 	switch(e.kind){
 		case LITERAL_INT:
 			//cout << scan.tokenBuffer.data();
@@ -359,12 +379,15 @@ void CodeGen::ProcessLiteral(ExprRec& e)
 			break;
 		case LITERAL_STR:
 			//push to string table.
+			ExtractExpr(e,s);
+			Generate("WRST	", s,"");
 			break;
 		case LITERAL_BOOL:
 			break;
 		case LITERAL_FAKE:
-            cout << scan.tokenBuffer.data();
-            e.valF = atoi(scan.tokenBuffer.data());
+            //cout << scan.tokenBuffer.data()<<"\n";
+			e.valF = std::stof(scan.tokenBuffer.data());
+            //e.valF = atoi(scan.tokenBuffer.data());
             cout << e.valF;
 			break;
 		case ID_EXPR:

@@ -108,19 +108,19 @@ private:
 
 	void FinStmt();
 
-	void AssignStmt();
+	void AssignStmt(ExprRec& expr);
 
 	void Declaration();
 
 	void StructStmt();
 
-	void SimpleStmt();
+	void SimpleStmt(ExprRec& expr);
 
-	void StmtTail();
+	void StmtTail(ExprRec& expr);
 
-	void Statement();
+	void Statement(ExprRec& expr);
 
-	void StmtList();
+	void StmtList(ExprRec& expr);
 
 	void Program();
 
