@@ -104,9 +104,9 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 		//s = "+" + to_string(StringSamDistance(stringTable.size()-1))+ "(R14)";
 		//s ="+" + to_string(StringSamDistance(stringTable.size()-1)) +"(R14)";
 	//WIP case for bool and fakes
-    case BOOL_LITERAL:
+    case LITERAL_BOOL:
         break;
-    case FAKE_LITERAL:
+    case LITERAL_FAKE:
         cout << "---literal fake\n";
         FakeToAlpha(e.valF, t);
         s = "#" + t;
@@ -162,6 +162,26 @@ void CodeGen::Finish()
 
 
 	outFile.close();
+
+
+
+    listFile << endl << endl;
+    listFile << " _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_\n";
+    listFile << " ||||||||   S Y M B O L   T A B L E   ||||||||\n" << endl;
+    listFile << " _____________________________________________" << endl;
+    listFile << " Relative" << endl;
+    listFile << " Address      Identifier" << endl;
+    listFile << " --------     --------------------------------" << endl;
+    for (unsigned i = 0; i < symbolTable.size(); i++)
+    {
+        listFile.width(7);
+        listFile << 2*i << "       " << symbolTable[i] << endl;
+    }
+    listFile << " _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_" << endl;
+    listFile << endl;
+    listFile << " Normal successful compilation." << endl;
+
+    listFile.close();
 
 
 }
