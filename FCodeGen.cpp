@@ -128,7 +128,6 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 		s = "#" + t;
 		break;
 	case LITERAL_STR:
-		cout<<"str";
 		s ="+" + to_string(StringSamDistance(stringTable.size()-1)) +"(R13)";
 		//cout<<"str";
 		break;
@@ -219,8 +218,7 @@ void CodeGen::Finish()
     Generate("LABEL	", "FAKES", "");
     IntToAlpha(int(4*(symbolTable.size()+1)),s);
     Generate("SKIP	", s, "");
-
-
+	
 	Generate("LABEL	", "STRS", "");
     //IntToAlpha(int(4*(fakeTable.size()+1)),s);
     //for loop for stings
@@ -526,6 +524,7 @@ void CodeGen::ProcessLiteral(ExprRec& e)
 	string s;
 	switch(e.kind){
 		case LITERAL_INT:
+			cout << "process lit int\n";
 			//cout << scan.tokenBuffer.data();
 			e.kind = LITERAL_INT;
 			e.val = atoi(scan.tokenBuffer.data());
