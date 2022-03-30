@@ -41,7 +41,7 @@ private:
 
 	void VarDecTail();
 
-	void DecTail();
+	void DecTail(ExprRec& expr);
 
 	void Type(ExprRec& expr);
 
@@ -110,7 +110,7 @@ private:
 
 	void AssignStmt(ExprRec& expr);
 
-	void Declaration();
+	void Declaration(ExprRec& expr);
 
 	void StructStmt();
 

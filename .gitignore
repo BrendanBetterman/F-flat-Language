@@ -3,3 +3,5 @@
 #ignore compiled fflat files
 *.lst
 *.asm
+*.lis
+*,obj
