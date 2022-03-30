@@ -687,9 +687,8 @@ void Parser::AssignStmt(ExprRec& expr)
 	Match(SEMICOLON);
 }
 
-void Parser::Declaration()
+void Parser::Declaration(ExprRec& expr)
 {
-	ExprRec expr;
 	Type(expr);
 	Match(ID);
 	DecTail();
@@ -792,7 +791,7 @@ void Parser::Statement(ExprRec& expr)
 	case FAKE_SYM:
 	case INT_SYM:
 	case STR_SYM:
-		Declaration();
+		Declaration(expr);//needs expr
 		break;
 	default:
 		SyntaxError(NextToken(), "");

@@ -110,7 +110,7 @@ private:
 
 	void AssignStmt(ExprRec& expr);
 
-	void Declaration();
+	void Declaration(ExprRec& expr);
 
 	void StructStmt();
 
