@@ -85,6 +85,7 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 	case ID_EXPR:
 		//cout<<"id expr";
 	case TEMP_EXPR:  // operand form: +k(R15)
+		
 		s = e.name;
 		n = 0;
 		//cout<<"temp";
@@ -111,7 +112,9 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
         FakeToAlpha(e.valF, t);
         s = "#" + t;
         break;
-		
+	default:
+		cout<<"--Default";
+		break;
 	}
 }
 void CodeGen::Generate(const string & s1, const string & s2, const string & s3){
@@ -373,7 +376,9 @@ void CodeGen::ProcessLiteral(ExprRec& e)
 	string s;
 	switch(e.kind){
 		case LITERAL_INT:
+			cout << "process lit int";
 			//cout << scan.tokenBuffer.data();
+			e.kind = LITERAL_INT;
 			e.val = atoi(scan.tokenBuffer.data());
 			//cout << e.val;
 			break;
@@ -385,6 +390,7 @@ void CodeGen::ProcessLiteral(ExprRec& e)
 		case LITERAL_BOOL:
 			break;
 		case LITERAL_FAKE:
+			cout<<"process fake";
             //cout << scan.tokenBuffer.data()<<"\n";
 			e.valF = std::stof(scan.tokenBuffer.data());
             //e.valF = atoi(scan.tokenBuffer.data());

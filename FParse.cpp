@@ -104,9 +104,9 @@ void Parser::VarDecTail()
 	}
 }
 
-void Parser::DecTail()
+void Parser::DecTail(ExprRec& expr)
 {
-	ExprRec expr;
+	
 	switch (NextToken())
 	{
 	case ASSIGN_OP:
@@ -223,7 +223,7 @@ void Parser::FactorTail()
 
 void Parser::Primary(ExprRec& result)
 {
-	
+	ExprRec identifier;
 	
 	switch (NextToken())
 	{
@@ -232,6 +232,7 @@ void Parser::Primary(ExprRec& result)
 		Literal();
 		code.ProcessLiteral(result);
 		cout << "Process Literal INT\n";
+		
 		break;
 	case FAKE_LITERAL:
 		result.kind = LITERAL_FAKE;
@@ -691,7 +692,7 @@ void Parser::Declaration(ExprRec& expr)
 {
 	Type(expr);
 	Match(ID);
-	DecTail();
+	DecTail(expr);
 	code.ProcessId(expr);
 	cout << "Processed ID\n";
 	Match(SEMICOLON);

@@ -41,7 +41,7 @@ private:
 
 	void VarDecTail();
 
-	void DecTail();
+	void DecTail(ExprRec& expr);
 
 	void Type(ExprRec& expr);
 
