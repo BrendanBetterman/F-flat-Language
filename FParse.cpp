@@ -114,7 +114,8 @@ void Parser::DecTail(ExprRec& expr)
 		Literal();
 		code.ProcessLiteral(expr);
 		cout << "Assign OP\n";
-		cout << scan.tokenBuffer;
+		//code.Assign(expr,expr);
+		//cout << scan.tokenBuffer;
 		break;
 	case LSTAPLE:
 	case SEMICOLON:
@@ -690,11 +691,18 @@ void Parser::AssignStmt(ExprRec& expr)
 
 void Parser::Declaration(ExprRec& expr)
 {
+	
 	Type(expr);
+	
 	Match(ID);
-	DecTail(expr);
+	//cout << scan.tokenBuffer << " statemnett\n";
+	expr.name = scan.tokenBuffer;
+	
 	code.ProcessId(expr);
+	DecTail(expr);
+	
 	cout << "Processed ID\n";
+	
 	Match(SEMICOLON);
 }
 
@@ -792,6 +800,7 @@ void Parser::Statement(ExprRec& expr)
 	case FAKE_SYM:
 	case INT_SYM:
 	case STR_SYM:
+		
 		Declaration(expr);//needs expr
 		break;
 	default:

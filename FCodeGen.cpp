@@ -129,6 +129,8 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 		break;
 	case LITERAL_STR:
 		cout<<"str";
+		s ="+" + to_string(StringSamDistance(stringTable.size()-1)) +"(R13)";
+		//cout<<"str";
 		break;
 		//s = "+" + to_string(StringSamDistance(stringTable.size()-1))+ "(R14)";
 		//s ="+" + to_string(StringSamDistance(stringTable.size()-1)) +"(R14)";
@@ -163,11 +165,39 @@ void CodeGen::Generate(const string & s1, const string & s2, const string & s3){
 	listFile << endl;
 	outFile << endl;
 }
+string CodeGen::ConvertToSam(string s){
+	string tmp ="\"";
+	for(int i =0; i<s.length(); i++){
+		if(s[i]=='"' || s[i]==':'){
+			tmp+=":";
+		}
+		tmp += s[i];
+	}
+	tmp +="\"";
+	return tmp;
+}
+int CodeGen::StringSamDistance(int index){
+	if(index ==0){
+		return 0;
+	}
+	int tmp =0;
+	for(int i=0; i<index; i++){
+		tmp += stringTable[i].length();
+		if(tmp%2==0){
+			tmp+=2;
+		}else{
+			tmp+=1;
+		}
+	}
+	stringTable[index];
+	return tmp;
+}
 //--------Public-Methods--------
 void CodeGen::Start()
 {
 	Generate("LDA		", "R15", "INTS");
 	Generate("LDA		", "R14", "FAKES");
+	Generate("LDA		", "R13", "STRS");
 	//WIP
 	//Generate load address for STRS BOOLS fakes
 	//R14 , R13, R12
@@ -191,6 +221,12 @@ void CodeGen::Finish()
     Generate("SKIP	", s, "");
 
 
+	Generate("LABEL	", "STRS", "");
+    //IntToAlpha(int(4*(fakeTable.size()+1)),s);
+    //for loop for stings
+	for(int i=0; i< stringTable.size(); i++){
+		Generate("STRING	",ConvertToSam(stringTable[i]),"");
+	}
 
 	outFile.close();
 
@@ -304,6 +340,9 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 	//WIP .kind of lit str bool and fake
 	if(outExpr.kind == LITERAL_STR){
 		//wrtie string
+		string s;
+		ExtractExpr(outExpr,s);
+		Generate("WRST	", s,"");
 	}
 	if(outExpr.kind == LITERAL_INT){
 		string s;
@@ -463,10 +502,18 @@ void CodeGen::ProcessMulOp()
 }
 void CodeGen::ProcessId(ExprRec& e)
 {
+<<<<<<< Updated upstream
     CheckId(scan.tokenBuffer, e.kind);
 	//e.kind = ID_EXPR;
 	cout << scan.tokenBuffer;
     e.name = scan.tokenBuffer;
+=======
+	
+	CheckId(scan.tokenBuffer);
+	e.kind = ID_EXPR;
+	//cout << scan.tokenBuffer;
+	//e.name = scan.tokenBuffer;
+>>>>>>> Stashed changes
 }
 void CodeGen::ProcessLiteralInit(ExprRec& e)
 {
@@ -479,16 +526,18 @@ void CodeGen::ProcessLiteral(ExprRec& e)
 	string s;
 	switch(e.kind){
 		case LITERAL_INT:
-			cout << "process lit int";
 			//cout << scan.tokenBuffer.data();
 			e.kind = LITERAL_INT;
 			e.val = atoi(scan.tokenBuffer.data());
+			cout << e.val;
 			//cout << e.val;
 			break;
 		case LITERAL_STR:
 			//push to string table.
-			ExtractExpr(e,s);
-			Generate("WRST	", s,"");
+			e.kind = LITERAL_STR;
+			stringTable.push_back(scan.tokenBuffer.data());
+			//ExtractExpr(e,s);
+			//Generate("WRST	", s,"");
 			break;
 		case LITERAL_BOOL:
 
