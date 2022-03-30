@@ -81,26 +81,15 @@ public:
 
 private:
     int maxTemp;
-<<<<<<< Updated upstream
     vector<Symbol> symbolTable;
-    //vector<string> intTable;
-    //vector<string> boolTable;
-    //vector<string> fakeTable;
-    //vector<string> strTable;
-
-    void CheckId(const string & s, const ExprKind & t);
-    void Enter(const string & s, const ExprKind & t);
-=======
-    vector<string> symbolTable;
     vector<Symbol> intTable;
     vector<Symbol> boolTable;
     vector<Symbol> fakeTable;
     vector<string> stringTable;
     string ConvertToSam(string s);
     int StringSamDistance(int index);
-    void CheckId(const string & s);
-    void Enter(const string & s);
->>>>>>> Stashed changes
+    void CheckId(const string & s,const ExprKind & t);
+    void Enter(const string & s,const ExprKind & t);
     void IntToAlpha(int val, string& str);
     void FakeToAlpha(float val, string& str);
     bool LookUp(const string & s);

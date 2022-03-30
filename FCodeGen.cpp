@@ -210,13 +210,21 @@ void CodeGen::Finish()
 	//repeat this chunk for fakes, bools, strings
 	//keep in mind the differnt sizes of registers
 	Generate("LABEL	", "INTS","");
-    IntToAlpha(int(2*(symbolTable.size()+1)),s);
+	int tmpSize =0;
+	for(int i=0; i< symbolTable.size(); i++){
+		if(symbolTable[i].kind == LITERAL_INT) tmpSize +=1;
+	}
+    IntToAlpha(int(2*(tmpSize)),s);
 	Generate("SKIP	", s, "");
 	//WIP Need tables for str bool and fake
     //bools 2nd
 
     Generate("LABEL	", "FAKES", "");
-    IntToAlpha(int(4*(symbolTable.size()+1)),s);
+	tmpSize =0;
+	for(int i=0; i< symbolTable.size(); i++){
+		if(symbolTable[i].kind == LITERAL_FAKE) tmpSize +=1;
+	}
+    IntToAlpha(int(4*(tmpSize)),s);
     Generate("SKIP	", s, "");
 	
 	Generate("LABEL	", "STRS", "");
@@ -500,18 +508,11 @@ void CodeGen::ProcessMulOp()
 }
 void CodeGen::ProcessId(ExprRec& e)
 {
-<<<<<<< Updated upstream
-    CheckId(scan.tokenBuffer, e.kind);
-	//e.kind = ID_EXPR;
-	cout << scan.tokenBuffer;
-    e.name = scan.tokenBuffer;
-=======
 	
-	CheckId(scan.tokenBuffer);
+	CheckId(scan.tokenBuffer,e.kind);
 	e.kind = ID_EXPR;
 	//cout << scan.tokenBuffer;
 	//e.name = scan.tokenBuffer;
->>>>>>> Stashed changes
 }
 void CodeGen::ProcessLiteralInit(ExprRec& e)
 {
