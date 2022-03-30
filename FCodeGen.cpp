@@ -16,25 +16,53 @@ CodeGen::CodeGen(){
     maxTemp =0;
 }
 //-------Private-Methods-------
-void CodeGen::CheckId(const string & s)
+void CodeGen::CheckId(const string & s, const ExprKind & t)
 {
 	if (!LookUp(s))  // variable not declared yet
-		Enter(s);
+        Enter(s,t);
 }
-void CodeGen::Enter(const string & s)
+void CodeGen::Enter(const string & s, const ExprKind & t )
 {
 	//fakes, bools and ints
-	symbolTable.push_back(s);
+    //symbolTable.push_back(s);
+
+    Symbol thisSym;
+    cout << s << " Enter(s) before pushback symbolTable\n";
+    thisSym.label = s;
+    thisSym.kind = t;
+    symbolTable.push_back(thisSym);
+
+
+
+    /*switch(t)
+    {
+        case 0: intTable.push_back(s); break;
+        case 1: boolTable.push_back(s); break;
+        case 2: fakeTable.push_back(s); break;
+        case 3: strTable.push_back(s); break;
+        default: break;
+    }
+    */
 }
 bool CodeGen::LookUp(const string & s)
 {
 	//loop through all symbol tables int bool string fake
-	for (unsigned i =0; i < intTable.size(); i++)
-		if (intTable[i].label == s)
+    for (unsigned i =0; i < symbolTable.size(); i++)
+        if (symbolTable[i].label == s)
 			return true;
-   // for (unsigned j = 0; j < fakeTable.size(); j++)
-    //    if (fakeTable[j].label = s)
-    //        return true;
+    /*for (unsigned i = 0; i < intTable.size(); i++)
+        if (intTable[i] = s)
+            return true;
+    for (unsigned j = 0; j < boolTable.size(); j++)
+        if (boolTable[j] = s)
+            return true;
+    for (unsigned j = 0; j < fakeTable.size(); j++)
+        if (fakeTable[j] = s)
+            return true;
+    for (unsigned j = 0; j < strTable.size(); j++)
+        if (strTable[j] = s)
+            return true;
+      */
 
 
 	
@@ -88,7 +116,7 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 		s = e.name;
 		n = 0;
 		//cout<<"temp";
-		while (symbolTable[n] != s) n++;
+        while (symbolTable[n].label != s) n++;
 		k = 2 * n;  // offset: 2 bytes per variable
 		IntToAlpha(k, t);
 		s = "+" + t + "(R15)";
@@ -150,13 +178,13 @@ void CodeGen::Finish()
 	//repeat this chunk for fakes, bools, strings
 	//keep in mind the differnt sizes of registers
 	Generate("LABEL	", "INTS","");
-	IntToAlpha(int(2*(intTable.size()+1)),s);
+    IntToAlpha(int(2*(symbolTable.size()+1)),s);
 	Generate("SKIP	", s, "");
 	//WIP Need tables for str bool and fake
     //bools 2nd
 
     Generate("LABEL	", "FAKES", "");
-    IntToAlpha(int(4*(fakeTable.size()+1)),s);
+    IntToAlpha(int(4*(symbolTable.size()+1)),s);
     Generate("SKIP	", s, "");
 
 
@@ -172,10 +200,60 @@ void CodeGen::Finish()
     listFile << " Relative" << endl;
     listFile << " Address      Identifier" << endl;
     listFile << " --------     --------------------------------" << endl;
-    for (unsigned i = 0; i < symbolTable.size(); i++)
+
+    int curOffSet = 0;
+
+    for (int j = 0; j < 4; j++)
     {
-        listFile.width(7);
-        listFile << 2*i << "       " << symbolTable[i] << endl;
+        switch(j)
+        {
+          case 0: listFile << " INTS----" << endl; break;
+          case 1: listFile << " BOOLS---" << endl; break;
+          case 2: listFile << " FAKES---" << endl; break;
+          case 3: listFile << " STRINGS-" << endl; break;
+        }
+
+        for (unsigned i = 0; i < symbolTable.size(); i++)
+        {
+            switch(j)
+            {
+            case 0: if (symbolTable[i].kind == LITERAL_INT)
+                    {
+                        listFile.width(7);
+                        listFile << curOffSet << "        " << symbolTable[i].label << endl;
+                        curOffSet += 2;
+                    }
+                    break;
+            case 1: if (symbolTable[i].kind == LITERAL_BOOL)
+                    {
+                        listFile.width(7);
+                        listFile << curOffSet << "      " << symbolTable[i].label << endl;
+                        curOffSet += 2;
+                    }
+                    break;
+            case 2: if (symbolTable[i].kind == LITERAL_FAKE)
+                    {
+                        listFile.width(7);
+                        listFile << curOffSet << "      " << symbolTable[i].label << endl;
+                        curOffSet += 4;
+                    }
+                    break;
+            case 3: if (symbolTable[i].kind == LITERAL_STR)
+                    {
+
+
+                    listFile << "        " << symbolTable[i].label << endl;
+                        //figure string offset here
+                    }
+                    break;
+            default: break;
+                        }
+
+           // if ( symbolTable[i].kind == )
+           // listFile.width(7);
+           // listFile << 2*i << "       " << symbolTable[i].label << endl;
+        }
+
     }
     listFile << " _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_" << endl;
     listFile << endl;
@@ -235,6 +313,11 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
         cout << "/nWriteExpr .kind = LITERAL_FAKE\n";
         ExtractExpr(outExpr, f);
         Generate("WRF       ", f, "");
+    }
+    if (outExpr.kind == LITERAL_BOOL){
+        string f;
+        cout << "/nWriteExpr .kind = LITERAL_BOOL\n";
+        Generate("WRI       ", "", "");
     }
 }
 void CodeGen::NewLine()
@@ -325,7 +408,7 @@ string CodeGen::GetTemp(){
 	t = "Temp&";
 	IntToAlpha(++maxTemp, s);
 	t += s;
-	CheckId(t);
+    CheckId(t, LITERAL_INT);  // forcing TEMP_EXPR for quick fix
 	return t;
 }
 string ExtractOp(const OpRec& o){
@@ -377,10 +460,10 @@ void CodeGen::ProcessMulOp()
 }
 void CodeGen::ProcessId(ExprRec& e)
 {
-	CheckId(scan.tokenBuffer);
+    CheckId(scan.tokenBuffer, e.kind);
 	//e.kind = ID_EXPR;
 	cout << scan.tokenBuffer;
-	e.name = scan.tokenBuffer;
+    e.name = scan.tokenBuffer;
 }
 void CodeGen::ProcessLiteralInit(ExprRec& e)
 {
@@ -403,6 +486,7 @@ void CodeGen::ProcessLiteral(ExprRec& e)
 			Generate("WRST	", s,"");
 			break;
 		case LITERAL_BOOL:
+
 			break;
 		case LITERAL_FAKE:
             //cout << scan.tokenBuffer.data()<<"\n";
