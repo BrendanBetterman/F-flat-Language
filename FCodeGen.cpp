@@ -167,6 +167,8 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 		//s ="+" + to_string(StringSamDistance(stringTable.size()-1)) +"(R14)";
 	//WIP case for bool and fakes
     case LITERAL_BOOL:
+		IntToAlpha(e.val,t);
+		s = "#" + t;
         break;
     case LITERAL_FAKE:
         cout << "---literal fake\n";
@@ -229,6 +231,7 @@ void CodeGen::Start()
 	Generate("LDA		", "R15", "INTS");
 	Generate("LDA		", "R14", "FAKES");
 	Generate("LDA		", "R13", "STRS");
+	Generate("LDA		", "R12", "BOOLS");
 	//WIP
 	//Generate load address for STRS BOOLS fakes
 	//R14 , R13, R12
@@ -249,7 +252,13 @@ void CodeGen::Finish()
     IntToAlpha(int(2*(tmpSize)),s);
 	Generate("SKIP	", s, "");
 	//WIP Need tables for str bool and fake
-    //bools 2nd
+    Generate("LABEL	", "BOOLS","");
+	tmpSize =0;
+	for(int i=0; i< symbolTable.size(); i++){
+		if(symbolTable[i].kind == LITERAL_BOOL) tmpSize +=1;
+	}
+    IntToAlpha(int(2*(tmpSize)),s);
+	Generate("SKIP	", s, "");
 
     Generate("LABEL	", "FAKES", "");
 	tmpSize =0;
@@ -365,6 +374,16 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 			Generate("STO		", "R2", s);
 			ExtractExpr(target, s);
 			Generate("STO		", "R3", s);//+2
+			break;
+		case LITERAL_BOOL:
+			ExtractExpr(source, s);
+			Generate("LD		", "R0", s);
+			ExtractExpr(target, s);
+			id =target.name;
+			tmp = getOff(id);
+			IntToAlpha(tmp,id);
+			cout << tmp;
+			Generate("STO		", "R0", "+"+id+"(R12)");
 			break;
 	}
 	
@@ -486,7 +505,13 @@ void CodeGen::SetRelCond()
 }
 void CodeGen::ProcessOp(OpRec& o)
 {
-
+	string s = scan.tokenBuffer;
+	if(s =="+") o.op=PLUS;
+	else if (s=="-") o.op =MINUS;
+	else if (s=="*") o.op =MULT;
+	else if (s=="/") o.op =DIV;
+	else if (s=="%") o.op =MOD;
+	
 }
 string CodeGen::GetTemp(){
 	string s;
@@ -510,6 +535,8 @@ string ExtractOp(const OpRec& o){
 			return "IM		";
 		case DIV:
 			return "ID		";
+		default:
+			return "IA		";
 		//WIP
 		//find sam instructions for mul div mod
 	}	
@@ -518,6 +545,7 @@ string ExtractOp(const OpRec& o){
 void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2, ExprRec& e)
 {
 	string s;
+	string tmp;
 	if(e1.kind == ID_EXPR && e2.kind == ID_EXPR){
 		e.kind = ID_EXPR;
 		switch(op.op){
@@ -538,8 +566,12 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
 		e.name = GetTemp();
 		ExtractExpr(e1,s);
 		Generate("LD		","R0",s);
+		
 		ExtractExpr(e2, s);
-		Generate(ExtractOp(op), "R0", s);
+		tmp = ExtractOp(op);
+		cout<< tmp<<"here\n";
+		
+		Generate(tmp, "R0", s);
 		ExtractExpr(e, s);
 		Generate("STO       ", "R0", s);
 
@@ -585,7 +617,16 @@ void CodeGen::ProcessLiteral(ExprRec& e)
 			//Generate("WRST	", s,"");
 			break;
 		case LITERAL_BOOL:
-
+			e.kind = LITERAL_BOOL;
+			cout<<scan.tokenBuffer.data();
+			if(scan.tokenBuffer.data()=="yay"){
+				e.val = 1;
+				
+			}else{
+				e.val =0;
+				cout<<"true";
+			}
+			
 			break;
 		case LITERAL_FAKE:
 			cout<<"process fake";

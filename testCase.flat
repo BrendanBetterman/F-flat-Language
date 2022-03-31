@@ -1,6 +1,4 @@
 BOF
-fout("d");
 int k = 2;
-fake f = 3;
-fout(f);
+k = k + 2;
 EOF
