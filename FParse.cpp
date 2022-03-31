@@ -112,9 +112,10 @@ void Parser::DecTail(ExprRec& expr)
 	case ASSIGN_OP:
 		Match(ASSIGN_OP);
 		Literal();
+		
 		code.ProcessLiteral(expr);
 		cout << "Assign OP\n";
-		//code.Assign(expr,expr);
+		code.Assign(expr,expr);
 		//cout << scan.tokenBuffer;
 		break;
 	case LSTAPLE:
@@ -553,7 +554,7 @@ void Parser::ItemList()
 {
 	ExprRec expr;
 	Expression(expr);
-
+	
 	code.WriteExpr(expr);
 	ItemListTail();
 }
@@ -699,6 +700,7 @@ void Parser::Declaration(ExprRec& expr)
 	expr.name = scan.tokenBuffer;
 	
 	code.ProcessId(expr);
+	
 	DecTail(expr);
 	
 	cout << "Processed ID\n";

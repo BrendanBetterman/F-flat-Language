@@ -1,7 +1,6 @@
 BOF
 fout("d");
-int f = 3;
-int w = 2;
-int i = 2;
-fake u = 2;
+int k = 2;
+fake f = 3;
+fout(f);
 EOF

@@ -81,6 +81,10 @@ public:
 
 private:
     int maxTemp;
+    int intoff;
+    int fakoff;
+    int stroff;
+    int booloff;
     vector<Symbol> symbolTable;
     vector<Symbol> intTable;
     vector<Symbol> boolTable;
@@ -88,11 +92,13 @@ private:
     vector<string> stringTable;
     string ConvertToSam(string s);
     int StringSamDistance(int index);
-    void CheckId(const string & s,const ExprKind & t);
+    void CheckId(const string & s, ExprRec & t);
     void Enter(const string & s,const ExprKind & t);
     void IntToAlpha(int val, string& str);
     void FakeToAlpha(float val, string& str);
-    bool LookUp(const string & s);
+    bool LookUp(const string & s,ExprRec & t);
+
+    int getOff(string& s);
 
     void ExtractExpr(const ExprRec & e, string& s);
     string ExtractOP(const OpRec & o);

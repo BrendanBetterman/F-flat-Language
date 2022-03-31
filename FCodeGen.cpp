@@ -14,12 +14,16 @@ extern Scanner scan; //Global scanner
 
 CodeGen::CodeGen(){
     maxTemp =0;
+	intoff = 0;
+	fakoff = 0;
+	stroff = 0;
+	booloff =0;
 }
 //-------Private-Methods-------
-void CodeGen::CheckId(const string & s, const ExprKind & t)
+void CodeGen::CheckId(const string & s, ExprRec & t)
 {
-	if (!LookUp(s))  // variable not declared yet
-        Enter(s,t);
+	if (!LookUp(s,t))  // variable not declared yet
+        Enter(s,t.kind);
 }
 void CodeGen::Enter(const string & s, const ExprKind & t )
 {
@@ -30,6 +34,22 @@ void CodeGen::Enter(const string & s, const ExprKind & t )
     cout << s << " Enter(s) before pushback symbolTable\n";
     thisSym.label = s;
     thisSym.kind = t;
+	
+	switch(t){
+		case LITERAL_INT:
+			thisSym.off = intoff;
+			intoff +=2;
+			break;
+		case LITERAL_FAKE:
+			thisSym.off = fakoff;
+			fakoff +=4;
+			break;
+		case LITERAL_BOOL:
+			thisSym.off = booloff;
+			booloff +=2;
+			break;
+	}
+	
     symbolTable.push_back(thisSym);
 
 
@@ -44,12 +64,24 @@ void CodeGen::Enter(const string & s, const ExprKind & t )
     }
     */
 }
-bool CodeGen::LookUp(const string & s)
+int CodeGen::getOff(string& s){
+	for (unsigned i=0; i< symbolTable.size(); i++){
+		if(symbolTable[i].label ==s){
+			return symbolTable[i].off;
+		}
+	}
+	return 0;
+}
+bool CodeGen::LookUp(const string & s,ExprRec & t)
 {
 	//loop through all symbol tables int bool string fake
     for (unsigned i =0; i < symbolTable.size(); i++)
-        if (symbolTable[i].label == s)
+        if (symbolTable[i].label == s){
+			t.kind = symbolTable[i].kind;
+			
 			return true;
+		}
+			
     /*for (unsigned i = 0; i < intTable.size(); i++)
         if (intTable[i] = s)
             return true;
@@ -311,19 +343,24 @@ void CodeGen::Finish()
 void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 {
 //needs to check if its an int fake boolean or string
-	string s;
+	string s,id;
+	int tmp;
 	switch(source.kind){
 		case LITERAL_INT:
 			cout<< "assign int";
 			ExtractExpr(source, s);
-			Generate("LD		", "R14", s);
+			Generate("LD		", "R0", s);
 			ExtractExpr(target, s);
-			Generate("STO		", "R0", s);
+			id =target.name;
+			tmp = getOff(id);
+			IntToAlpha(tmp,id);
+			cout << tmp;
+			Generate("STO		", "R0", "+"+id+"(R15)");
 			break;
 		case LITERAL_FAKE:
 			cout<<"assign fake";
 			ExtractExpr(source, s);
-			Generate("LD		", "R13", s);
+			Generate("LD		", "R0", s);
 			ExtractExpr(target, s);
 			Generate("STO		", "R2", s);
 			ExtractExpr(target, s);
@@ -367,6 +404,7 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
         cout << "/nWriteExpr .kind = LITERAL_BOOL\n";
         Generate("WRI       ", "", "");
     }
+	
 }
 void CodeGen::NewLine()
 {
@@ -456,7 +494,9 @@ string CodeGen::GetTemp(){
 	t = "Temp&";
 	IntToAlpha(++maxTemp, s);
 	t += s;
-    CheckId(t, LITERAL_INT);  // forcing TEMP_EXPR for quick fix
+	ExprRec tmp;
+	tmp.kind = LITERAL_INT;
+    CheckId(t, tmp);  // forcing TEMP_EXPR for quick fix
 	return t;
 }
 string ExtractOp(const OpRec& o){
@@ -466,6 +506,10 @@ string ExtractOp(const OpRec& o){
 			return "IA		";
 		case MINUS:
 			return "IS		";
+		case MULT:
+			return "IM		";
+		case DIV:
+			return "ID		";
 		//WIP
 		//find sam instructions for mul div mod
 	}	
@@ -509,8 +553,8 @@ void CodeGen::ProcessMulOp()
 void CodeGen::ProcessId(ExprRec& e)
 {
 	
-	CheckId(scan.tokenBuffer,e.kind);
-	e.kind = ID_EXPR;
+	CheckId(scan.tokenBuffer,e);
+	//e.kind = ID_EXPR;
 	//cout << scan.tokenBuffer;
 	//e.name = scan.tokenBuffer;
 }
@@ -530,6 +574,7 @@ void CodeGen::ProcessLiteral(ExprRec& e)
 			e.kind = LITERAL_INT;
 			e.val = atoi(scan.tokenBuffer.data());
 			cout << e.val;
+			
 			//cout << e.val;
 			break;
 		case LITERAL_STR:
