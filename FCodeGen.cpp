@@ -48,21 +48,12 @@ void CodeGen::Enter(const string & s, const ExprKind & t )
 			thisSym.off = booloff;
 			booloff +=2;
 			break;
+        default: break;
 	}
 	
     symbolTable.push_back(thisSym);
 
 
-
-    /*switch(t)
-    {
-        case 0: intTable.push_back(s); break;
-        case 1: boolTable.push_back(s); break;
-        case 2: fakeTable.push_back(s); break;
-        case 3: strTable.push_back(s); break;
-        default: break;
-    }
-    */
 }
 int CodeGen::getOff(string& s){
 	for (unsigned i=0; i< symbolTable.size(); i++){
@@ -75,29 +66,14 @@ int CodeGen::getOff(string& s){
 bool CodeGen::LookUp(const string & s,ExprRec & t)
 {
 	//loop through all symbol tables int bool string fake
-    for (unsigned i =0; i < symbolTable.size(); i++)
+    for (unsigned i =0; i < symbolTable.size(); i++){
         if (symbolTable[i].label == s){
 			t.kind = symbolTable[i].kind;
 			
 			return true;
 		}
-			
-    /*for (unsigned i = 0; i < intTable.size(); i++)
-        if (intTable[i] = s)
-            return true;
-    for (unsigned j = 0; j < boolTable.size(); j++)
-        if (boolTable[j] = s)
-            return true;
-    for (unsigned j = 0; j < fakeTable.size(); j++)
-        if (fakeTable[j] = s)
-            return true;
-    for (unsigned j = 0; j < strTable.size(); j++)
-        if (strTable[j] = s)
-            return true;
-      */
+    }
 
-
-	
 
 	return false;
 }
@@ -200,7 +176,7 @@ void CodeGen::Generate(const string & s1, const string & s2, const string & s3){
 }
 string CodeGen::ConvertToSam(string s){
 	string tmp ="\"";
-	for(int i =0; i<s.length(); i++){
+    for(unsigned i =0; i<s.length(); i++){
 		if(s[i]=='"' || s[i]==':'){
 			tmp+=":";
 		}
@@ -246,7 +222,7 @@ void CodeGen::Finish()
 	//keep in mind the differnt sizes of registers
 	Generate("LABEL	", "INTS","");
 	int tmpSize =0;
-	for(int i=0; i< symbolTable.size(); i++){
+    for(unsigned i=0; i< symbolTable.size(); i++){
 		if(symbolTable[i].kind == LITERAL_INT) tmpSize +=1;
 	}
     IntToAlpha(int(2*(tmpSize)),s);
@@ -254,7 +230,7 @@ void CodeGen::Finish()
 	//WIP Need tables for str bool and fake
     Generate("LABEL	", "BOOLS","");
 	tmpSize =0;
-	for(int i=0; i< symbolTable.size(); i++){
+    for(unsigned i=0; i< symbolTable.size(); i++){
 		if(symbolTable[i].kind == LITERAL_BOOL) tmpSize +=1;
 	}
     IntToAlpha(int(2*(tmpSize)),s);
@@ -262,7 +238,7 @@ void CodeGen::Finish()
 
     Generate("LABEL	", "FAKES", "");
 	tmpSize =0;
-	for(int i=0; i< symbolTable.size(); i++){
+    for(unsigned i=0; i< symbolTable.size(); i++){
 		if(symbolTable[i].kind == LITERAL_FAKE) tmpSize +=1;
 	}
     IntToAlpha(int(4*(tmpSize)),s);
@@ -271,7 +247,7 @@ void CodeGen::Finish()
 	Generate("LABEL	", "STRS", "");
     //IntToAlpha(int(4*(fakeTable.size()+1)),s);
     //for loop for stings
-	for(int i=0; i< stringTable.size(); i++){
+    for(unsigned i=0; i< stringTable.size(); i++){
 		Generate("STRING	",ConvertToSam(stringTable[i]),"");
 	}
 
@@ -385,6 +361,7 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 			cout << tmp;
 			Generate("STO		", "R0", "+"+id+"(R12)");
 			break;
+    default: break;
 	}
 	
 	
@@ -549,17 +526,11 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
 	if(e1.kind == ID_EXPR && e2.kind == ID_EXPR){
 		e.kind = ID_EXPR;
 		switch(op.op){
-			case PLUS:
-				e.val = e1.val + e2.val;
-				break;
-			case MINUS:
-				e.val = e1.val - e2.val;
-			case MULT:
-				e.val = e1.val * e2.val;
-			case DIV:
-				e.val = e1.val / e2.val;
-			case MOD:
-				e.val = e1.val % e2.val;
+            case PLUS:  e.val = e1.val + e2.val; break;
+            case MINUS:	e.val = e1.val - e2.val; break;
+            case MULT:  e.val = e1.val * e2.val; break;
+            case DIV:   e.val = e1.val / e2.val; break;
+            case MOD:   e.val = e1.val % e2.val; break;
 		}
 	}else{
 		e.kind = TEMP_EXPR;
@@ -619,15 +590,10 @@ void CodeGen::ProcessLiteral(ExprRec& e)
 		case LITERAL_BOOL:
 			e.kind = LITERAL_BOOL;
 			cout<<scan.tokenBuffer.data();
-			if(scan.tokenBuffer.data()=="yay"){
-				e.val = 1;
-				
-			}else{
-				e.val =0;
-				cout<<"true";
-			}
-			
-			break;
+            //string y = "yay";
+            if(scan.tokenBuffer.data() == string("yay") ) { e.val = 1; }
+            else { e.val = 0; cout<<"false"; }
+            break;
 		case LITERAL_FAKE:
 			cout<<"process fake";
             //cout << scan.tokenBuffer.data()<<"\n";
