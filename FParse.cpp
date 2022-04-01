@@ -550,9 +550,9 @@ void Parser::ItemListTail()
 	}
 }
 
-void Parser::ItemList()
+void Parser::ItemList(ExprRec& expr)
 {
-	ExprRec expr;
+
 	Expression(expr);
 	
 	code.WriteExpr(expr);
@@ -649,22 +649,22 @@ void Parser::Variable(ExprRec& expr)
 	VariableTail();
 }
 
-void Parser::FoutlnStmt()
+void Parser::FoutlnStmt(ExprRec& expr)
 {
 	Match(FOUTLN_SYM);
 	Match(LPAREN);
 	code.NewLine();
 	//cout << "fout new line\n";
-	ItemList();
+	ItemList(expr);
 	Match(RPAREN);
 	Match(SEMICOLON);
 }
 
-void Parser::FoutStmt()
+void Parser::FoutStmt(ExprRec& expr)
 {
 	Match(FOUT_SYM);
 	Match(LPAREN);
-	ItemList();
+	ItemList(expr);
 	Match(RPAREN);
 	Match(SEMICOLON);
 }
@@ -734,16 +734,17 @@ void Parser::SimpleStmt(ExprRec& expr)
 	switch (NextToken())
 	{
 	case ID:
+		
 		AssignStmt(expr);
 		break;
 	case FIN_SYM:
 		FinStmt();
 		break;
 	case FOUT_SYM:
-		FoutStmt();
+		FoutStmt(expr);
 		break;
 	case FOUTLN_SYM:
-		FoutlnStmt();
+		FoutlnStmt(expr);
 		break;
 	default:
 		SyntaxError(NextToken(), "");

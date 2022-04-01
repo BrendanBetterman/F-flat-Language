@@ -1,4 +1,4 @@
 BOF
-int k = 2;
-k = k + 2;
+fake k = 3.03;
+fout(k);
 EOF

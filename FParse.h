@@ -89,7 +89,7 @@ private:
 
 	void ItemListTail();
 
-	void ItemList();
+	void ItemList(ExprRec& expr);
 
 	void VariableTail();
 
@@ -102,9 +102,9 @@ private:
 
 	void Variable(ExprRec& expr);
 
-	void FoutlnStmt();
+	void FoutlnStmt(ExprRec& expr);
 
-	void FoutStmt();
+	void FoutStmt(ExprRec& expr);
 
 	void FinStmt();
 

@@ -88,8 +88,9 @@ private:
     vector<Symbol> symbolTable;
     vector<Symbol> intTable;
     vector<Symbol> boolTable;
-    vector<Symbol> fakeTable;
+    vector<string> fakeTable;
     vector<string> stringTable;
+    
     string ConvertToSam(string s);
     int StringSamDistance(int index);
     void CheckId(const string & s, ExprRec & t);

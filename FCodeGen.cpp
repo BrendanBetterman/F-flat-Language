@@ -172,8 +172,10 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
         break;
     case LITERAL_FAKE:
         cout << "---literal fake\n";
-        FakeToAlpha(e.valF, t);
-        s = "#" + t;
+        //FakeToAlpha(e.valF, t);
+		//get fake table symbol offset.
+		IntToAlpha((fakeTable.size()-1)*4,s);
+        //s = "+" + s + "(R14)";
         break;
 	default:
 		cout<<"--Default";
@@ -261,6 +263,9 @@ void CodeGen::Finish()
 	Generate("SKIP	", s, "");
 
     Generate("LABEL	", "FAKES", "");
+	for(int i=0; i< fakeTable.size(); i++){
+		Generate("REAL	",fakeTable[i],"");
+	}
 	tmpSize =0;
 	for(int i=0; i< symbolTable.size(); i++){
 		if(symbolTable[i].kind == LITERAL_FAKE) tmpSize +=1;
@@ -354,6 +359,7 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 //needs to check if its an int fake boolean or string
 	string s,id;
 	int tmp;
+	string s2;
 	switch(source.kind){
 		case LITERAL_INT:
 			cout<< "assign int";
@@ -369,11 +375,12 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 		case LITERAL_FAKE:
 			cout<<"assign fake";
 			ExtractExpr(source, s);
+			s = "+" + s + "(R14)";
 			Generate("LD		", "R0", s);
 			ExtractExpr(target, s);
-			Generate("STO		", "R2", s);
-			ExtractExpr(target, s);
-			Generate("STO		", "R3", s);//+2
+			IntToAlpha(stoi(s)+2,s);
+			s = "+" + s + "(R14)";
+			Generate("LD		", "R1", s);
 			break;
 		case LITERAL_BOOL:
 			ExtractExpr(source, s);
@@ -400,29 +407,41 @@ void CodeGen::ProcessVariable()
 void CodeGen::WriteExpr(const ExprRec & outExpr)
 {
 	//WIP .kind of lit str bool and fake
+	
 	if(outExpr.kind == LITERAL_STR){
 		//wrtie string
 		string s;
 		ExtractExpr(outExpr,s);
 		Generate("WRST	", s,"");
 	}
+	if(outExpr.kind == TEMP_EXPR){
+		cout <<"write id";
+	}
+	//string s;
+	//ExtractExpr(outExpr,s);
+	//cout << s;
 	if(outExpr.kind == LITERAL_INT){
 		string s;
 		
 		ExtractExpr(outExpr, s);
-		Generate("WRI		", s, "");
+		Generate("WRI	", s, "");
 	}
     if (outExpr.kind == LITERAL_FAKE){
-        string f;
-        cout << "/nWriteExpr .kind = LITERAL_FAKE\n";
+        string f,s;
+        //cout << "/nWriteExpr .kind = LITERAL_FAKE\n";
         ExtractExpr(outExpr, f);
-        Generate("WRF       ", f, "");
+			f = "+" + f + "(R14)";
+			IntToAlpha(stoi(f)+2,s);
+			s = "+" + s + "(R14)";
+
+        Generate("WRF		", f+","+ s , "");
     }
     if (outExpr.kind == LITERAL_BOOL){
         string f;
         cout << "/nWriteExpr .kind = LITERAL_BOOL\n";
         Generate("WRI       ", "", "");
     }
+
 	
 }
 void CodeGen::NewLine()
@@ -619,6 +638,7 @@ void CodeGen::ProcessLiteral(ExprRec& e)
 		case LITERAL_BOOL:
 			e.kind = LITERAL_BOOL;
 			cout<<scan.tokenBuffer.data();
+			
 			if(scan.tokenBuffer.data()=="yay"){
 				e.val = 1;
 				
@@ -633,6 +653,8 @@ void CodeGen::ProcessLiteral(ExprRec& e)
             //cout << scan.tokenBuffer.data()<<"\n";
 			e.valF = std::stof(scan.tokenBuffer.data());
             //e.valF = atoi(scan.tokenBuffer.data());
+			e.kind = LITERAL_FAKE;
+			fakeTable.push_back(scan.tokenBuffer.data());
             cout << e.valF;
 			break;
 		case ID_EXPR:
