@@ -4,4 +4,5 @@
 *.lst
 *.asm
 *.lis
-*,obj
+*.obj
+
