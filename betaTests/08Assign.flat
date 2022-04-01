@@ -1,0 +1,17 @@
+/* 08Assign.flat
+  Various arithmetic expressions.
+*/ 
+
+BOF
+   int num1, num2, num3, num4;
+   int result;
+
+   fout( "Enter 4 integers: ");
+   fin( num1, num2, num3, num4);
+   result = ((num1 - 3) * (num2 + num3))/ num4);
+   foutln( "\n((num1 - 3) * (num2 + num3))/ num4 = ", result);
+   
+   result = (num2 + num4 * num1 / 3) - num3);
+   foutln( "\n(num2 + num4 * num1 / 3) - num3 = ", result);
+   
+EOF

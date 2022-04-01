@@ -1,0 +1,33 @@
+//  10intArray.flat
+
+//  Tests intArray indexing in expressions and assignment statements.
+
+BOF
+	int x[6];
+	int k;
+
+
+	x[0] = 3;
+	x[1] = 72;
+	x[2] = 13;
+	x[3] = 22;
+	x[4] = 44;
+	x[5] = 0;
+
+	foutln( "x[0] = ", x[0]);
+	foutln( "x[1] = ", x[1]);
+	foutln( "x[2] = ", x[2]);
+	foutln( "x[3] = ", x[3]);
+	foutln( "x[4] = ", x[4]);
+	foutln( "x[5] = ", x[5]);
+
+	foutln( "k = ");
+	fin( k);
+	x[0] = 2 * k - 1; foutln( "x[0] = ", x[0], "\n");
+	x[1] = x[0] + 10; foutln( "x[1] = ", x[1], "\n");
+	x[2] = x[1] + x[0]; foutln( "x[2] = ", x[2], "\n");
+	x[3] = x[2] + x[1]; foutln( "x[3] = ", x[3], "\n");
+	x[4] = x[3] + x[2]; foutln( "x[4] = ", x[4], "\n");
+	x[5] = x[4] + x[3]; foutln( "x[5] = ", x[5], "\n");
+	foutln( "\n");
+EOF

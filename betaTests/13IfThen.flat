@@ -1,0 +1,17 @@
+/*  13IfThen.flat
+
+    Tests a simple fif statement with an felse clause.
+*/
+
+BOF
+	int n, m;
+
+	foutln( "Enter two integers: ");
+	fin ( n, m);
+	fif ( n > m )
+		foutln( n, " is greater than ", m, "\n");
+	felse
+		foutln( n, " is less than or equal to ", m, "\n");
+	fendif
+	foutln( "\n");
+EOF

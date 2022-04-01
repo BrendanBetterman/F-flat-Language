@@ -1,0 +1,44 @@
+// 03Expr.tun
+//
+// Integer expressions
+
+BOF
+	int a, b, c, d;
+	
+	a = 5; b = 7; c = 8; d = 12;
+	foutln( a, b, c, d);
+	
+	
+	foutln( a - b + c * d);
+	
+	foutln( (a - b + c) * d);
+	
+	foutln( (a - (b + c)) * d);
+	
+	foutln( ((a - b) + c) * d);
+	
+	
+	foutln( d / b - c * d);
+	
+	foutln( d / (b - c) * d);
+	
+	foutln( d / (b - c * d));
+	
+	foutln( (d / b - c) * d);
+	
+	
+	foutln( b * 5 + d / 2 * a - c);
+	
+	foutln( b * ((5 + d / 2 * a) - c));
+	
+	foutln( b * (5 + d )/ (2 * a - c));
+	
+	foutln( (b * 5 + d) / ((2 * a) - c));
+	
+	
+	foutln( 20 * 6 - 45 + 50 / 2);
+	
+	foutln( ((20 * 6) - (45 + 50)) / 2);
+	
+
+EOF
