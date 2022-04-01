@@ -9,7 +9,7 @@ BOF
 	foutln( "\nEnter two integers: ");
 	foutln("\n");
 
-	float  y0, y1; 
+	fake  y0, y1; //was float?
 	fin( x0, x1);
 	foutln( x1, x0);
 	foutln( "Enter two real numbers: ");
