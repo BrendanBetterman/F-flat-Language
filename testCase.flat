@@ -1,12 +1,4 @@
 BOF
-//str u = "test";
-int k = 3; 
-int hello = 3;
-int l = 4;
-//fake u = 3.02;
-//fake w = 4.99;
-//fake i = 3.89;
-//fake o = 3.8922;
+int k = 3;
 fout(k);
-//foutln(w);
 EOF

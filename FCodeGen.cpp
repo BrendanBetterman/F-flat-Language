@@ -48,9 +48,10 @@ void CodeGen::Enter(const string & s, ExprKind & t )
 			thisSym.off = booloff;
 			booloff +=2;
 			break;
-        default: break;
+        default: 
+			cout<<"here";
+			break;
 	}
-	
     symbolTable.push_back(thisSym);
 
 
@@ -67,6 +68,7 @@ bool CodeGen::LookUp(const string & s, ExprKind & t)
 {
 	//loop through all symbol tables int bool string fake
     for (unsigned i =0; i < symbolTable.size(); i++){
+		
         if (symbolTable[i].label == s){
             t = symbolTable[i].kind;
 			
@@ -259,6 +261,7 @@ void CodeGen::Finish()
     for(unsigned i=0; i< fakeTable.size(); i++){
 		Generate("REAL	",fakeTable[i],"");
 	}
+	Generate("SKIP	","4","");
 	tmpSize =0;
     for(unsigned i=0; i< symbolTable.size(); i++){
 		if(symbolTable[i].kind == LITERAL_FAKE) tmpSize +=1;
@@ -270,6 +273,7 @@ void CodeGen::Finish()
     //IntToAlpha(int(4*(fakeTable.size()+1)),s);
     //for loop for stings
     for(unsigned i=0; i< stringTable.size(); i++){
+		cout<<ConvertToSam(stringTable[i]);
 		Generate("STRING	",ConvertToSam(stringTable[i]),"");
 	}
 
@@ -405,38 +409,61 @@ void CodeGen::ProcessVariable()
 void CodeGen::WriteExpr(const ExprRec & outExpr)
 {
 	//WIP .kind of lit str bool and fake
-	
-	if(outExpr.kind == LITERAL_STR){
-		//wrtie string
-		string s;
-		ExtractExpr(outExpr,s);
-		Generate("WRST	", s,"");
+	string s;
+	ExtractExpr(outExpr,s);
+	switch(outExpr.kind){
+		case LITERAL_STR:
+			Generate("WRST	", s, "");
+			break;
+		case TEMP_EXPR:
+			Generate("WRI	", s, "");
+			break;
+		case TEMPF_EXPR:
+			Generate("WRF	", s, "");
+			break;
+		case LITERAL_INT:
+			Generate("WRI	", s, "");
+			break;
+		case LITERAL_FAKE:
+			s = "+" + s + "(R14)";
+			Generate("WRF	", s, "");
+			break;
+		case LITERAL_BOOL:
+			Generate("WRST	", s, "");
+			break;
 	}
-	if(outExpr.kind == TEMP_EXPR){
-		cout <<"write id";
-	}
-	//string s;
-	//ExtractExpr(outExpr,s);
-	//cout << s;
-	if(outExpr.kind == LITERAL_INT){
-		string s;
+	// if(outExpr.kind == LITERAL_STR){
+	// 	//wrtie string
+	// 	string s;
+	// 	ExtractExpr(outExpr,s);
+	// 	Generate("WRST	", s,"");
+	// }
+	// if(outExpr.kind == TEMP_EXPR){
+	// 	cout <<"write id";
+	// }
+
+	// //string s;
+	// //ExtractExpr(outExpr,s);
+	// //cout << s;
+	// if(outExpr.kind == LITERAL_INT){
+	// 	string s;
 		
-		ExtractExpr(outExpr, s);
-		Generate("WRI	", s, "");
-	}
-    if (outExpr.kind == LITERAL_FAKE){
-        string f;
-        //cout << "/nWriteExpr .kind = LITERAL_FAKE\n";
+	// 	ExtractExpr(outExpr, s);
+	// 	Generate("WRI	", s, "");
+	// }
+    // if (outExpr.kind == LITERAL_FAKE){
+    //     string f;
+    //     //cout << "/nWriteExpr .kind = LITERAL_FAKE\n";
 		
-        ExtractExpr(outExpr, f);
-		f = "+" + f + "(R14)";
-        Generate("WRF		", f, "");
-    }
-    if (outExpr.kind == LITERAL_BOOL){
-        string f;
-        cout << "/nWriteExpr .kind = LITERAL_BOOL\n";
-        Generate("WRI       ", "", "");
-    }
+    //     ExtractExpr(outExpr, f);
+	// 	f = "+" + f + "(R14)";
+    //     Generate("WRF		", f, "");
+    // }
+    // if (outExpr.kind == LITERAL_BOOL){
+    //     string f;
+    //     cout << "/nWriteExpr .kind = LITERAL_BOOL\n";
+    //     Generate("WRI       ", "", "");
+    // }
 
 	
 }
@@ -589,7 +616,17 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
             case DIV:   e.val = e1.val / e2.val; break;
             case MOD:   e.val = e1.val % e2.val; break;
 		}
-	}else{
+	}else if(e1.kind == IDF_EXPR && e2.kind == IDF_EXPR){
+		
+        e.kind = IDF_EXPR;
+        switch(op.op){
+            case PLUS:  e.valF = e1.valF + e2.valF; break;
+            case MINUS: e.valF = e1.valF - e2.valF; break;
+            case MULT:  e.valF = e1.valF * e2.valF; break;
+            case DIV:   e.valF = e1.valF / e2.valF; break;
+            default: break;
+        }
+    }else{
 		
 		e.kind = TEMP_EXPR;
 		e.name = GetTemp();
@@ -606,16 +643,7 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
 
 	}
 
-    if(e1.kind == IDF_EXPR && e2.kind == IDF_EXPR){
-        e.kind = IDF_EXPR;
-        switch(op.op){
-            case PLUS:  e.valF = e1.valF + e2.valF; break;
-            case MINUS: e.valF = e1.valF - e2.valF; break;
-            case MULT:  e.valF = e1.valF * e2.valF; break;
-            case DIV:   e.valF = e1.valF / e2.valF; break;
-            default: break;
-        }
-    }
+    
 }
 
 void CodeGen::ProcessMulOp()
@@ -626,6 +654,7 @@ void CodeGen::ProcessId(ExprRec& e)
 {
 	
     CheckId(scan.tokenBuffer,e.kind);
+
 	//e.kind = ID_EXPR;
 	//cout << scan.tokenBuffer;
 	//e.name = scan.tokenBuffer;
@@ -680,7 +709,7 @@ void CodeGen::ProcessLiteral(ExprRec& e)
             cout << "TEMP expr";
 			break;
         case IDF_EXPR:
-            cout << "IDF expr";
+            cout << "IDF expr in literal process";
             break;
         case TEMPF_EXPR:
             cout << "TEMPF expr";
