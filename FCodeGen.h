@@ -14,13 +14,13 @@ struct OpRec // information about an operator
 {
 	OpKind op; // operator type
 };
-enum ExprKind { ID_EXPR, LITERAL_INT, TEMP_EXPR, LITERAL_STR, LITERAL_FAKE, LITERAL_BOOL };
+enum ExprKind { ID_EXPR, IDF_EXPR, LITERAL_INT, TEMP_EXPR, TEMPF_EXPR, LITERAL_STR, LITERAL_FAKE, LITERAL_BOOL };
 
 struct ExprRec // information about a constant, variable, or
                // an intermediate (temporary) result
 {
    ExprKind kind;   // operand type
-   string   name;   // used when kind is ID_EXPR or TEMP_EXPR
+   string   name;   // used when kind is ID_EXPR, TEMP_EXPR, IDF_EXPR, or TEMPF_EXPR
    int      val;    // used when kind is LITERAL_EXPR
    float    valF;   // used when kind is LITERAL_FAKE
 
@@ -93,16 +93,16 @@ private:
     
     string ConvertToSam(string s);
     int StringSamDistance(int index);
-    void CheckId(const string & s, ExprRec & t);
-    void Enter(const string & s,const ExprKind & t);
+    void CheckId(const string & s, ExprKind & t);
+    void Enter(const string & s, ExprKind & t);
     void IntToAlpha(int val, string& str);
     void FakeToAlpha(float val, string& str);
-    bool LookUp(const string & s,ExprRec & t);
+    bool LookUp(const string & s,ExprKind & t);
 
     int getOff(string& s);
 
     void ExtractExpr(const ExprRec & e, string& s);
-    string ExtractOP(const OpRec & o);
+    string ExtractOp(const OpRec & o, ExprKind & k);
     string GetTemp();
     void Generate(const string & s1, const string & s2, const string & s3);
 
