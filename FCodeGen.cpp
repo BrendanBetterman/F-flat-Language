@@ -132,8 +132,14 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 		break;
 	case LITERAL_INT:
 		cout <<"lit int\n";
-		IntToAlpha(e.val, t);
-		s = "#" + t;
+		n=-1;
+		//keeps getting last var as e.name
+		while(symbolTable[++n].label!=e.name);
+		cout<< symbolTable[--n].off<<endl;
+		IntToAlpha(symbolTable[n].off,t);
+		//IntToAlpha(e.val, t);
+		
+		s = "+" + t+"(R15)";
 		break;
 	case LITERAL_STR:
 		s ="+" + to_string(StringSamDistance(stringTable.size()-1)) +"(R13)";
@@ -150,7 +156,12 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
         cout << "---literal fake\n";
         //FakeToAlpha(e.valF, t);
 		//get fake table symbol offset.
-		IntToAlpha((fakeTable.size()-1)*4,s);
+		t = e.name;
+		cout<<e.name<<" here"<<endl;
+		n = -1;
+		while(symbolTable[++n].label!=t);
+		cout<< symbolTable[n].off<<endl;
+		IntToAlpha(symbolTable[n].off,s);
         //s = "+" + s + "(R14)";
         break;
 	default:
@@ -257,7 +268,10 @@ void CodeGen::Finish()
 	}
 
 	outFile.close();
+	for(int i =0; i <symbolTable.size(); i++){
+		cout<<symbolTable[i].label<<symbolTable[i].off<<endl;
 
+	}
 
 
     listFile << endl << endl;
@@ -404,14 +418,12 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 		Generate("WRI	", s, "");
 	}
     if (outExpr.kind == LITERAL_FAKE){
-        string f,s;
+        string f;
         //cout << "/nWriteExpr .kind = LITERAL_FAKE\n";
+		
         ExtractExpr(outExpr, f);
-			f = "+" + f + "(R14)";
-			IntToAlpha(stoi(f)+2,s);
-			s = "+" + s + "(R14)";
-
-        Generate("WRF		", f+","+ s , "");
+		f = "+" + f + "(R14)";
+        Generate("WRF		", f, "");
     }
     if (outExpr.kind == LITERAL_BOOL){
         string f;
@@ -542,6 +554,7 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
 {
 	string s;
 	string tmp;
+	
 	if(e1.kind == ID_EXPR && e2.kind == ID_EXPR){
 		e.kind = ID_EXPR;
 		switch(op.op){
@@ -552,6 +565,7 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
             case MOD:   e.val = e1.val % e2.val; break;
 		}
 	}else{
+		
 		e.kind = TEMP_EXPR;
 		e.name = GetTemp();
 		ExtractExpr(e1,s);
@@ -620,6 +634,7 @@ void CodeGen::ProcessLiteral(ExprRec& e)
             //e.valF = atoi(scan.tokenBuffer.data());
 			e.kind = LITERAL_FAKE;
 			fakeTable.push_back(scan.tokenBuffer.data());
+			
             cout << e.valF;
 			break;
 		case ID_EXPR:
