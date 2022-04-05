@@ -293,10 +293,12 @@ void Parser::AddOp(OpRec& op)
 	{
 	case ADD_OP:
 		Match(ADD_OP);
+		op.op = PLUS;
 		code.ProcessOp(op);
 		break;
 	case SUB_OP:
 		Match(SUB_OP);
+		op.op = MINUS;
 		code.ProcessOp(op);
 		break;
 	default:

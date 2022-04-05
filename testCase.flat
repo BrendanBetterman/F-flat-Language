@@ -1,4 +1,5 @@
 BOF
-int k = 3;
-fout(k);
+fake test = 2.001;
+test = test - 2.2;
+fout(test);
 EOF
