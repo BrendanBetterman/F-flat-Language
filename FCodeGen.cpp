@@ -114,7 +114,7 @@ void CodeGen::FakeToAlpha(float val, string& str)
 }
 void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 	string t;
-    int n;
+    int k, n;
 
 	switch (e.kind)
 	{
@@ -126,14 +126,18 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 		n = 0;
 		//cout<<"temp";
         while (symbolTable[n].label != s) n++;
-        IntToAlpha(symbolTable[n].off, t); // offset: 2 bytes per variable
+        k = 2 * n;
+		IntToAlpha(k,t);
+		//IntToAlpha(symbolTable[n].off, t); // offset: 2 bytes per variable
 		s = "+" + t + "(R15)";
 		break;
     case TEMPF_EXPR:  // operand form +k(R14)
         s = e.name;
         n = 0;
         while(symbolTable[n].label != s) n++;
-        IntToAlpha(symbolTable[n].off, t);
+        k = 2 * n;
+		IntToAlpha(k,t);
+		//IntToAlpha(symbolTable[n].off, t);
         s = "+" + t + "(R14)";
         break;
 	case LITERAL_INT:
