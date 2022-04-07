@@ -57,7 +57,26 @@ void Parser::Match(Token t)
 	
 		
 }
-
+string Parser::kindToStr(ExprKind& k){
+	switch(k){
+		case LITERAL_INT:
+			return "Literal int";
+		case LITERAL_FAKE:
+			return "Literal fake";
+		case LITERAL_BOOL:
+			return "literal bool";
+		case LITERAL_STR:
+			return "literal string";
+		case TEMP_EXPR:
+			return "temp expr";
+		case ID_EXPR:
+			return "id expr";
+		case IDF_EXPR:
+			return "idf expr";
+		default:
+			return "default";
+	}
+}
 
 void Parser::VarDec()
 {
@@ -136,6 +155,7 @@ void Parser::Type(ExprRec& expr)
 	case INT_SYM:
 		Match(INT_SYM);
 		expr.kind=LITERAL_INT;
+		cout<<"type is literal int";
 		break;
 	case BOOL_SYM:
 		Match(BOOL_SYM);
@@ -273,10 +293,12 @@ void Parser::AddOp(OpRec& op)
 	{
 	case ADD_OP:
 		Match(ADD_OP);
+		op.op = PLUS;
 		code.ProcessOp(op);
 		break;
 	case SUB_OP:
 		Match(SUB_OP);
+		op.op = MINUS;
 		code.ProcessOp(op);
 		break;
 	default:
@@ -698,11 +720,11 @@ void Parser::Declaration(ExprRec& expr)
 	Match(ID);
 	//cout << scan.tokenBuffer << " statemnett\n";
 	expr.name = scan.tokenBuffer;
-	
+	//cout<<"here"<<kindToStr(expr.kind)<<endl;
 	code.ProcessId(expr);
-	
+	//cout<<kindToStr(expr.kind)<<endl;
 	DecTail(expr);
-	
+	//cout<<kindToStr(expr.kind)<<endl;
 	cout << "Processed ID\n";
 	
 	Match(SEMICOLON);

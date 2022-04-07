@@ -36,7 +36,7 @@ private:
 	void VarDec();
 
 	void VarDecList();
-
+	string kindToStr(ExprKind& k);
 	void VarDecListTail();
 
 	void VarDecTail();
