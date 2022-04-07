@@ -20,6 +20,27 @@ CodeGen::CodeGen(){
 	booloff =0;
 }
 //-------Private-Methods-------
+string CodeGen::kindtoStr(ExprKind& t){
+	switch(t){
+		case ID_EXPR:
+			return "ID_Expr";
+		case IDF_EXPR:
+			return "IDF_EXPR";
+		case LITERAL_INT:
+			return "LITERAL_INT";
+		case TEMP_EXPR:
+			return "TEMP_EXPR";
+		case TEMPF_EXPR:
+			return "TEMP_EXPR";
+		case LITERAL_STR:
+			return "LITERAL_STR";
+		case LITERAL_FAKE:
+			return "LITERAL_FAKE";
+		case LITERAL_BOOL: 
+			return "LITERAL_BOOL";
+	}
+	
+}
 void CodeGen::CheckId(const string & s, ExprKind & t)
 {
 	if (!LookUp(s,t))  // variable not declared yet
@@ -179,7 +200,7 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 		//cout<< symbolTable[n].off<<endl;
 		//IntToAlpha(symbolTable[n].off,s);
 		IntToAlpha(fakoff,s);
-        //s = "+" + s + "(R14)";
+        s = "+" + s + "(R14)";
         break;
 	default:
 		cout<<"--Default";
@@ -579,7 +600,7 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
 {
 	string s;
 	string tmp;
-	
+	cout<< kindtoStr(e.kind);
 	if(e1.kind == ID_EXPR && e2.kind == ID_EXPR){
 		e.kind = ID_EXPR;
 		switch(op.op){
@@ -589,16 +610,16 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
             case DIV:   e.val = e1.val / e2.val; break;
             case MOD:   e.val = e1.val % e2.val; break;
 		}
-	}else if(e1.kind == IDF_EXPR && e2.kind == IDF_EXPR){
+	//}//else{ if(e1.kind == IDF_EXPR && e2.kind == IDF_EXPR){
 		
-        e.kind = IDF_EXPR;
+        /*e.kind = IDF_EXPR;
         switch(op.op){
             case PLUS:  e.valF = e1.valF + e2.valF; break;
             case MINUS: e.valF = e1.valF - e2.valF; break;
             case MULT:  e.valF = e1.valF * e2.valF; break;
             case DIV:   e.valF = e1.valF / e2.valF; break;
             default: break;
-        }
+        }*/
     }else{
 		
 		e.kind = TEMP_EXPR;
@@ -634,7 +655,12 @@ void CodeGen::ProcessId(ExprRec& e)
 {
 	
     CheckId(scan.tokenBuffer,e.kind);
-
+	switch(e.kind){
+		case LITERAL_INT:
+			e.kind = ID_EXPR;
+		case LITERAL_FAKE:
+			e.kind = IDF_EXPR;
+	}
 	//e.kind = ID_EXPR;
 	//cout << scan.tokenBuffer;
 	//e.name = scan.tokenBuffer;
