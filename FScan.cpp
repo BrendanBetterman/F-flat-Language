@@ -112,6 +112,9 @@ Token Scanner::GetNextToken(){
 		if(isspace(currentChar)){
 			currentChar = NextChar();
 		}
+		if(currentChar =='\n'){
+			currentChar = NextChar();
+		}
 		switch(currentChar){
 			case '(':
 				return LPAREN;
@@ -125,8 +128,8 @@ Token Scanner::GetNextToken(){
 				return SUB_OP;
 			case '/':
 				//cout << sourceFile.peek();
-				
-				if(sourceFile.peek()=='/'){
+				 c=sourceFile.peek();
+				if(c=='/'){
 					//comment
 					
 					currentChar=NextChar();
@@ -134,16 +137,19 @@ Token Scanner::GetNextToken(){
 						currentChar = NextChar();
 					}while (currentChar != '\n');
 					//needs to return no op
+					currentChar = NextChar();
 					break;
-				}else if(sourceFile.peek()=='*'){
+				}else if(c=='*'){
 					//multiLine
-					currentChar=NextChar();
+					cout<<"multi";
+					//currentChar=NextChar();
 					do{
 						currentChar = NextChar();
 						//cout << currentChar;
 					}while (currentChar != '*' && sourceFile.peek() != '/');
 					currentChar = NextChar();//ignores *
 					currentChar = NextChar();//ignores / 
+					currentChar = NextChar();//ignores \n
 					//needs to return no op
 					break;
 				}else{
@@ -158,6 +164,7 @@ Token Scanner::GetNextToken(){
 				return COMMA;
 			case '>':
 				c = sourceFile.peek();
+				
 				if ( c == '='){
 					currentChar = NextChar();
 					return GE_OP;

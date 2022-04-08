@@ -502,7 +502,13 @@ void CodeGen::NewLine()
 //---fif---
 void CodeGen::ProcessIf()
 {
-
+	/*
+	Compare Registers, address , in line literals first
+	IC OR FC  R0 or +0(R15) or #0 , compared too
+	JEQ, JNE,JGT,JLT,JGE,JLE
+	jump the opposite of compared then jmp 
+	*/
+	
 }
 void CodeGen::ProcessEndIf()
 {

@@ -1,5 +1,6 @@
 BOF
-str test;
-fin(test);
+//comment
+int test = 3;
+test = test + 12;
 fout(test);
 EOF

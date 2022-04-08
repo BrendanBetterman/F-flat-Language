@@ -22,7 +22,7 @@ Parser::Parser()
 
 void Parser::SyntaxError(Token t, string msg)
 {
-	cout << "line #" <<scan.lineNumber+1;
+	cout << endl<<"line #" <<scan.lineNumber+1;
 	cout << "position "<<scan.lineBuffer.size();
 	
 	cout << "Char" << scan.tokenBuffer;
@@ -496,6 +496,38 @@ void Parser::FelseClause()
 void Parser::Condition(ExprRec& expr)
 {
 	cout << "Condition";
+	//NextToken();
+	//Variable(expr);
+	
+	//switch(NextToken()){//get condition
+	//	case GE_OP:
+	//		Match(GE_OP);
+	//		cout<<"greater than or equal";
+	//		break;
+	//	case LE_OP:
+	//		Match(LE_OP);
+	//		cout<<"less than or equal ";
+	//		break;
+	//	case LT_OP:
+	//		Match(LT_OP);
+	//		cout<<"less than ";
+	//		break;
+	//	case GT_OP:
+	//		Match(GT_OP);
+	//		cout<<"greater than ";
+	//		break;
+	//	case EQ_OP:
+	//		Match(EQ_OP);
+	//		break;
+	//	case NE_OP:
+	//		Match(NE_OP);
+	//		break;
+	//	default:
+	//		cout<<"default";
+	//		break;
+	//}
+	
+	cout<< scan.tokenBuffer;//back
 	AndCond();
 	CondTail();
 }
@@ -607,6 +639,7 @@ void Parser::VariableTail(ExprRec& expr)
 	case GE_OP:
 	case EQ_OP:
 	case NE_OP:
+		cout<<"conditional stmt";
 		break;
 	default:
 		
