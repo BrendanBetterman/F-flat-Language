@@ -1,6 +1,8 @@
 BOF
+fake hello;
 int test;
+
 fin(test);
-test = test%2;
+fin(hello);
 fout(test);
 EOF

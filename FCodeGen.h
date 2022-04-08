@@ -91,7 +91,7 @@ private:
     vector<string> fakeTable;
     vector<string> stringTable;
     
-    string kindtoStr(ExprKind& t);
+    string kindtoStr(const ExprKind& t);
     string ConvertToSam(string s);
     int StringSamDistance(int index);
     void CheckId(const string & s, ExprKind & t);

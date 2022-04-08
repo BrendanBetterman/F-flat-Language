@@ -20,7 +20,7 @@ CodeGen::CodeGen(){
 	booloff =0;
 }
 //-------Private-Methods-------
-string CodeGen::kindtoStr(ExprKind& t){
+string CodeGen::kindtoStr(const ExprKind& t){
 	switch(t){
 		case ID_EXPR:
 			return "ID_Expr";
@@ -149,9 +149,9 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 		n = 0;
 		//cout<<"temp";
         while (symbolTable[n].label != s) n++;
-        k = 2 * n;
-		IntToAlpha(k,t);
-		//IntToAlpha(symbolTable[n].off, t); // offset: 2 bytes per variable
+        //k = 2 * n;
+		//IntToAlpha(k,t);
+		IntToAlpha(symbolTable[n].off, t); // offset: 2 bytes per variable
 		s = "+" + t + "(R15)";
 		break;
     case TEMPF_EXPR:  // operand form +k(R14)
@@ -430,7 +430,39 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 }
 void CodeGen::ReadValue(const ExprRec & InVal)
 {
-
+	string s;
+	
+	ExprRec tmp;//creates tmp exprrec to get address
+	tmp.name = InVal.name;
+	ExprKind kind;
+	CheckId(InVal.name,kind);//gets var type from name
+	//cout<<InVal.name;
+	
+	switch(kind){
+		case LITERAL_INT:
+			tmp.kind = ID_EXPR;
+			ExtractExpr(tmp, s);//gets address for var
+			Generate("RDI		", s, "");
+			break;
+		case LITERAL_FAKE:
+			tmp.kind = IDF_EXPR;
+			ExtractExpr(tmp, s);//gets address for var
+			Generate("RDF		", s, "");
+			break;
+		case LITERAL_STR:
+			Generate("RDST		", s, "");
+			break;
+		case LITERAL_BOOL:
+			Generate("RDST		", s, "");
+			//check if yay or nay
+			// convert to int zero or one.
+			//sto conversion.
+			break;
+		default:
+			break;
+	}
+	
+	
 }
 void CodeGen::ProcessVariable()
 {

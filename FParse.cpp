@@ -581,9 +581,8 @@ void Parser::ItemList(ExprRec& expr)
 	ItemListTail();
 }
 
-void Parser::VariableTail()
+void Parser::VariableTail(ExprRec& expr)
 {
-	ExprRec expr;
 	switch (NextToken())
 	{
 	case LSTAPLE:
@@ -615,17 +614,16 @@ void Parser::VariableTail()
 	}
 }
 
-void Parser::VarListTail()
+void Parser::VarListTail(ExprRec& expr)
 {
-	ExprRec expr;
 	switch (NextToken())
 	{
 	case COMMA:
 		Match(COMMA);
 		Variable(expr);
-		// code.ReadValue();
+		code.ReadValue(expr);
 		cout << "Read value\n";
-		VarListTail();
+		VarListTail(expr);
 		break;
 	case RPAREN:
 		break;
@@ -634,13 +632,13 @@ void Parser::VarListTail()
 	}
 }
 
-void Parser::VarList()
+void Parser::VarList(ExprRec& expr)
 {
-	ExprRec expr;
 	Variable(expr);
+	
 	code.ReadValue(expr);
 	cout << "Read Value\n";
-	VarListTail();
+	VarListTail(expr);
 }
 
 void Parser::Expression(ExprRec& result)//
@@ -668,7 +666,7 @@ void Parser::Expression(ExprRec& result)//
 void Parser::Variable(ExprRec& expr)
 {
 	Match(ID);
-	VariableTail();
+	VariableTail(expr);
 }
 
 void Parser::FoutlnStmt(ExprRec& expr)
@@ -691,11 +689,11 @@ void Parser::FoutStmt(ExprRec& expr)
 	Match(SEMICOLON);
 }
 
-void Parser::FinStmt()
+void Parser::FinStmt(ExprRec& expr)
 {
 	Match(FIN_SYM);
 	Match(LPAREN);
-	VarList();
+	VarList(expr);
 	Match(RPAREN);
 	Match(SEMICOLON);
 }
@@ -760,7 +758,7 @@ void Parser::SimpleStmt(ExprRec& expr)
 		AssignStmt(expr);
 		break;
 	case FIN_SYM:
-		FinStmt();
+		FinStmt(expr);
 		break;
 	case FOUT_SYM:
 		FoutStmt(expr);

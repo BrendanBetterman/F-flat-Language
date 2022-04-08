@@ -91,11 +91,11 @@ private:
 
 	void ItemList(ExprRec& expr);
 
-	void VariableTail();
+	void VariableTail(ExprRec& expr);
 
-	void VarListTail();
+	void VarListTail(ExprRec& expr);
 
-	void VarList();
+	void VarList(ExprRec& expr);
 
 	void Expression(ExprRec& result);
 	//void Expression();
@@ -106,7 +106,7 @@ private:
 
 	void FoutStmt(ExprRec& expr);
 
-	void FinStmt();
+	void FinStmt(ExprRec& expr);
 
 	void AssignStmt(ExprRec& expr);
 
