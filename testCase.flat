@@ -1,8 +1,5 @@
 BOF
-fake hello;
-int test;
-
+str test;
 fin(test);
-fin(hello);
 fout(test);
 EOF

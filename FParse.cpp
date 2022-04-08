@@ -621,6 +621,7 @@ void Parser::VarListTail(ExprRec& expr)
 	case COMMA:
 		Match(COMMA);
 		Variable(expr);
+		cout <<"varlisttail" <<expr.name <<endl;
 		code.ReadValue(expr);
 		cout << "Read value\n";
 		VarListTail(expr);
@@ -635,7 +636,6 @@ void Parser::VarListTail(ExprRec& expr)
 void Parser::VarList(ExprRec& expr)
 {
 	Variable(expr);
-	
 	code.ReadValue(expr);
 	cout << "Read Value\n";
 	VarListTail(expr);
@@ -666,6 +666,8 @@ void Parser::Expression(ExprRec& result)//
 void Parser::Variable(ExprRec& expr)
 {
 	Match(ID);
+	
+	expr.name = scan.tokenBuffer;
 	VariableTail(expr);
 }
 
@@ -754,7 +756,6 @@ void Parser::SimpleStmt(ExprRec& expr)
 	switch (NextToken())
 	{
 	case ID:
-		
 		AssignStmt(expr);
 		break;
 	case FIN_SYM:
