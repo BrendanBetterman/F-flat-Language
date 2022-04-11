@@ -611,6 +611,17 @@ string CodeGen::GetTemp(){
     CheckId(t, tmp.kind);  // forcing TEMP_EXPR for quick fix
 	return t;
 }
+string CodeGen::GetTempF(){
+    string s;
+    static string t;
+    t = "Temp&";
+    IntToAlpha(++maxTemp, s);
+    t += s;
+    ExprRec tmp;
+    tmp.kind = LITERAL_FAKE;
+    CheckId(t, tmp.kind);  // forcing TEMP_EXPR for quick fix
+    return t;
+}
 string CodeGen::ExtractOp(const OpRec& o, ExprKind & k){
 	//needs it for floats and floats and ints
 
@@ -647,6 +658,7 @@ string CodeGen::ExtractOp(const OpRec& o, ExprKind & k){
 
 
 }
+/*
 void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2, ExprRec& e)
 {
 	string s;
@@ -663,14 +675,14 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
 		}
 	//}//else{ if(e1.kind == IDF_EXPR && e2.kind == IDF_EXPR){
 		
-        /*e.kind = IDF_EXPR;
-        switch(op.op){
-            case PLUS:  e.valF = e1.valF + e2.valF; break;
-            case MINUS: e.valF = e1.valF - e2.valF; break;
-            case MULT:  e.valF = e1.valF * e2.valF; break;
-            case DIV:   e.valF = e1.valF / e2.valF; break;
-            default: break;
-        }*/
+        //e.kind = IDF_EXPR;
+        //switch(op.op){
+        //    case PLUS:  e.valF = e1.valF + e2.valF; break;
+        //    case MINUS: e.valF = e1.valF - e2.valF; break;
+        //    case MULT:  e.valF = e1.valF * e2.valF; break;
+        //    case DIV:   e.valF = e1.valF / e2.valF; break;
+        //    default: break;
+       // }
     }else{
 		
 		e.kind = TEMP_EXPR;
@@ -696,8 +708,115 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
 	}
 
     
-}
+}*/
+void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2, ExprRec& e)
+{
+    string s;
+    string tmp;
+    bool isE1_int = true;  //set these, so no warnings below
+    bool isE2_int = true;
+    bool isFakes = true;;
 
+    switch(e1.kind)
+    {
+        case LITERAL_INT:
+        case TEMP_EXPR:
+        case ID_EXPR:
+        case LITERAL_BOOL:  isE1_int = true; break;
+        case LITERAL_FAKE:
+        case TEMPF_EXPR:
+        case IDF_EXPR:      isE1_int = false; break;
+        default: break;
+    }
+    switch(e2.kind)
+    {
+        case LITERAL_INT:
+        case TEMP_EXPR:
+        case ID_EXPR:
+        case LITERAL_BOOL:  isE2_int = true; break;
+        case LITERAL_FAKE:
+        case TEMPF_EXPR:
+        case IDF_EXPR:      isE2_int = false; break;
+        default: break;
+    }
+    if (isE1_int && isE2_int) isFakes = false;
+    else isFakes = true;
+
+
+    if ((e1.kind == LITERAL_INT && e2.kind == LITERAL_INT) || (e1.kind == LITERAL_FAKE && e2.kind == LITERAL_FAKE))
+    {
+        if(e1.kind == LITERAL_INT && e2.kind == LITERAL_INT) {
+            e.kind = LITERAL_INT;
+            switch(op.op){
+                case PLUS:  e.val = e1.val + e2.val; break;
+                case MINUS:	e.val = e1.val - e2.val; break;
+                case MULT:  e.val = e1.val * e2.val; break;
+                case DIV:   e.val = e1.val / e2.val; break;
+                case MOD:   e.val = e1.val % e2.val; break;
+            }
+        } else if(e1.kind == LITERAL_FAKE && e2.kind == LITERAL_FAKE){
+            e.kind = LITERAL_FAKE;
+            switch(op.op){
+                case PLUS:  e.valF = e1.valF + e2.valF; break;
+                case MINUS: e.valF = e1.valF - e2.valF; break;
+                case MULT:  e.valF = e1.valF * e2.valF; break;
+                case DIV:   e.valF = e1.valF / e2.valF; break;
+                default: break;
+            }
+        }
+    } //-- END of PURE LITERALS
+    else{
+
+        if (!isFakes)  //--- All INTS
+        {
+            e.kind = TEMP_EXPR;
+            e.name = GetTemp();
+            ExtractExpr(e1,s);
+            Generate("LD		","R0",s);
+            switch(op.op){
+                case PLUS:
+                    cout<<"GenInfixPLUS-";
+                case MINUS:
+                    cout<<"GenInfixMIN-";
+                default:
+                    cout<<"GenInfixDefaultOP";
+            }
+            ExtractExpr(e2, s);
+            tmp = ExtractOp(op, e.kind);
+            cout<< tmp<<"here\n";
+
+            Generate(tmp, "R0", s);
+            ExtractExpr(e, s);
+            Generate("STO		", "R0", s);
+        }
+        else //--- Doing Fakes: All Combo's with INT TO FAKE Conversions
+        {
+            e.kind = TEMPF_EXPR;
+            e.name = GetTempF();
+
+            ExtractExpr(e1,s);
+            Generate("LD        ", "R0", s);
+            if (isE1_int)
+                Generate("FLT     ", "R0", s);
+
+            ExtractExpr(e2,s);
+            if (isE2_int)
+                Generate("FLT     ", "R0", s);  //needs to be different reg?
+
+            Generate(ExtractOp(op, e.kind), "R0", s);
+            ExtractExpr(e, s);
+            Generate("STO       ", "R0", s);
+
+          }
+
+
+
+    } //---END else
+
+
+
+
+}
 void CodeGen::ProcessMulOp()
 {
 
