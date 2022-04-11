@@ -95,9 +95,17 @@ bool CodeGen::LookUp(const string & s, ExprKind & t)
 		
         if (symbolTable[i].label == s){
             t = symbolTable[i].kind;
-			
+			switch(t){
+				case LITERAL_INT:
+					t = ID_EXPR;
+					break;
+				case LITERAL_FAKE:
+					t=IDF_EXPR;
+					break;
+			}
 			return true;
 		}
+		
     }
 
 
@@ -481,12 +489,14 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 		case LITERAL_BOOL:
 			Generate("WRST	", s, "");
 			break;
+		case ID_EXPR:
 		case TEMP_EXPR:
 		case LITERAL_INT:
 			//outExpr.kind = TEMP_EXPR;
 			ExtractExpr(outExpr,s);
 			Generate("WRI		", s, "");
 			break;
+		case IDF_EXPR:
 		case LITERAL_FAKE:
 			//s = "+" + s + "(R14)";
 		case TEMPF_EXPR:

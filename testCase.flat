@@ -1,6 +1,7 @@
 BOF
 //comment
 int test = 3;
-test = test + 12;
+int hello =5;
+
 fout(test);
 EOF
