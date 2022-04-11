@@ -77,7 +77,22 @@ string Parser::kindToStr(ExprKind& k){
 			return "default";
 	}
 }
-
+string Parser::tokenToStr(Token& k){
+	switch (k)
+	{
+	case INT_LITERAL:
+		/* code */
+		cout << "int lit";
+		break;
+	case GE_OP:
+		cout<<"ge op";
+		break;
+	
+	default:
+		cout<<"defulat token";
+		break;
+	}
+}
 void Parser::VarDec()
 {
 	Match(ID);
@@ -416,7 +431,7 @@ void Parser::AndTail()
 	case SEMICOLON:
 		break;
 	default:
-		SyntaxError(NextToken(), "");
+		SyntaxError(NextToken(), "and tail");
 	}
 }
 
@@ -434,7 +449,7 @@ void Parser::Negation()
 	case SEMICOLON:
 		break;
 	default:
-		SyntaxError(NextToken(), "");
+		SyntaxError(NextToken(), "Negation");
 	}
 }
 
@@ -450,7 +465,7 @@ void Parser::CondTail()
 	case SEMICOLON:
 		break;
 	default:
-		SyntaxError(NextToken(), "");
+		SyntaxError(NextToken(), "cond tail");
 	}
 }
 
@@ -473,7 +488,7 @@ void Parser::VarInit()
 		Variable(expr);
 		break;
 	default:
-		SyntaxError(NextToken(), "");
+		SyntaxError(NextToken(), "and cond");
 	}
 }
 
@@ -498,36 +513,49 @@ void Parser::Condition(ExprRec& expr)
 	cout << "Condition";
 	//NextToken();
 	//Variable(expr);
+	//NextToken();
 	
-	//switch(NextToken()){//get condition
-	//	case GE_OP:
-	//		Match(GE_OP);
-	//		cout<<"greater than or equal";
-	//		break;
-	//	case LE_OP:
-	//		Match(LE_OP);
-	//		cout<<"less than or equal ";
-	//		break;
-	//	case LT_OP:
-	//		Match(LT_OP);
-	//		cout<<"less than ";
-	//		break;
-	//	case GT_OP:
-	//		Match(GT_OP);
-	//		cout<<"greater than ";
-	//		break;
-	//	case EQ_OP:
-	//		Match(EQ_OP);
-	//		break;
-	//	case NE_OP:
-	//		Match(NE_OP);
-	//		break;
-	//	default:
-	//		cout<<"default";
-	//		break;
-	//}
+	ExprRec left;
+	switch(NextToken()){
+		case INT_LITERAL:
+			left.kind = LITERAL_INT;
+			left.val = stoi(scan.tokenBuffer);
+			break;
+		case ID:
+			left.kind = ID_EXPR;
+			break;
+	}
+	switch(NextToken()){//get condition
+		case GE_OP:
+			Match(GE_OP);
+			cout<<"greater than or equal";
+			break;
+		case LE_OP:
+			Match(LE_OP);
+			cout<<"less than or equal ";
+			break;
+		case LT_OP:
+			Match(LT_OP);
+			cout<<"less than ";
+			break;
+		case GT_OP:
+			Match(GT_OP);
+			cout<<"greater than ";
+			break;
+		case EQ_OP:
+			Match(EQ_OP);
+			break;
+		case NE_OP:
+			Match(NE_OP);
+			break;
+		default:
+			cout<<"default";
+			break;
+	}
 	
-	cout<< scan.tokenBuffer;//back
+	cout << scan.tokenBuffer;//back
+	//NextToken();
+	
 	AndCond();
 	CondTail();
 }
@@ -780,7 +808,7 @@ void Parser::StructStmt()
 		ForStmt();
 		break;
 	default:
-		SyntaxError(NextToken(), "");
+		SyntaxError(NextToken(), "StructStmt");
 	}
 }
 
@@ -801,7 +829,7 @@ void Parser::SimpleStmt(ExprRec& expr)
 		FoutlnStmt(expr);
 		break;
 	default:
-		SyntaxError(NextToken(), "");
+		SyntaxError(NextToken(), "Simple Stmt");
 	}
 }
 
@@ -832,7 +860,7 @@ void Parser::StmtTail(ExprRec& expr)
 	case FWHILE_SYM:
 		break;
 	default:
-		SyntaxError(NextToken(), "");
+		SyntaxError(NextToken(), "Stmt Tail");
 	}
 }
 
@@ -861,7 +889,7 @@ void Parser::Statement(ExprRec& expr)
 		Declaration(expr);//needs expr
 		break;
 	default:
-		SyntaxError(NextToken(), "");
+		SyntaxError(NextToken(), "Stmt");
 	}
 }
 
