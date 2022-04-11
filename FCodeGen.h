@@ -105,6 +105,7 @@ private:
     void ExtractExpr(const ExprRec & e, string& s);
     string ExtractOp(const OpRec & o, ExprKind & k);
     string GetTemp();
+    string GetTempF();
     void Generate(const string & s1, const string & s2, const string & s3);
 
 };
