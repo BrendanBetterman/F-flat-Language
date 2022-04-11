@@ -1,0 +1,30 @@
+// 07Assign.flat
+//
+// Variable initialization and assignments.
+
+
+BOF
+   int n = 5; 
+   int m = 7; 
+   int k = 4;
+   fake a = 2.5; 
+   fake b = 3.1; 
+   fake c = 4.0;
+
+   x = k * (n + m);
+   foutln( x);
+   
+   x = 4 * (n + m));
+   foutln( x);
+   
+   foutln( (n + m) * k);
+   
+   d = c * (a - b));
+   foutln( d);
+   
+   foutln( 400.0e-2 );
+   
+   d = 0.4e+1 * (a - b));
+   foutln( d);
+   
+EOF

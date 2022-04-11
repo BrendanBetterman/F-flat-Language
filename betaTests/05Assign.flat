@@ -1,0 +1,26 @@
+// 05Assign.flat
+// 
+// Simple variables and input/output.
+
+BOF
+
+    int  x, y;
+    fake a, b;
+
+   fout( "Enter an integer: ");
+   fin( x);
+   fout( x, "\n");
+   y = x;
+   fout( y, "\n");
+   x = 17;
+   fout( x, "\n\n");
+   
+   fout( "Enter a real number: ");
+   fin( a);
+   fout( a, "\n");
+   b = a;
+   fout( b, "\n");
+   a = 26.03;
+   fout( a, "\n\n");
+   
+EOF

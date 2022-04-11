@@ -1,0 +1,4 @@
+BOF
+int y = 12;
+fake z = 0.456;
+EOF
