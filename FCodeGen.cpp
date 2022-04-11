@@ -95,17 +95,13 @@ bool CodeGen::LookUp(const string & s, ExprKind & t)
 		
         if (symbolTable[i].label == s){
             t = symbolTable[i].kind;
-			cout<<"here lookup";
 			switch(t){
 				case LITERAL_INT:
 					t = ID_EXPR;
-					cout << "lit int to id exp";
 					break;
 				case LITERAL_FAKE:
-					t = IDF_EXPR;
+					t=IDF_EXPR;
 					break;
-				default:
-					cout<<"default lookup";
 			}
 			return true;
 		}
@@ -153,11 +149,8 @@ void CodeGen::FakeToAlpha(float val, string& str)
 void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 	string t;
     int k, n;
-	//ExprKind tmp = e.kind;
-	//string tmps = e.name;
-	//LookUp(tmps,tmp);
-	//cout << kindtoStr(tmp);
-	switch (e.kind)//e.kind
+
+	switch (e.kind)
 	{
 	case ID_EXPR:
 		//cout<<"id expr";
@@ -517,10 +510,8 @@ void CodeGen::NewLine()
 	Generate("WRNL		", "", "");
 }
 //---fif---
-void CodeGen::ProcessIf(ExprRec&left,OpRec& op, ExprRec&right)
+void CodeGen::ProcessIf()
 {
-	//needs leftexprRec Right exprRect and opRec
-
 	/*
 	Compare Registers, address , in line literals first
 	IC OR FC  R0 or +0(R15) or #0 , compared too

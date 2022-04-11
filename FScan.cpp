@@ -163,43 +163,35 @@ Token Scanner::GetNextToken(){
 			case ',':
 				return COMMA;
 			case '>':
-				BufferChar(currentChar);
 				c = sourceFile.peek();
 				
 				if ( c == '='){
 					currentChar = NextChar();
-					BufferChar(currentChar);
 					return GE_OP;
 				}	
 				else			
 					return GT_OP;
 			case '<':
-				BufferChar(currentChar);
 			    c = sourceFile.peek();
 				if ( c == '=' ){
 					currentChar = NextChar();
-					BufferChar(currentChar);
 					return LE_OP;
 				}
 				else
 					return LT_OP;
 			case '=':
 				//special case
-				BufferChar(currentChar);
 				if (sourceFile.peek() == '='){
 					currentChar=NextChar();
-					BufferChar(currentChar);
 					return EQ_OP;
 				}else{
 					return ASSIGN_OP;
 				}
 				break;
 			case '!':
-				BufferChar(currentChar);
 				c = sourceFile.peek();
 				if ( c == '='){
 					currentChar = NextChar();
-					BufferChar(currentChar);
 					return NE_OP;
 				}
 				

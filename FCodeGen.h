@@ -44,7 +44,7 @@ public:
     void WriteExpr(const ExprRec & outExpr);
     void NewLine();
 
-    void ProcessIf(ExprRec& left,OpRec& op, ExprRec& right);
+    void ProcessIf();
     void ProcessEndIf();
     void ProcessElse();
 

@@ -1,7 +1,7 @@
 BOF
 //comment
-int test = 0;
-int hello = 43;
-test = test + hello;
+int test = 3;
+int hello =5;
+
 fout(test);
 EOF
