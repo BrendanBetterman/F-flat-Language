@@ -1,0 +1,29 @@
+/*  StringInit.flat
+/*
+//  Tests string initialization and assignment.
+*/
+
+BOF
+	str name[10];
+	str place[10];
+	str name2[10];
+	str name3[10];
+	str sport[10]; 
+
+	name = "Steven";
+	place = "Bemidji";
+	name2 = name;
+
+	foutln( name);
+	fout("\n");
+	foutln( place);
+	fout("\n");
+	foutln( name2);
+	fout("\n");
+	name3 = "baseball";
+	foutln( name3);
+	fout("\n");
+	sport = name3;
+	foutln( name, " from ", place, " loves ", sport);
+	fout("\n");
+EOF
