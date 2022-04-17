@@ -491,6 +491,7 @@ void Parser::FelseClause()
 	{
 	case FELSE_SYM:
 		Match(FELSE_SYM);
+		code.ProcessElse();
 		StmtList(expr);
 		break;
 	case FENDIF_SYM:

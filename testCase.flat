@@ -3,9 +3,8 @@ BOF
 int tmp = 1;
 fif(1 <=2)
     fout("test");
-    fif(1==1)
-        fout("true");
-    fendif
+felse
+    fout("else");
 fendif
 fout("out");
 EOF

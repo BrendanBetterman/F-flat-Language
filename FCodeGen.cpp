@@ -563,6 +563,16 @@ void CodeGen::ProcessEndIf()
 }
 void CodeGen::ProcessElse()
 {
+	string s,a,label;
+	s= "Endif"; // get from stack
+	IntToAlpha(fifId++,a);
+	s = s+a;
+	Generate("JMP		",s,"");
+	a= "LABEL	";
+	label = fifStack.back();
+	fifStack.pop_back();
+	Generate(a,label,"");
+	fifStack.push_back(s);
 
 }
 //---do-while---
