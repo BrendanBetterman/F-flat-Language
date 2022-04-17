@@ -344,27 +344,33 @@ void Parser::Factor()
 	FactorTail();
 }
 
-void Parser::RelOp()
+void Parser::RelOp(ConRec& con)
 {
 	switch (NextToken())
 	{
 	case LT_OP:
 		Match(LT_OP);
+		con.con = LT;
 		break;
 	case LE_OP:
 		Match(LE_OP);
+		con.con = LE;
 		break;
 	case GT_OP:
 		Match(GT_OP);
+		con.con = GT;
 		break;
 	case GE_OP:
 		Match(GE_OP);
+		con.con = GE;
 		break;
 	case EQ_OP:
 		Match(EQ_OP);
+		con.con = EQ;
 		break;
 	case NE_OP:
 		Match(NE_OP);
+		con.con = NE;
 		break;
 	default:
 		SyntaxError(NextToken(), "");
@@ -374,6 +380,7 @@ void Parser::RelOp()
 void Parser::RelTail()
 {
 	ExprRec expr;
+	ConRec con;
 	switch (NextToken())
 	{
 	case LT_OP:
@@ -382,7 +389,7 @@ void Parser::RelTail()
 	case GE_OP:
 	case EQ_OP:
 	case NE_OP:
-		RelOp();
+		RelOp(con);
 		Expression(expr);
 		break;
 	case AND_SYM:
@@ -496,38 +503,15 @@ void Parser::FelseClause()
 void Parser::Condition(ExprRec& expr)
 {
 	cout << "Condition";
-	//NextToken();
 	//Variable(expr);
 	
-	//switch(NextToken()){//get condition
-	//	case GE_OP:
-	//		Match(GE_OP);
-	//		cout<<"greater than or equal";
-	//		break;
-	//	case LE_OP:
-	//		Match(LE_OP);
-	//		cout<<"less than or equal ";
-	//		break;
-	//	case LT_OP:
-	//		Match(LT_OP);
-	//		cout<<"less than ";
-	//		break;
-	//	case GT_OP:
-	//		Match(GT_OP);
-	//		cout<<"greater than ";
-	//		break;
-	//	case EQ_OP:
-	//		Match(EQ_OP);
-	//		break;
-	//	case NE_OP:
-	//		Match(NE_OP);
-	//		break;
-	//	default:
-	//		cout<<"default";
-	//		break;
-	//}
-	
-	cout<< scan.tokenBuffer;//back
+	Primary(expr);
+	ConRec con;
+	RelOp(con);
+	ExprRec expr2;
+	Primary(expr2);
+	code.ProcessIf(expr,con,expr2);
+		
 	AndCond();
 	CondTail();
 }
@@ -583,6 +567,7 @@ void Parser::FifStmt()
 	StmtList(expr);
 	FelseClause();
 	Match(FENDIF_SYM);
+	code.ProcessEndIf();
 }
 
 void Parser::ItemListTail()

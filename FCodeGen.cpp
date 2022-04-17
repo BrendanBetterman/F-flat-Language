@@ -18,6 +18,7 @@ CodeGen::CodeGen(){
 	fakoff = 0;
 	stroff = 0;
 	booloff =0;
+	fifId = 0;
 }
 //-------Private-Methods-------
 string CodeGen::kindtoStr(const ExprKind& t){
@@ -510,7 +511,7 @@ void CodeGen::NewLine()
 	Generate("WRNL		", "", "");
 }
 //---fif---
-void CodeGen::ProcessIf()
+void CodeGen::ProcessIf(ExprRec& expr,ConRec& con,ExprRec& expr2)
 {
 	/*
 	Compare Registers, address , in line literals first
@@ -518,11 +519,47 @@ void CodeGen::ProcessIf()
 	JEQ, JNE,JGT,JLT,JGE,JLE
 	jump the opposite of compared then jmp 
 	*/
-	
+	string s;
+	ExtractExpr(expr,s);
+	Generate("LD		","R0",s);
+	ExtractExpr(expr2,s);
+	Generate("LD		","R1",s);
+	Generate("IC		","R0","R1");
+	s= "Endif"; // get from stack
+ 	string a;
+	IntToAlpha(fifId++,a);
+	s = s+a;
+	fifStack.push_back(s);
+	//Flip Condition
+	switch(con.con){
+		case EQ:
+			Generate("JNE		",s,"");
+			break;
+		case NE:
+			Generate("JEQ		",s,"");
+			break;
+		case LT:
+			Generate("JGE		",s,"");
+			break;
+		case GT:
+			Generate("JLE		",s,"");
+			break;
+		case LE:
+			Generate("JGT		",s,"");
+			break;
+		case GE:
+			Generate("JLT		",s,"");
+			break;
+	}
 }
 void CodeGen::ProcessEndIf()
 {
-
+	//pop from stack
+	string s,label;
+	s= "LABEL	";
+	label = fifStack.back();
+	fifStack.pop_back();
+	Generate(s,label,"");
 }
 void CodeGen::ProcessElse()
 {

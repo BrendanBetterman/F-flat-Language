@@ -6,8 +6,10 @@ using namespace std;
 
 #include "FScan.h"
 
-
-
+enum ConKind{EQ,NE,LT,GT,LE,GE};
+struct ConRec{
+    ConKind con;
+};
 enum OpKind {PLUS, MINUS,MULT,DIV,MOD};
 
 struct OpRec // information about an operator
@@ -44,7 +46,7 @@ public:
     void WriteExpr(const ExprRec & outExpr);
     void NewLine();
 
-    void ProcessIf();
+    void ProcessIf(ExprRec& expr,ConRec& con,ExprRec& expr2);
     void ProcessEndIf();
     void ProcessElse();
 
@@ -85,11 +87,13 @@ private:
     int fakoff;
     int stroff;
     int booloff;
+    int fifId;
     vector<Symbol> symbolTable;
     vector<Symbol> intTable;
     vector<Symbol> boolTable;
     vector<string> fakeTable;
     vector<string> stringTable;
+    vector<string> fifStack;
     
     string kindtoStr(const ExprKind& t);
     string ConvertToSam(string s);

@@ -59,7 +59,7 @@ private:
 
 	void Factor();
 
-	void RelOp();
+	void RelOp(ConRec& con);
 
 	void RelTail();
 
