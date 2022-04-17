@@ -510,6 +510,30 @@ void CodeGen::NewLine()
 {
 	Generate("WRNL		", "", "");
 }
+bool CodeGen::isFake(ExprKind& kind){
+	switch(kind){
+		case LITERAL_FAKE:
+		case IDF_EXPR:
+		case TEMPF_EXPR:
+			cout<<"fake";
+			return true;
+			break;
+		default:
+			return false;
+	}
+}
+bool CodeGen::isInt(ExprKind& kind){
+	switch(kind){
+		case LITERAL_INT:
+		case ID_EXPR:
+		case TEMP_EXPR:
+			cout<<"int";
+			return true;
+			break;
+		default:
+			return false;
+	}
+}
 //---fif---
 void CodeGen::ProcessIf(ExprRec& expr,ConRec& con,ExprRec& expr2)
 {
@@ -521,10 +545,26 @@ void CodeGen::ProcessIf(ExprRec& expr,ConRec& con,ExprRec& expr2)
 	*/
 	string s;
 	ExtractExpr(expr,s);
-	Generate("LD		","R0",s);
-	ExtractExpr(expr2,s);
-	Generate("LD		","R1",s);
-	Generate("IC		","R0","R1");
+	
+	LookUp(expr.name,expr.kind);
+	LookUp(expr2.name,expr2.kind);
+	cout<<"\n here "<< kindtoStr(expr.kind)<<"\n";
+	if(isInt(expr.kind) && isInt(expr2.kind)){
+		Generate("LD		","R0",s);
+		ExtractExpr(expr2,s);
+		Generate("LD		","R1",s);
+		Generate("IC		","R0","R1");
+	}else if(isFake(expr.kind) && isFake(expr2.kind)){
+		//second fake not offsetting properly
+	
+		Generate("LD		","R0",s);
+		ExtractExpr(expr2,s);
+		Generate("LD		","R2",s);
+		Generate("FC		","R0","R2");
+	}else{
+		cout<<"\n"<< kindtoStr(expr.kind)<<"\n";
+	}
+	
 	s= "Endif"; // get from stack
  	string a;
 	IntToAlpha(fifId++,a);
@@ -563,6 +603,8 @@ void CodeGen::ProcessEndIf()
 }
 void CodeGen::ProcessElse()
 {
+	//creates next label, to jump too
+	//pops from stack for if.
 	string s,a,label;
 	s= "Endif"; // get from stack
 	IntToAlpha(fifId++,a);

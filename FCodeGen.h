@@ -103,7 +103,8 @@ private:
     void IntToAlpha(int val, string& str);
     void FakeToAlpha(float val, string& str);
     bool LookUp(const string & s,ExprKind & t);
-
+    bool isFake(ExprKind& kind);
+    bool isInt(ExprKind& kind);
     int getOff(string& s);
 
     void ExtractExpr(const ExprRec & e, string& s);

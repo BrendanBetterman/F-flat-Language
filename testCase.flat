@@ -1,9 +1,10 @@
 BOF
 //comment
-int tmp = 1;
-fif(1 <=2)
+int tmp = 4;
+fake test = 4.01;
+fif(tmp <= 3)
     fout("test");
-felse
+felse 
     fout("else");
 fendif
 fout("out");
