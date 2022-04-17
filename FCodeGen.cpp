@@ -408,7 +408,7 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 			ExtractExpr(source, s);
 			Generate("LD		", "R0", s);
 			ExtractExpr(target, s);
-			id =target.name;
+			id =source.name;
 			tmp = getOff(id);
 			IntToAlpha(tmp,id);
 			cout << tmp;
@@ -919,7 +919,14 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
 
             Generate(tmp, "R0", s);
             ExtractExpr(e, s);
-            Generate("STO		", "R0", s);
+			string id;
+			int off;
+			id =e1.name;
+			off = getOff(id);
+			IntToAlpha(off,id);
+			Generate("STO		", "R0", "+"+id+"(R15)");
+			Generate("%comment	","break","");
+            //Generate("STO		", "R0", s);
         }
         else //--- Doing Fakes: All Combo's with INT TO FAKE Conversions
         {
@@ -937,6 +944,8 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
 
             Generate(ExtractOp(op, e.kind), "R0", s);
             ExtractExpr(e, s);
+
+
             Generate("STO       ", "R0", s);
 
           }
