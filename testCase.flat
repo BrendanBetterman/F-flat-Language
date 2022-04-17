@@ -1,11 +1,15 @@
 BOF
 //comment
 int tmp = 4;
-fake test = 4.01;
-fif(tmp <= 3)
-    fout("test");
-felse 
-    fout("else");
+fin(tmp);
+fif(tmp <=3)
+    fout(tmp);
+felse
+    fout("tst");
 fendif
-fout("out");
+while(tmp <=10)
+    tmp = tmp+ 1;
+    foutln(tmp);
+endWhile
+fout("done");
 EOF

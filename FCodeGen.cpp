@@ -19,6 +19,7 @@ CodeGen::CodeGen(){
 	stroff = 0;
 	booloff =0;
 	fifId = 0;
+	whlId = 0;
 }
 //-------Private-Methods-------
 string CodeGen::kindtoStr(const ExprKind& t){
@@ -60,6 +61,7 @@ void CodeGen::Enter(const string & s, ExprKind & t )
 	switch(t){
 		case LITERAL_INT:
 			thisSym.off = intoff;
+			//thisSym.kind = ID_EXPR;//tset
 			intoff +=2;
 			break;
 		case LITERAL_FAKE:
@@ -150,6 +152,7 @@ void CodeGen::FakeToAlpha(float val, string& str)
 void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 	string t;
     int k, n;
+	//cout<< kindtoStr(e.kind);
 
 	switch (e.kind)
 	{
@@ -186,7 +189,6 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 		//cout<< symbolTable[--n].off<<endl;
 		//IntToAlpha(symbolTable[--n].off,t);
 		//IntToAlpha(e.val, t);
-		
 		
 		IntToAlpha(e.val,s);
 		s = "#" + s;
@@ -440,28 +442,34 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 }
 void CodeGen::ReadValue(const ExprRec & InVal)
 {
-	string s;
+	string s,id;
+	int tmp;
 	
-	ExprRec tmp;//creates tmp exprrec to get address
-	tmp.name = InVal.name;
 	ExprKind kind;
 	CheckId(InVal.name,kind);//gets var type from name
-	//cout<<InVal.name;
-	
+	//LookUp(s,kind);
 	switch(kind){
+		case ID_EXPR:
+		case TEMP_EXPR:
 		case LITERAL_INT:
-			tmp.kind = ID_EXPR;
-			ExtractExpr(tmp, s);//gets address for var
-			Generate("RDI		", s, "");
+			//tmp.kind = ID_EXPR;
+			
+			ExtractExpr(InVal, s);//gets address for var
+			id =InVal.name;
+			tmp = getOff(id);
+			IntToAlpha(tmp,id);
+			Generate("RDI		", "+"+id+"(R15)", "");
 			break;
+		case IDF_EXPR:
+		case TEMPF_EXPR:
 		case LITERAL_FAKE:
-			tmp.kind = IDF_EXPR;
-			ExtractExpr(tmp, s);//gets address for var
+			
+			ExtractExpr(InVal, s);//gets address for var
 			Generate("RDF		", s, "");
 			break;
 		case LITERAL_STR:
-			tmp.kind = LITERAL_STR;
-			ExtractExpr(tmp, s);
+			
+			ExtractExpr(InVal, s);
 			Generate("RDST	", s, "");
 			break;
 		case LITERAL_BOOL:
@@ -483,8 +491,13 @@ void CodeGen::ProcessVariable()
 void CodeGen::WriteExpr(const ExprRec & outExpr)
 {
 	//WIP .kind of lit str bool and fake
-	string s;
+	string s, id;
+	int tmp;
+	ExprKind kind;
+	
 	ExtractExpr(outExpr,s);
+	//LookUp(outExpr.name,kind);
+	
 	switch(outExpr.kind){
 		case LITERAL_STR:
 		case LITERAL_BOOL:
@@ -495,7 +508,11 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 		case LITERAL_INT:
 			//outExpr.kind = TEMP_EXPR;
 			ExtractExpr(outExpr,s);
-			Generate("WRI		", s, "");
+			
+			id =outExpr.name;
+			tmp = getOff(id);
+			IntToAlpha(tmp,id);
+			Generate("WRI		", "+"+id+"(R15)", "");
 			break;
 		case IDF_EXPR:
 		case LITERAL_FAKE:
@@ -503,7 +520,8 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 		case TEMPF_EXPR:
 			Generate("WRF		", s, "");
 			break;
-		
+		default:
+			cout<<"\ndefault write\n";
 	}
 }
 void CodeGen::NewLine()
@@ -534,20 +552,11 @@ bool CodeGen::isInt(ExprKind& kind){
 			return false;
 	}
 }
-//---fif---
-void CodeGen::ProcessIf(ExprRec& expr,ConRec& con,ExprRec& expr2)
-{
-	/*
-	Compare Registers, address , in line literals first
-	IC OR FC  R0 or +0(R15) or #0 , compared too
-	JEQ, JNE,JGT,JLT,JGE,JLE
-	jump the opposite of compared then jmp 
-	*/
+void CodeGen::Condition(ExprRec& expr,ConRec& con,ExprRec& expr2){
 	string s;
-	ExtractExpr(expr,s);
-	
 	LookUp(expr.name,expr.kind);
 	LookUp(expr2.name,expr2.kind);
+	ExtractExpr(expr,s);
 	cout<<"\n here "<< kindtoStr(expr.kind)<<"\n";
 	if(isInt(expr.kind) && isInt(expr2.kind)){
 		Generate("LD		","R0",s);
@@ -556,7 +565,6 @@ void CodeGen::ProcessIf(ExprRec& expr,ConRec& con,ExprRec& expr2)
 		Generate("IC		","R0","R1");
 	}else if(isFake(expr.kind) && isFake(expr2.kind)){
 		//second fake not offsetting properly
-	
 		Generate("LD		","R0",s);
 		ExtractExpr(expr2,s);
 		Generate("LD		","R2",s);
@@ -564,34 +572,49 @@ void CodeGen::ProcessIf(ExprRec& expr,ConRec& con,ExprRec& expr2)
 	}else{
 		cout<<"\n"<< kindtoStr(expr.kind)<<"\n";
 	}
-	
-	s= "Endif"; // get from stack
- 	string a;
-	IntToAlpha(fifId++,a);
-	s = s+a;
-	fifStack.push_back(s);
-	//Flip Condition
+}
+void CodeGen::Jump(ConRec& con,string& label){
 	switch(con.con){
-		case EQ:
-			Generate("JNE		",s,"");
-			break;
 		case NE:
-			Generate("JEQ		",s,"");
+			Generate("JEQ		",label,"");
+			break;
+		case EQ:
+			Generate("JNE		",label,"");
 			break;
 		case LT:
-			Generate("JGE		",s,"");
+			Generate("JGE		",label,"");
 			break;
 		case GT:
-			Generate("JLE		",s,"");
+			Generate("JLE		",label,"");
 			break;
 		case LE:
-			Generate("JGT		",s,"");
+			Generate("JGT		",label,"");
 			break;
 		case GE:
-			Generate("JLT		",s,"");
+			Generate("JLT		",label,"");
 			break;
 	}
 }
+/*---fif---
+(Left,conditional op, right)
+Compare Registers, address , in line literals first
+	IC OR FC  R0 or +0(R15) or #0 , compared too
+	JEQ, JNE,JGT,JLT,JGE,JLE
+	jump the opposite of compared then jmp 
+*/
+void CodeGen::ProcessIf(ExprRec& expr,ConRec& con,ExprRec& expr2)
+{
+	//writes conditional stmt
+	Condition(expr,con,expr2);
+	string s,a;
+	s= "ENDIF";
+	IntToAlpha(fifId++,a);
+	s = s+a;
+	fifStack.push_back(s);
+	//Gens flipped conditional jump
+	Jump(con,s);
+}
+//Pops from fif stack and gens label
 void CodeGen::ProcessEndIf()
 {
 	//pop from stack
@@ -601,12 +624,13 @@ void CodeGen::ProcessEndIf()
 	fifStack.pop_back();
 	Generate(s,label,"");
 }
+//pops from stack. 
+//gens JMP to new label. 
+//creates label from stack.
 void CodeGen::ProcessElse()
 {
-	//creates next label, to jump too
-	//pops from stack for if.
 	string s,a,label;
-	s= "Endif"; // get from stack
+	s= "ENDIF"; // get from stack
 	IntToAlpha(fifId++,a);
 	s = s+a;
 	Generate("JMP		",s,"");
@@ -627,9 +651,19 @@ void CodeGen::ProcessEndFwhile()
 
 }
 //---while---
-void CodeGen::ProcessWhile()
+void CodeGen::ProcessWhile(ExprRec& Lexpr,ConRec& con,ExprRec& Rexpr)
 {
-
+	string s,a,top,end;
+	s = "WHL";
+	IntToAlpha(whlId++,a);
+	top = s +a;
+	Generate("LABEL	",top,"");
+	IntToAlpha(whlId++,a);
+	end = s +a;
+	whileStack.push_back(end);
+	whileStack.push_back(top);
+	Condition(Lexpr,con,Rexpr);
+	Jump(con,end);
 }
 void CodeGen::ProcessWhileCond()
 {
@@ -637,7 +671,15 @@ void CodeGen::ProcessWhileCond()
 }
 void CodeGen::ProcessEndWhile()
 {
-
+	//pop from stack
+	string s,label;
+	label = whileStack.back();
+	whileStack.pop_back();
+	Generate("JMP		",label,"");//jmp to first
+	s= "LABEL	";
+	label = whileStack.back();
+	whileStack.pop_back();
+	Generate(s,label,"");//exit label
 }
 //---for-loop---
 void CodeGen::InitLoopCtrl()

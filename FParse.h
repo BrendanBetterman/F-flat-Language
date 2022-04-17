@@ -77,7 +77,7 @@ private:
 
 	void FelseClause();
 
-	void Condition(ExprRec& expr);
+	void Condition(ExprRec& Lexpr,ConRec& con, ExprRec& Rexpr);
 
 	void ForStmt();
 

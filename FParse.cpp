@@ -246,7 +246,7 @@ void Parser::FactorTail()
 void Parser::Primary(ExprRec& result)
 {
 	ExprRec identifier;
-	
+	ConRec con;
 	switch (NextToken())
 	{
 	case INT_LITERAL:
@@ -279,7 +279,7 @@ void Parser::Primary(ExprRec& result)
 		break;
 	case LPAREN:
 		Match(LPAREN);
-		Condition(result);
+		Condition(result,con,identifier);
 		Match(RPAREN);
 		break;
 	default:
@@ -501,17 +501,15 @@ void Parser::FelseClause()
 	}
 }
 
-void Parser::Condition(ExprRec& expr)
+void Parser::Condition(ExprRec& Lexpr,ConRec& con, ExprRec& Rexpr)
 {
 	cout << "Condition";
 	//Variable(expr);
 	
-	Primary(expr);
-	ConRec con;
+	Primary(Lexpr);
 	RelOp(con);
-	ExprRec expr2;
-	Primary(expr2);
-	code.ProcessIf(expr,con,expr2);
+	Primary(Rexpr);
+	
 		
 	AndCond();
 	CondTail();
@@ -519,53 +517,60 @@ void Parser::Condition(ExprRec& expr)
 
 void Parser::ForStmt()
 {
-	ExprRec expr;
+	ExprRec Lexpr,Rexpr;
+	ConRec con;
 	Match(FOR_SYM);
 	Match(LPAREN);
 	VarInit();
 	Match(ASSIGN_OP);
-	Expression(expr);
+	Expression(Lexpr);
 	Match(SEMICOLON);
-	Condition(expr);
+	Condition(Lexpr,con,Rexpr);
 	Match(SEMICOLON);
-	Variable(expr);
+	Variable(Lexpr);
 	Match(ASSIGN_OP);
-	Expression(expr);
+	Expression(Lexpr);
 	Match(RPAREN);
-	StmtList(expr);
+	StmtList(Lexpr);
 	Match(ENDFOR_SYM);
 }
 
 void Parser::DoFwhileStmt()
 {
-	ExprRec expr;
+	ExprRec Lexpr,Rexpr;
+	ConRec con;
 	Match(DO_SYM);
-	StmtList(expr);
+	StmtList(Lexpr);
 	Match(FWHILE_SYM);
 	Match(LPAREN);
-	Condition(expr);
+	Condition(Lexpr,con,Rexpr);
 	Match(RPAREN);
 }
 
 void Parser::WhileStmt()
 {
-	ExprRec expr;
+	ExprRec Lexpr,Rexpr;
+	ConRec con;
 	Match(WHILE_SYM);
 	Match(LPAREN);
-	Condition(expr);
+	Condition(Lexpr,con,Rexpr);
+	code.ProcessWhile(Lexpr,con,Rexpr);
 	Match(RPAREN);
-	StmtList(expr);
+	StmtList(Lexpr);
 	Match(ENDWHILE_SYM);
+	code.ProcessEndWhile();
 }
 
 void Parser::FifStmt()
 {
-	ExprRec expr;
+	ExprRec Lexpr,Rexpr;
+	ConRec con;
 	Match(FIF_SYM);
 	Match(LPAREN);
-	Condition(expr);
+	Condition(Lexpr,con,Rexpr);
+	code.ProcessIf(Lexpr,con,Rexpr);//should go in if
 	Match(RPAREN);
-	StmtList(expr);
+	StmtList(Lexpr);
 	FelseClause();
 	Match(FENDIF_SYM);
 	code.ProcessEndIf();
@@ -625,7 +630,7 @@ void Parser::VariableTail(ExprRec& expr)
 	case GE_OP:
 	case EQ_OP:
 	case NE_OP:
-		cout<<"conditional stmt";
+		//cout<<"conditional stmt";
 		break;
 	default:
 		

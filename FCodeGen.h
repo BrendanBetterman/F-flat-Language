@@ -53,7 +53,7 @@ public:
     void ProcessDo();
     void ProcessEndFwhile();
 
-    void ProcessWhile();
+    void ProcessWhile(ExprRec& Lexpr,ConRec& con,ExprRec& Rexpr);
     void ProcessWhileCond();
     void ProcessEndWhile();
 
@@ -87,13 +87,18 @@ private:
     int fakoff;
     int stroff;
     int booloff;
+    //loop stacks
     int fifId;
+    int whlId;
+
     vector<Symbol> symbolTable;
     vector<Symbol> intTable;
     vector<Symbol> boolTable;
     vector<string> fakeTable;
     vector<string> stringTable;
+    //loop stacks
     vector<string> fifStack;
+    vector<string> whileStack;
     
     string kindtoStr(const ExprKind& t);
     string ConvertToSam(string s);
@@ -106,6 +111,9 @@ private:
     bool isFake(ExprKind& kind);
     bool isInt(ExprKind& kind);
     int getOff(string& s);
+
+    void Condition(ExprRec& expr,ConRec& con,ExprRec& expr2);
+    void Jump(ConRec& con,string& label);
 
     void ExtractExpr(const ExprRec & e, string& s);
     string ExtractOp(const OpRec & o, ExprKind & k);
