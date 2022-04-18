@@ -31,7 +31,7 @@ void Scanner::BufferChar(char c){
 Token Scanner::CheckReserved(){
 	cout << tokenBuffer<<"\n";
     if(tokenBuffer == "BOF") return BEGIN_SYM;
-	if (tokenBuffer == "EOF") return END_SYM;
+	if (tokenBuffer == "EOF") return EOF_SYM;//END_SYM
 	if (tokenBuffer == "fin") return FIN_SYM;
 	if (tokenBuffer == "fout") return FOUT_SYM;
 	if (tokenBuffer == "foutln") return FOUTLN_SYM;
@@ -141,7 +141,7 @@ Token Scanner::GetNextToken(){
 						currentChar = NextChar();
 					}while (currentChar != '\n');
 					//needs to return no op
-					currentChar = NextChar();
+					//currentChar = NextChar();
 					break;
 				}else if(c=='*'){
 					//multiLine
@@ -309,7 +309,10 @@ Token Scanner::GetNextToken(){
 
 
 				}else{
-					LexicalError(currentChar);
+					if(currentChar !='\n'){
+						LexicalError(currentChar);
+					}
+					
 				}
     }
 	return EOF_SYM;
