@@ -980,6 +980,7 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
                 Generate("e1:FLT     ", "R0", s);
 
             ExtractExpr(e2,s);
+			
             if (isE2_int)
                 Generate("e2:FLT     ", "R0", s);  //needs to be different reg?
 

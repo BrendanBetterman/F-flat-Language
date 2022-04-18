@@ -474,7 +474,16 @@ void Parser::VarInit()
 	{
 	case INT_SYM:
 		Match(INT_SYM);
+		expr.kind = LITERAL_INT;
 		Match(ID);
+		expr.name = scan.tokenBuffer;
+		code.ProcessId(expr);
+		NextToken();
+		Match(ASSIGN_OP);
+		Literal();
+		code.ProcessLiteral(expr);
+		code.Assign(expr,expr);
+		Match(SEMICOLON);
 		break;
 	case ID:
 		Variable(expr);
@@ -522,9 +531,11 @@ void Parser::ForStmt()
 	Match(FOR_SYM);
 	Match(LPAREN);
 	VarInit();
-	Match(ASSIGN_OP);
-	Expression(Lexpr);
-	Match(SEMICOLON);
+	
+	//Match(ASSIGN_OP);
+	//Expression(Lexpr);
+	//Match(SEMICOLON);
+	//init var 
 	Condition(Lexpr,con,Rexpr);
 	Match(SEMICOLON);
 	Variable(Lexpr);
