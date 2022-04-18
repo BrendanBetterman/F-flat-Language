@@ -662,7 +662,27 @@ void CodeGen::ProcessEndFwhile(ExprRec& Lexpr,ConRec& con,ExprRec& Rexpr)
 	string label;
 	label = whileStack.back();
 	whileStack.pop_back();
-	Jump(con,label);//jmp needs to be inverted.
+	switch(con.con){
+		case EQ:
+			Generate("JEQ		",label,"");
+			break;
+		case NE:
+			Generate("JNE		",label,"");
+			break;
+		case GE:
+			Generate("JGE		",label,"");
+			break;
+		case LE:
+			Generate("JLE		",label,"");
+			break;
+		case GT:
+			Generate("JGT		",label,"");
+			break;
+		case LT:
+			Generate("JLT		",label,"");
+			break;
+	}
+	//Jump(con,label);//jmp needs to be inverted.
 }
 //---while---
 void CodeGen::ProcessWhile(ExprRec& Lexpr,ConRec& con,ExprRec& Rexpr)
