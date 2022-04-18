@@ -938,7 +938,14 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
             e.kind = TEMP_EXPR;
             e.name = GetTemp();
             ExtractExpr(e1,s);
-            Generate("LD		","R0",s);
+
+			string id;
+			int off;
+			id =e1.name;
+			off = getOff(id);
+			IntToAlpha(off,id);
+
+            Generate("LD		","R0","+"+id+"(R15)");
             switch(op.op){
                 case PLUS:
                     cout<<"GenInfixPLUS-";
@@ -953,8 +960,8 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
 
             Generate(tmp, "R0", s);
             ExtractExpr(e, s);
-			string id;
-			int off;
+			//string id;
+			//int off;
 			id =e1.name;
 			off = getOff(id);
 			IntToAlpha(off,id);
