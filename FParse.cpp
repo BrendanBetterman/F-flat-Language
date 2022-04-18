@@ -537,13 +537,15 @@ void Parser::ForStmt()
 
 void Parser::DoFwhileStmt()
 {
-	ExprRec Lexpr,Rexpr;
+	ExprRec expr,Lexpr,Rexpr;
 	ConRec con;
 	Match(DO_SYM);
-	StmtList(Lexpr);
+	code.ProcessDo();
+	StmtList(expr);
 	Match(FWHILE_SYM);
 	Match(LPAREN);
 	Condition(Lexpr,con,Rexpr);
+	code.ProcessEndFwhile(Lexpr,con,Rexpr);
 	Match(RPAREN);
 }
 

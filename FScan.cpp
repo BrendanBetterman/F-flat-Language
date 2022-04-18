@@ -109,10 +109,14 @@ Token Scanner::GetNextToken(){
     {
 		
         /* code either switch statment or if wall */
-		if(isspace(currentChar)){
+		while(isspace(currentChar)){
 			currentChar = NextChar();
 		}
-		if(currentChar =='\n'){
+		while(currentChar == '\t'){
+			currentChar = NextChar();
+		}
+		
+		while(currentChar =='\n'){
 			currentChar = NextChar();
 		}
 		switch(currentChar){

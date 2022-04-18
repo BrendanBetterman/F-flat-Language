@@ -642,13 +642,27 @@ void CodeGen::ProcessElse()
 
 }
 //---do-while---
+//Gen Label
 void CodeGen::ProcessDo()
 {
-
+	//writes conditional stmt
+	string s,a;
+	s= "WHL";
+	IntToAlpha(whlId++,a);
+	s = s+a;
+	Generate("LABEL	",s,"");
+	whileStack.push_back(s);
+	//Gens flipped conditional jump
+	
 }
-void CodeGen::ProcessEndFwhile()
+//jump back to label
+void CodeGen::ProcessEndFwhile(ExprRec& Lexpr,ConRec& con,ExprRec& Rexpr)
 {
-
+	Condition(Lexpr,con,Rexpr);
+	string label;
+	label = whileStack.back();
+	whileStack.pop_back();
+	Jump(con,label);//jmp needs to be inverted.
 }
 //---while---
 void CodeGen::ProcessWhile(ExprRec& Lexpr,ConRec& con,ExprRec& Rexpr)

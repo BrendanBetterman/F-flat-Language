@@ -51,7 +51,7 @@ public:
     void ProcessElse();
 
     void ProcessDo();
-    void ProcessEndFwhile();
+    void ProcessEndFwhile(ExprRec& Lexpr,ConRec& con,ExprRec& Rexpr);
 
     void ProcessWhile(ExprRec& Lexpr,ConRec& con,ExprRec& Rexpr);
     void ProcessWhileCond();
