@@ -1,0 +1,26 @@
+//  21ForLoop.tun
+//
+//  Simple for loops.
+
+BOF
+	
+	int n, k;
+	
+	foutln( "Enter a positive integer upper limit for counting: ");
+	fin( n );
+	fout("\n");
+	foutln( "Forward: ");
+	foutln( "\n");
+	for ( k = 1 ; k < n; k = k+1)
+		foutln( k);
+	endfor
+
+	foutln( "\n");
+	foutln( "Backward: ");
+	foutln( "\n");
+	for ( int k2 = 1 ; k2 < n; k2 = k2+1)
+		foutln( k2);
+	endfor
+	foutln( "\n" );
+	
+EOF

@@ -1,0 +1,27 @@
+//  19Loop.flat
+//
+//  Simple loops.
+
+BOF
+	int n, k;
+
+	foutln( "Enter a positive integer upper limit for counting: ");
+	fin( n);
+	fout("\n");
+	k = 1;
+	foutln( "Forward: ");
+	do
+		foutln( k);
+		k= k + 1;
+	while (k <= n )
+	fout("\n"); 
+	
+	k = n;
+	foutln( "Backward: ");
+	do
+		foutln( k);
+		k = k - 1;
+	while (k != 0 )
+
+	fout("\n"); 
+EOF

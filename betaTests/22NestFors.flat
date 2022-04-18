@@ -1,0 +1,21 @@
+/*  22NestedFors.flat
+  
+    For loops nested four levels deep.
+*/
+
+BOF
+	int i, j, k,  m;
+
+
+	for ( i = 7 ; i <= 9; i = i + 1)
+		for ( j = 1 ; j <= 9; j = j + 1)
+			for ( k = 1 ; k <= 5; k = k + 1)
+				for ( m = 1; m <= 9; m = m + 1)
+					foutln( 1000*i + 100*j + 10*k + m);
+				endfor
+			endfor
+			fout("\n") ;
+		endfor
+		fout("\n") ;
+	endfor
+EOF
