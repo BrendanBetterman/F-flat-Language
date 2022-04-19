@@ -890,6 +890,6 @@ void Parser::Program()
 void Parser::SystemGoal()
 {
 	Program();
-	Match(EOF_SYM);
+	//Match(EOF_SYM);
 	code.Finish();
 }

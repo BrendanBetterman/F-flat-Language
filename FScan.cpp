@@ -31,7 +31,7 @@ void Scanner::BufferChar(char c){
 Token Scanner::CheckReserved(){
 	cout << tokenBuffer<<"\n";
     if(tokenBuffer == "BOF") return BEGIN_SYM;
-	if (tokenBuffer == "EOF") return EOF_SYM;//END_SYM
+	if (tokenBuffer == "EOF") return END_SYM;//END_SYM
 	if (tokenBuffer == "fin") return FIN_SYM;
 	if (tokenBuffer == "fout") return FOUT_SYM;
 	if (tokenBuffer == "foutln") return FOUTLN_SYM;
