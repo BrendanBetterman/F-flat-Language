@@ -418,9 +418,9 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 		case LITERAL_FAKE:
 			cout<<"assign fake";
 			ExtractExpr(source, s);
-			s = "+" + s + "(R14)";
+			//s = "+" + s + "(R14)";
 			//Generate("LD		", "R0", s);
-			ExtractExpr(target, s);
+			//ExtractExpr(target, s);
 			IntToAlpha(stoi(s)+2,s);
 			s = "+" + s + "(R14)";
 			//Generate("LD		", "R1", s);
@@ -508,7 +508,7 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 		case TEMP_EXPR:
 		case LITERAL_INT:
 			//outExpr.kind = TEMP_EXPR;
-			ExtractExpr(outExpr,s);
+			//ExtractExpr(outExpr,s);
 			
 			id =outExpr.name;
 			tmp = getOff(id);
@@ -519,6 +519,8 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 		case LITERAL_FAKE:
 			//s = "+" + s + "(R14)";
 		case TEMPF_EXPR:
+			//ExtractExpr(outExpr,s);
+
 			Generate("WRF		", s, "");
 			break;
 		default:

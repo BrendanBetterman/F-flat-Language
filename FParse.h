@@ -33,11 +33,11 @@ private:
 
 	void Match(Token t);
 
-	void VarDec();
+	void VarDec(ExprKind& expr);
 
-	void VarDecList();
+	void VarDecList(ExprKind& expr);
 	string kindToStr(ExprKind& k);
-	void VarDecListTail();
+	void VarDecListTail(ExprKind& expr);
 
 	void VarDecTail();
 

@@ -78,26 +78,30 @@ string Parser::kindToStr(ExprKind& k){
 	}
 }
 
-void Parser::VarDec()
+void Parser::VarDec(ExprKind& kind)
 {
+	ExprRec expr;//should get type from previous
+	expr.kind =kind;
 	Match(ID);
+	expr.name = scan.tokenBuffer;//new 4-20
+	code.ProcessId(expr);
 	VarDecTail();
 }
 
-void Parser::VarDecList()
+void Parser::VarDecList(ExprKind& kind)
 {
-	VarDec();
-	VarDecListTail();
+	VarDec(kind);
+	VarDecListTail(kind);
 }
 
-void Parser::VarDecListTail()
+void Parser::VarDecListTail(ExprKind& kind)
 {
 	switch (NextToken())
 	{
 	case COMMA:
 		Match(COMMA);
-		VarDec();
-		VarDecListTail();
+		VarDec(kind);
+		VarDecListTail(kind);
 		break;
 	case SEMICOLON:
 		break;
@@ -141,7 +145,7 @@ void Parser::DecTail(ExprRec& expr)
 	case SEMICOLON:
 	case COMMA:
 		VarDecTail();
-		VarDecListTail();
+		VarDecListTail(expr.kind);
 		break;
 	default:
 		SyntaxError(NextToken(), "");
