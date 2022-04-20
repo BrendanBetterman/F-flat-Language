@@ -537,13 +537,18 @@ void Parser::ForStmt()
 	//Match(SEMICOLON);
 	//init var 
 	Condition(Lexpr,con,Rexpr);
+	code.ProcessForCond(Lexpr,con,Rexpr);
+	//code.forcond
 	Match(SEMICOLON);
 	Variable(Lexpr);
 	Match(ASSIGN_OP);
 	Expression(Lexpr);
+	code.LoopUpdate();
 	Match(RPAREN);
 	StmtList(Lexpr);
+	
 	Match(ENDFOR_SYM);
+	code.ProcessEndFor();
 }
 
 void Parser::DoFwhileStmt()
@@ -556,8 +561,8 @@ void Parser::DoFwhileStmt()
 	Match(FWHILE_SYM);
 	Match(LPAREN);
 	Condition(Lexpr,con,Rexpr);
-	code.ProcessEndFwhile(Lexpr,con,Rexpr);
 	Match(RPAREN);
+	code.ProcessEndFwhile(Lexpr,con,Rexpr);
 }
 
 void Parser::WhileStmt()
@@ -748,22 +753,15 @@ void Parser::AssignStmt(ExprRec& expr)
 	cout << "Assignment op\n";
 	Match(SEMICOLON);
 }
-
+//get type,match id,set name,code.processid,dectail
 void Parser::Declaration(ExprRec& expr)
 {
-	
 	Type(expr);
-	
 	Match(ID);
-	//cout << scan.tokenBuffer << " statemnett\n";
 	expr.name = scan.tokenBuffer;
-	//cout<<"here"<<kindToStr(expr.kind)<<endl;
 	code.ProcessId(expr);
-	//cout<<kindToStr(expr.kind)<<endl;
 	DecTail(expr);
-	//cout<<kindToStr(expr.kind)<<endl;
 	cout << "Processed ID\n";
-	
 	Match(SEMICOLON);
 }
 

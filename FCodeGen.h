@@ -58,7 +58,7 @@ public:
     void ProcessEndWhile();
 
     void InitLoopCtrl();
-    void ProcessForCond();
+    void ProcessForCond(ExprRec& Lexpr,ConRec& con,ExprRec& Rexpr);
     void LoopUpdate();
     void ProcessEndFor();
 
@@ -114,7 +114,7 @@ private:
 
     void Condition(ExprRec& expr,ConRec& con,ExprRec& expr2);
     void Jump(ConRec& con,string& label);
-
+    void NIJump(ConRec& con,string& label);
     void ExtractExpr(const ExprRec & e, string& s);
     string ExtractOp(const OpRec & o, ExprKind & k);
     string GetTemp();

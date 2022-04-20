@@ -127,7 +127,12 @@ Token Scanner::GetNextToken(){
 			case ';':
 				return SEMICOLON;
 			case '+':
-				return ADD_OP;
+				if(sourceFile.peek() == '+'){
+					return INC_OP;
+				}else{
+					return ADD_OP;
+				}
+				
 			case '-':
 				return SUB_OP;
 			case '/':

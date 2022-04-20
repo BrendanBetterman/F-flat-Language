@@ -595,6 +595,28 @@ void CodeGen::Jump(ConRec& con,string& label){
 			break;
 	}
 }
+void CodeGen::NIJump(ConRec& con,string& label){
+	switch(con.con){
+		case EQ:
+			Generate("JEQ		",label,"");
+			break;
+		case NE:
+			Generate("JNE		",label,"");
+			break;
+		case GE:
+			Generate("JGE		",label,"");
+			break;
+		case LE:
+			Generate("JLE		",label,"");
+			break;
+		case GT:
+			Generate("JGT		",label,"");
+			break;
+		case LT:
+			Generate("JLT		",label,"");
+			break;
+	}
+}
 /*---fif---
 (Left,conditional op, right)
 Compare Registers, address , in line literals first
@@ -662,26 +684,7 @@ void CodeGen::ProcessEndFwhile(ExprRec& Lexpr,ConRec& con,ExprRec& Rexpr)
 	string label;
 	label = whileStack.back();
 	whileStack.pop_back();
-	switch(con.con){
-		case EQ:
-			Generate("JEQ		",label,"");
-			break;
-		case NE:
-			Generate("JNE		",label,"");
-			break;
-		case GE:
-			Generate("JGE		",label,"");
-			break;
-		case LE:
-			Generate("JLE		",label,"");
-			break;
-		case GT:
-			Generate("JGT		",label,"");
-			break;
-		case LT:
-			Generate("JLT		",label,"");
-			break;
-	}
+	NIJump(con,label);
 	//Jump(con,label);//jmp needs to be inverted.
 }
 //---while---
@@ -718,19 +721,62 @@ void CodeGen::ProcessEndWhile()
 //---for-loop---
 void CodeGen::InitLoopCtrl()
 {
-
+	
 }
-void CodeGen::ProcessForCond()
+void CodeGen::ProcessForCond(ExprRec& Lexpr,ConRec& con,ExprRec& Rexpr)
 {
-
+	string label,a,cond,loop,update,exit;
+	label = "FOR";
+	//gen label condition label
+	IntToAlpha(whlId++,a);
+	cond = label + a;
+	Generate("LABEL	",cond,"");
+	//gen loop label
+	IntToAlpha(whlId++,a);
+	loop = label + a;
+	//gen update label
+	IntToAlpha(whlId++,a);
+	update = label + a;
+	//gen exit label
+	IntToAlpha(whlId++,a);
+	exit = label + a;
+	//push to stack
+	whileStack.push_back(exit);
+	whileStack.push_back(update);
+	whileStack.push_back(loop);
+	whileStack.push_back(cond);
+	//first jump to loop
+	Condition(Lexpr,con,Rexpr);
+	NIJump(con,loop);//non inverse
+	//if condition not met exit
+	Generate("JMP	",exit,"");
+	//gen update label
+	Generate("LABEL	",update,"");
 }
 void CodeGen::LoopUpdate()
 {
-
+	//updates before
+	string label,loop,top,a;
+	//jump to condition
+	top = whileStack.back();
+	whileStack.pop_back();
+	Generate("JMP	",top,"");
+	//set label for loop
+	loop = whileStack.back();
+	whileStack.pop_back();
+	Generate("LABEL	",loop,"");
 }
 void CodeGen::ProcessEndFor()
 {
-
+	string update,exit;
+	//jmp to update
+	update = whileStack.back();
+	whileStack.pop_back();
+	Generate("JMP		",update,"");
+	//exit
+	exit = whileStack.back();
+	whileStack.pop_back();
+	Generate("LABEL		",exit,"");
 }
 //---Conditions---
 void CodeGen::SetOrCond()
