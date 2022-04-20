@@ -105,6 +105,7 @@ bool CodeGen::LookUp(const string & s, ExprKind & t)
 				case LITERAL_FAKE:
 					t=IDF_EXPR;
 					break;
+                default: break;
 			}
 			return true;
 		}
@@ -867,66 +868,20 @@ string CodeGen::ExtractOp(const OpRec& o, ExprKind & k){
 
     }
 
-
+    return "";
 }
-/*
-void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2, ExprRec& e)
-{
-	string s;
-	string tmp;
-	cout<< kindtoStr(e.kind);
-	if(e1.kind == ID_EXPR && e2.kind == ID_EXPR){
-		e.kind = ID_EXPR;
-		switch(op.op){
-            case PLUS:  e.val = e1.val + e2.val; break;
-            case MINUS:	e.val = e1.val - e2.val; break;
-            case MULT:  e.val = e1.val * e2.val; break;
-            case DIV:   e.val = e1.val / e2.val; break;
-            case MOD:   e.val = e1.val % e2.val; break;
-		}
-	//}//else{ if(e1.kind == IDF_EXPR && e2.kind == IDF_EXPR){
-		
-        //e.kind = IDF_EXPR;
-        //switch(op.op){
-        //    case PLUS:  e.valF = e1.valF + e2.valF; break;
-        //    case MINUS: e.valF = e1.valF - e2.valF; break;
-        //    case MULT:  e.valF = e1.valF * e2.valF; break;
-        //    case DIV:   e.valF = e1.valF / e2.valF; break;
-        //    default: break;
-       // }
-    }else{
-		
-		e.kind = TEMP_EXPR;
-		e.name = GetTemp();
-		ExtractExpr(e1,s);
-		Generate("LD		","R0",s);
-		switch(op.op){
-			case PLUS:
-				cout<<"plust";
-			case MINUS:
-				cout<<"min";
-			default:
-				cout<<"default";
-		}
-		ExtractExpr(e2, s);
-        tmp = ExtractOp(op, e.kind);
-		cout<< tmp<<"here\n";
-		
-		Generate(tmp, "R0", s);
-		ExtractExpr(e, s);
-		Generate("STO		", "R0", s);
 
-	}
-
-    
-}*/
 void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2, ExprRec& e)
 {
     string s;
     string tmp;
     bool isE1_int = true;  //set these, so no warnings below
     bool isE2_int = true;
-    bool isFakes = true;;
+    bool isFakes = true;
+
+    if (e.kind == LITERAL_INT || e.kind == TEMP_EXPR || e.kind == ID_EXPR) isFakes = false;        //int result
+    else if (e.kind == LITERAL_FAKE || e.kind == TEMPF_EXPR || e.kind == IDF_EXPR) isFakes = true; // fake result
+         else cout << "\nGenInfixError: invalid result type assignment:" << e.name << "\n";        // wth result
 
     switch(e1.kind)
     {
@@ -951,8 +906,6 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
     case LITERAL_STR: break;
     default: cout << "Default-e2.kind\n"; break;
     }
-    if (isE1_int && isE2_int) isFakes = false;
-    else isFakes = true;
 
 
     if ((e1.kind == LITERAL_INT && e2.kind == LITERAL_INT) || (e1.kind == LITERAL_FAKE && e2.kind == LITERAL_FAKE))
@@ -994,11 +947,11 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
             Generate("LD		","R0","+"+id+"(R15)");
             switch(op.op){
                 case PLUS:
-                    cout<<"GenInfixPLUS-";
+                    cout<<"GenInfixPLUS-"; break;
                 case MINUS:
-                    cout<<"GenInfixMIN-";
+                    cout<<"GenInfixMIN-"; break;
                 default:
-                    cout<<"GenInfixDefaultOP";
+                    cout<<"GenInfixDefaultOP"; break;
             }
             ExtractExpr(e2, s);
             tmp = ExtractOp(op, e.kind);
@@ -1062,6 +1015,7 @@ void CodeGen::ProcessId(ExprRec& e)
 		case LITERAL_FAKE:
 			//e.kind = IDF_EXPR;
 			break;
+        default: break;
 	}
 	//e.kind = ID_EXPR;
 	//cout << scan.tokenBuffer;
