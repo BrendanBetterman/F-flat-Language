@@ -40,8 +40,9 @@ string CodeGen::kindtoStr(const ExprKind& t){
 			return "LITERAL_FAKE";
 		case LITERAL_BOOL: 
 			return "LITERAL_BOOL";
+        default: return "";
 	}
-	
+
 }
 void CodeGen::CheckId(const string & s, ExprKind & t)
 {
@@ -75,6 +76,7 @@ void CodeGen::Enter(const string & s, ExprKind & t )
 		case LITERAL_STR:
 			thisSym.off = stroff;
 			stroff+= StringSamDistance(stringTable.size()-1);
+            break;
         default: 
 			cout<<"here";
 			break;
@@ -321,7 +323,7 @@ void CodeGen::Finish()
 	}
 
 	outFile.close();
-	for(int i =0; i <symbolTable.size(); i++){
+    for(unsigned i =0; i <symbolTable.size(); i++){
 		cout<<symbolTable[i].label<<symbolTable[i].off<<endl;
 
 	}
@@ -392,6 +394,51 @@ void CodeGen::Finish()
     listFile << " _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_" << endl;
     listFile << endl;
     listFile << " Normal successful compilation." << endl;
+
+
+//--- START Debug Vectors
+    string p = "######################################################";
+    string d = "###-----------------------------------------------";
+    listFile << endl << endl << endl;
+    listFile << "DEBUG VECTORS" << endl << p << endl;
+    listFile << "###  vector<Symbol> symbolTable" << endl << d << endl;
+    string st, sk, so, sl;
+    unsigned sti = symbolTable.size();
+    IntToAlpha(sti, st);
+    listFile << "### Symbol(KIND, OFF, LABEL)" << endl;
+    listFile << "###  symbolTable.size() = " << st << endl << d << endl;
+    for (unsigned j = 0; j < sti; j++)
+    {
+        IntToAlpha(j,st);
+        sk = kindtoStr(symbolTable[j].kind);
+        IntToAlpha(symbolTable[j].off, so);
+        sl = symbolTable[j].label;
+        listFile << "### [" << st << "]->Symbol( " << sk << ", " << so << ", " << sl << " )" << endl;
+    }
+    listFile << d << endl << p << endl;
+    listFile << "### vector<string> fakeTable" << endl << d << endl;
+    sti = fakeTable.size();
+    IntToAlpha(sti, st);
+    listFile << "### fakeTable.size() = " << st << endl << d << endl;
+    for (unsigned k = 0; k < sti; k++)
+    {
+        IntToAlpha(k,st);
+        listFile << "### [" << st << "]->string(\"" << fakeTable[k] << "\")" << endl;
+    }
+    listFile << d << endl << p << endl;
+    listFile << "### vector<string> stringTable" << endl << d << endl;
+    sti = stringTable.size();
+    IntToAlpha(sti, st);
+    listFile << "### stringTable.size() = " << st << endl << d << endl;
+    for (unsigned l = 0; l < sti; l++)
+    {
+        IntToAlpha(l,st);
+        listFile << "### [" << st << "]->string(\"" << stringTable[l] << "\")" << endl;
+    }
+    listFile << d << endl << p << endl;
+ //--- END Debug Vectors
+
+
 
     listFile.close();
 
@@ -494,7 +541,7 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 	//WIP .kind of lit str bool and fake
 	string s, id;
 	int tmp;
-	ExprKind kind;
+    //ExprKind kind;
 	
 	ExtractExpr(outExpr,s);
 	//LookUp(outExpr.name,kind);

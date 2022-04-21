@@ -1,0 +1,14 @@
+BOF
+int i, j, k, l;
+i = 1;
+j = 10;
+k = i;
+l = k + 1;
+k = j + i;
+i = 1 + i;
+j = k + j;
+fake z = 0.625;
+fake w;
+fake x = 1.414;
+w = z + x;
+EOF
