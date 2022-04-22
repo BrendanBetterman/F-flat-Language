@@ -60,12 +60,14 @@ void CodeGen::Enter(const string & s, ExprKind & t )
     thisSym.kind = t;
 	
 	switch(t){
-		case LITERAL_INT:
+		//case LITERAL_INT:
+		case ID_EXPR:
 			thisSym.off = intoff;
-			//thisSym.kind = ID_EXPR;//tset
 			intoff +=2;
 			break;
-		case LITERAL_FAKE:
+		case IDF_EXPR:
+		//case LITERAL_FAKE:
+			//fakeTable.push_back("0.0");
 			thisSym.off = fakoff;
 			fakoff +=4;
 			break;
@@ -289,7 +291,7 @@ void CodeGen::Finish()
 	Generate("LABEL	", "INTS","");
 	int tmpSize =0;
     for(unsigned i=0; i< symbolTable.size(); i++){
-		if(symbolTable[i].kind == LITERAL_INT) tmpSize +=1;
+		if(symbolTable[i].kind == ID_EXPR) tmpSize +=1;
 	}
     IntToAlpha(int(2*(tmpSize)),s);
 	Generate("SKIP	", s, "");
@@ -309,7 +311,7 @@ void CodeGen::Finish()
 	
 	tmpSize =0;
     for(unsigned i=0; i< symbolTable.size(); i++){
-		if(symbolTable[i].kind == LITERAL_FAKE) tmpSize +=1;
+		if(symbolTable[i].kind == IDF_EXPR) tmpSize +=1;
 	}
     IntToAlpha(int(4*(tmpSize)),s);
     Generate("SKIP	", s, "");
@@ -466,11 +468,11 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 			cout<<"assign fake";
 			ExtractExpr(source, s);
 			//s = "+" + s + "(R14)";
-			//Generate("LD		", "R0", s);
-			//ExtractExpr(target, s);
-			IntToAlpha(stoi(s)+2,s);
-			s = "+" + s + "(R14)";
-			//Generate("LD		", "R1", s);
+			Generate("LD		", "R0", s);
+			ExtractExpr(target, s);
+			//IntToAlpha(s,s);
+			//s = "+" + s + "(R14)";
+			Generate("STO		", "R0", s);
 
 			break;
 		case LITERAL_BOOL:
@@ -1057,6 +1059,7 @@ void CodeGen::ProcessId(ExprRec& e)
 	//switching literal to id breaks
 	//assignments and calling
     CheckId(scan.tokenBuffer,e.kind);
+
 	switch(e.kind){
 		case LITERAL_INT:
 			//e.kind = ID_EXPR;
@@ -1083,7 +1086,7 @@ void CodeGen::ProcessLiteral(ExprRec& e)
 		case LITERAL_INT:
 			cout << "process lit int\n";
 			//cout << scan.tokenBuffer.data();
-			e.kind = LITERAL_INT;
+			//e.kind = LITERAL_INT;
 			e.val = atoi(scan.tokenBuffer.data());
 			cout << e.val;
 			
@@ -1103,26 +1106,23 @@ void CodeGen::ProcessLiteral(ExprRec& e)
             if(scan.tokenBuffer.data() == string("yay") ) { e.val = 1; }
             else { e.val = 0; cout<<"false"; }
             break;
+		
 		case LITERAL_FAKE:
 			cout<<"process fake";
             //cout << scan.tokenBuffer.data()<<"\n";
 			e.valF = std::stof(scan.tokenBuffer.data());
             //e.valF = atoi(scan.tokenBuffer.data());
-			e.kind = LITERAL_FAKE;
+			//e.kind = LITERAL_FAKE;
 			
 			fakeTable.push_back(scan.tokenBuffer.data());
 			
             cout << scan.tokenBuffer.data();
 			break;
-		case ID_EXPR:
-            cout << "ID expr";
-			break;
+	
 		case TEMP_EXPR:
             cout << "TEMP expr";
 			break;
-        case IDF_EXPR:
-            cout << "IDF expr in literal process";
-            break;
+       
         case TEMPF_EXPR:
             cout << "TEMPF expr";
             break;

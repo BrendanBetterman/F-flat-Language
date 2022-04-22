@@ -45,7 +45,7 @@ private:
 
 	void Type(ExprRec& expr);
 
-	void Literal();
+	void Literal(ExprRec& expr);
 
 	void MultOp();
 

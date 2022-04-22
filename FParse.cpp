@@ -129,16 +129,17 @@ void Parser::VarDecTail()
 
 void Parser::DecTail(ExprRec& expr)
 {
-	
+	ExprRec source;
 	switch (NextToken())
 	{
 	case ASSIGN_OP:
 		Match(ASSIGN_OP);
-		Literal();
+		Literal(source);
 		
-		code.ProcessLiteral(expr);
+		code.ProcessLiteral(source);
 		cout << "Assign OP\n";
-		code.Assign(expr,expr);
+
+		code.Assign(expr,source);
 		//cout << scan.tokenBuffer;
 		break;
 	case LSTAPLE:
@@ -158,7 +159,7 @@ void Parser::Type(ExprRec& expr)
 	{
 	case INT_SYM:
 		Match(INT_SYM);
-		expr.kind=LITERAL_INT;
+		expr.kind=ID_EXPR;//was lit int
 		cout<<"type is literal int";
 		break;
 	case BOOL_SYM:
@@ -167,7 +168,7 @@ void Parser::Type(ExprRec& expr)
 		break;
 	case FAKE_SYM:
 		Match(FAKE_SYM);
-		expr.kind = LITERAL_FAKE;
+		expr.kind = IDF_EXPR;//was lit fake
 		break;
 	case STR_SYM:
 		Match(STR_SYM);
@@ -178,7 +179,7 @@ void Parser::Type(ExprRec& expr)
 	}
 }
 
-void Parser::Literal()
+void Parser::Literal(ExprRec& expr)
 {
 	switch (NextToken())
 	{
@@ -255,26 +256,26 @@ void Parser::Primary(ExprRec& result)
 	{
 	case INT_LITERAL:
 		result.kind = LITERAL_INT;
-		Literal();
+		Literal(result);
 		code.ProcessLiteral(result);
 		cout << "Process Literal INT\n";
 		
 		break;
 	case FAKE_LITERAL:
 		result.kind = LITERAL_FAKE;
-		Literal();
+		Literal(result);
 		code.ProcessLiteral(result);
 		cout << "Process Literal Fake\n";
 		break;
 	case STR_LITERAL:
 		result.kind = LITERAL_STR;
-		Literal();
+		Literal(result);
 		code.ProcessLiteral(result);
 		cout << "Process Literal STR\n";
 		break;
 	case BOOL_LITERAL:
 		result.kind = LITERAL_BOOL;
-		Literal();
+		Literal(result);
 		code.ProcessLiteral(result);
 		cout << "Process Literal Bool\n";
 		break;
@@ -478,13 +479,13 @@ void Parser::VarInit()
 	{
 	case INT_SYM:
 		Match(INT_SYM);
-		expr.kind = LITERAL_INT;
+		expr.kind = LITERAL_INT;//should be id_expr
 		Match(ID);
 		expr.name = scan.tokenBuffer;
 		code.ProcessId(expr);
 		NextToken();
 		Match(ASSIGN_OP);
-		Literal();
+		Literal(expr);
 		code.ProcessLiteral(expr);
 		code.Assign(expr,expr);
 		Match(SEMICOLON);
@@ -751,8 +752,10 @@ void Parser::AssignStmt(ExprRec& expr)
 	ExprRec identifier;
 	Variable(expr);
 	Match(ASSIGN_OP);
-	Expression(expr);
-	code.Assign(identifier, expr);
+	Expression(identifier);
+	//identifier.kind = expr.kind;
+	//cout<<expr.valF;
+	code.Assign( expr,identifier);
 	
 	cout << "Assignment op\n";
 	Match(SEMICOLON);
