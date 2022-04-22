@@ -870,7 +870,7 @@ string CodeGen::GetTemp(){
 	IntToAlpha(++maxTemp, s);
 	t += s;
 	ExprRec tmp;
-	tmp.kind = LITERAL_INT;
+	tmp.kind = TEMP_EXPR;
     CheckId(t, tmp.kind);  // forcing TEMP_EXPR for quick fix
 	return t;
 }
@@ -881,7 +881,7 @@ string CodeGen::GetTempF(){
     IntToAlpha(++maxTemp, s);
     t += s;
     ExprRec tmp;
-    tmp.kind = LITERAL_FAKE;
+    tmp.kind = TEMPF_EXPR;
     CheckId(t, tmp.kind);  // forcing TEMP_EXPR for quick fix
     return t;
 }

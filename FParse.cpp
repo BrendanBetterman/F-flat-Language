@@ -474,12 +474,13 @@ void Parser::AndCond()
 
 void Parser::VarInit()
 {
-	ExprRec expr;
+	ExprRec expr,source;
+	
 	switch (NextToken())
 	{
 	case INT_SYM:
 		Match(INT_SYM);
-		expr.kind = LITERAL_INT;//should be id_expr
+		expr.kind = ID_EXPR;//should be id_expr
 		Match(ID);
 		expr.name = scan.tokenBuffer;
 		code.ProcessId(expr);
@@ -491,7 +492,20 @@ void Parser::VarInit()
 		Match(SEMICOLON);
 		break;
 	case ID:
-		Variable(expr);
+		Match(ID);
+		expr.name = scan.tokenBuffer;
+		switch(NextToken()){
+			case ASSIGN_OP:
+				//assign;
+				Match(ASSIGN_OP);
+				Literal(source);
+				code.ProcessLiteral(source);
+				code.Assign(expr,source);
+				
+				break;
+		}
+		//Variable(expr);
+		Match(SEMICOLON);
 		break;
 	default:
 		SyntaxError(NextToken(), "");
@@ -535,6 +549,7 @@ void Parser::ForStmt()
 	ConRec con;
 	Match(FOR_SYM);
 	Match(LPAREN);
+
 	VarInit();
 	
 	//Match(ASSIGN_OP);
@@ -712,8 +727,8 @@ void Parser::Expression(ExprRec& result)//
 
 void Parser::Variable(ExprRec& expr)
 {
-	Match(ID);
 	
+	Match(ID);
 	expr.name = scan.tokenBuffer;
 	VariableTail(expr);
 }
