@@ -70,7 +70,7 @@ public:
     void SetRelCond();
     void ProcessOp(OpRec& o);
 
-    void GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2, ExprRec& e);
+    void GenInfix( ExprRec & e1, const OpRec & op,ExprRec & e2, ExprRec& e);
 
     void ProcessMulOp();
     void ProcessId(ExprRec& e);

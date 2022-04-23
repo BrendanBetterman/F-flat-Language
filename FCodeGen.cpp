@@ -935,7 +935,7 @@ string CodeGen::GetTempF(){
 }
 string CodeGen::ExtractOp(const OpRec& o, ExprKind & k){
 	//needs it for floats and floats and ints
-
+	
     switch(k)
     {
         case ID_EXPR:
@@ -970,7 +970,7 @@ string CodeGen::ExtractOp(const OpRec& o, ExprKind & k){
     return "";
 }
 
-void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2, ExprRec& e)
+void CodeGen::GenInfix( ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& e)
 {
     string s;
     string tmp;
@@ -978,6 +978,12 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
     bool isE2_int = true;
     bool isFakes = true;
 
+	for(int i=0; i<symbolTable.size(); i++){
+		if(symbolTable[i].label == e.name)e.kind = symbolTable[i].kind;
+		if(symbolTable[i].label == e1.name)e1.kind = symbolTable[i].kind;
+		if(symbolTable[i].label == e2.name)e2.kind = symbolTable[i].kind;
+	}
+	
     if (e.kind == LITERAL_INT || e.kind == TEMP_EXPR || e.kind == ID_EXPR) isFakes = false;        //int result
     else if (e.kind == LITERAL_FAKE || e.kind == TEMPF_EXPR || e.kind == IDF_EXPR) isFakes = true; // fake result
          else cout << "\nGenInfixError: invalid result type assignment:" << e.name << "\n";        // wth result
@@ -1073,20 +1079,22 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
             e.name = GetTempF();
 
             ExtractExpr(e1,s);
-            Generate("LD        ", "R0", s);
-            if (isE1_int)
-                Generate("e1:FLT     ", "R0", s);
-
+            Generate("LD		", "R0", s);
+            if (isE1_int){
+				Generate("%		","e1","");
+                Generate("FLT     ", "R0", s);
+			}
             ExtractExpr(e2,s);
 			
-            if (isE2_int)
-                Generate("e2:FLT     ", "R0", s);  //needs to be different reg?
-
+            if (isE2_int){
+				Generate("%		","e2","");
+                Generate("FLT     ", "R0", s);  //needs to be different reg?
+			}
             Generate(ExtractOp(op, e.kind), "R0", s);
             ExtractExpr(e, s);
 
 
-            Generate("STO       ", "R0", s);
+            Generate("STO		", "R0", s);
 
           }
 
