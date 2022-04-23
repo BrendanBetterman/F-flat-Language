@@ -274,6 +274,7 @@ void CodeGen::Start()
 {
 	Generate("LDA		", "R15", "INTS");
 	Generate("LDA		", "R14", "FAKES");
+	Generate("LDA		", "R11", "FAKELIT");
 	Generate("LDA		", "R13", "STRS");
 	Generate("LDA		", "R12", "BOOLS");
 	//WIP
@@ -304,11 +305,11 @@ void CodeGen::Finish()
     IntToAlpha(int(2*(tmpSize)),s);
 	Generate("SKIP	", s, "");
 
-    Generate("LABEL	", "FAKES", "");
+    Generate("LABEL	", "FAKELIT", "");
     for(unsigned i=0; i< fakeTable.size(); i++){
 		Generate("REAL	",fakeTable[i],"");
 	}
-	
+	Generate("LABEL	", "FAKES", "");
 	tmpSize =0;
     for(unsigned i=0; i< symbolTable.size(); i++){
 		if(symbolTable[i].kind == IDF_EXPR) tmpSize +=1;
@@ -466,14 +467,12 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 			Generate("STO		", "R0", "+"+id+"(R15)");
 			break;
 		case LITERAL_FAKE:
-			//broken, first part being to rand mem
 			cout<<"assign fake";
 			ExtractExpr(source, s);
-			//s = "+" + s + "(R14)";
+			IntToAlpha(source.val,s);
+			s = "+" + s + "(R11)";
 			Generate("LD		", "R0", s);
-			ExtractExpr(target, s);
-			//IntToAlpha(s,s);
-			id =source.name;
+			id =target.name;
 			tmp = getOff(id);
 			IntToAlpha(tmp,id);
 			s = "+" + id + "(R14)";
@@ -579,7 +578,7 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 	string s, id;
 	int tmp;
     //ExprKind kind;
-	
+	ExprKind kind;
 	ExtractExpr(outExpr,s);
 	//LookUp(outExpr.name,kind);
 	
@@ -589,22 +588,36 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 			Generate("WRST	", s, "");
 			break;
 		case ID_EXPR:
+		case IDF_EXPR:
+			cout<<"id";
+			id =outExpr.name;
+			for(int i=0; i<symbolTable.size(); i++){
+				if(symbolTable[i].label == id){
+					kind = symbolTable[i].kind;
+				}
+			}
+			tmp = getOff(id);
+			IntToAlpha(tmp,id);
+			if(kind ==ID_EXPR){
+				Generate("WRI		", "+"+id+"(R15)", "");
+			}else{
+				Generate("WRF		", "+"+id+"(R14)", "");
+			}
+			break;
 		case TEMP_EXPR:
 		case LITERAL_INT:
 			//outExpr.kind = TEMP_EXPR;
 			//ExtractExpr(outExpr,s);
-			
-			id =outExpr.name;
-			tmp = getOff(id);
-			IntToAlpha(tmp,id);
-			Generate("WRI		", "+"+id+"(R15)", "");
+			//id =outExpr.name;
+			//tmp = getOff(id);
+			//IntToAlpha(tmp,id);
+			Generate("WRI		", s, "");
 			break;
-		case IDF_EXPR:
 		case LITERAL_FAKE:
 			//s = "+" + s + "(R14)";
 		case TEMPF_EXPR:
 			//ExtractExpr(outExpr,s);
-
+			
 			Generate("WRF		", s, "");
 			break;
 		default:
@@ -1150,6 +1163,7 @@ void CodeGen::ProcessLiteral(ExprRec& e)
 			//e.kind = LITERAL_FAKE;
 			
 			fakeTable.push_back(scan.tokenBuffer.data());
+			e.val = (fakeTable.size()-1)*4;
 			
             cout << scan.tokenBuffer.data();
 			break;
