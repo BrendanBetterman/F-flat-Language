@@ -16,9 +16,7 @@ struct OpRec // information about an operator
 {
 	OpKind op; // operator type
 };
-enum ExprKind { ID_EXPR, IDF_EXPR, IDB_EXPR,IDS_EXPR,
-        TEMP_EXPR, TEMPF_EXPR,
-        LITERAL_INT, LITERAL_FAKE,LITERAL_BOOL, LITERAL_STR};
+enum ExprKind { LITERAL_INT, ID_EXPR, TEMP_EXPR, LITERAL_FAKE, IDF_EXPR, TEMPF_EXPR, LITERAL_BOOL, IDB_BOOL, LITERAL_STR };
 
 struct ExprRec // information about a constant, variable, or
                // an intermediate (temporary) result
@@ -72,7 +70,7 @@ public:
     void SetRelCond();
     void ProcessOp(OpRec& o);
 
-    void GenInfix( ExprRec & e1, const OpRec & op,ExprRec & e2, ExprRec& e);
+    void GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2, ExprRec& e);
 
     void ProcessMulOp();
     void ProcessId(ExprRec& e);

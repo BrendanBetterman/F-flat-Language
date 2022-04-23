@@ -25,19 +25,15 @@ CodeGen::CodeGen(){
 string CodeGen::kindtoStr(const ExprKind& t){
 	switch(t){
 		case ID_EXPR:
-			return "ID_Expr";
+            return "ID_EXPR";
 		case IDF_EXPR:
 			return "IDF_EXPR";
-		case IDB_EXPR:
-			return "IDB_Expr";
-		case IDS_EXPR:
-			return "IDS_EXPR";
 		case LITERAL_INT:
 			return "LITERAL_INT";
 		case TEMP_EXPR:
 			return "TEMP_EXPR";
 		case TEMPF_EXPR:
-			return "TEMP_EXPR";
+            return "TEMPF_EXPR";
 		case LITERAL_STR:
 			return "LITERAL_STR";
 		case LITERAL_FAKE:
@@ -71,18 +67,16 @@ void CodeGen::Enter(const string & s, ExprKind & t )
 			break;
 		case IDF_EXPR:
 		//case LITERAL_FAKE:
+			//fakeTable.push_back("0.0");
 			thisSym.off = fakoff;
 			fakoff +=4;
 			break;
-		case IDB_EXPR:
+		case LITERAL_BOOL:
 			thisSym.off = booloff;
 			booloff +=2;
 			break;
-		case IDS_EXPR:
-			//WIP never called
-
+		case LITERAL_STR:
 			thisSym.off = stroff;
-			cout<<"here";
 			stroff+= StringSamDistance(stringTable.size()-1);
             break;
         default: 
@@ -164,19 +158,26 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 	string t;
     int k, n;
 	//cout<< kindtoStr(e.kind);
-	n=0;
+
 	switch (e.kind)
 	{
 	case ID_EXPR:
+		//cout<<"id expr";
 	case TEMP_EXPR:  // operand form: +k(R15)
+		
 		s = e.name;
+		n = 0;
+		//cout<<"temp";
         while (symbolTable[n].label != s) n++;
+        //k = 2 * n;
+		//IntToAlpha(k,t);
 		IntToAlpha(symbolTable[n].off, t); // offset: 2 bytes per variable
 		s = "+" + t + "(R15)";
 		break;
 	case IDF_EXPR:
     case TEMPF_EXPR:  // operand form +k(R14)
         s = e.name;
+        n = 0;
         while(symbolTable[n].label != s) n++;
         //k = 2 * n;
 		k = symbolTable[n].off;
@@ -184,22 +185,19 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 		//IntToAlpha(symbolTable[n].off, t);
         s = "+" + t + "(R14)";
         break;
-	case IDB_EXPR:
-		while(symbolTable[n].label != s) n++;
-		k = symbolTable[n].off;
-		IntToAlpha(k,t);
-		s = "+" + t + "(R12)";
-		break;
-	case IDS_EXPR:
-		while(symbolTable[n].label != s) n++;
-		k = symbolTable[n].off;
-		IntToAlpha(k,t);
-		s = "+" + t + "(R12)";
-		break;
 	case LITERAL_INT:
-		//cout <<"lit int\n";
+		cout <<"lit int\n";
+		n=0;
+		while(symbolTable[n].label!=e.name)n++;
+		//keeps getting last var as e.name
+		//while(symbolTable[++n].label!=e.name);
+		//cout<< symbolTable[--n].off<<endl;
+		//IntToAlpha(symbolTable[--n].off,t);
+		//IntToAlpha(e.val, t);
+		
 		IntToAlpha(e.val,s);
 		s = "#" + s;
+		//s = "+" + t+"(R15)";
 		break;
 	case LITERAL_STR:
 		s ="+" + to_string(StringSamDistance(stringTable.size()-1)) +"(R13)";
@@ -213,8 +211,12 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 		s = "#" + t;
         break;
     case LITERAL_FAKE:
-        //cout << "---literal fake\n";
-		IntToAlpha((fakeTable.size()-1)*4,s);
+        cout << "---literal fake\n";
+		n = 0;
+		while(symbolTable[n].label!=e.name)n++;
+		
+		IntToAlpha(symbolTable[n].off,s);
+		
         s = "+" + s + "(R11)";
         break;
 	default:
@@ -280,6 +282,7 @@ void CodeGen::Start()
 	//R14 , R13, R12
 }
 void CodeGen::Finish()
+
 {
 	string s;
 	listFile.width(6);
@@ -322,11 +325,7 @@ void CodeGen::Finish()
 		cout<<ConvertToSam(stringTable[i]);
 		Generate("STRING	",ConvertToSam(stringTable[i]),"");
 	}
-	//boolean labels
-	Generate("LABEL	","YAY","");
-	Generate("STRING	","\"YAY\"","");
-	Generate("LABEL	","NAY","");
-	Generate("STRING	","\"NAY\"","");
+
 	outFile.close();
     for(unsigned i =0; i <symbolTable.size(); i++){
 		cout<<symbolTable[i].label<<symbolTable[i].off<<endl;
@@ -358,21 +357,21 @@ void CodeGen::Finish()
         {
             switch(j)
             {
-            case 0: if (symbolTable[i].kind == LITERAL_INT)
+            case 0: if (symbolTable[i].kind == ID_EXPR || symbolTable[i].kind == TEMP_EXPR)
                     {
                         listFile.width(7);
                         listFile << curOffSet << "        " << symbolTable[i].label << endl;
                         curOffSet += 2;
                     }
                     break;
-            case 1: if (symbolTable[i].kind == LITERAL_BOOL)
+            case 1: if (symbolTable[i].kind == LITERAL_BOOL)  //Temporay -- needs to be IDB_EXPR || TEMPB_EXPR
                     {
-                        listFile.width(7);
+                    listFile.width(7);
                         listFile << curOffSet << "      " << symbolTable[i].label << endl;
                         curOffSet += 2;
                     }
                     break;
-            case 2: if (symbolTable[i].kind == LITERAL_FAKE)
+            case 2: if (symbolTable[i].kind == IDF_EXPR || symbolTable[i].kind == TEMPF_EXPR)
                     {
                         listFile.width(7);
                         listFile << curOffSet << "      " << symbolTable[i].label << endl;
@@ -407,24 +406,33 @@ void CodeGen::Finish()
     listFile << endl << endl << endl;
     listFile << "DEBUG VECTORS" << endl << p << endl;
     listFile << "###  vector<Symbol> symbolTable" << endl << d << endl;
-    string st, sk, so, sl;
+    string st, sk, so, sl, ls, lt, lo;
     unsigned sti = symbolTable.size();
+    int o;
     IntToAlpha(sti, st);
     listFile << "### Symbol(KIND, OFF, LABEL)" << endl;
     listFile << "###  symbolTable.size() = " << st << endl << d << endl;
+    ls = ""; lt = ""; lo = "";
     for (unsigned j = 0; j < sti; j++)
     {
+        ExprKind k = symbolTable[j].kind;
         IntToAlpha(j,st);
-        sk = kindtoStr(symbolTable[j].kind);
-        IntToAlpha(symbolTable[j].off, so);
+        sk = kindtoStr(k);
+        o = symbolTable[j].off;
+        IntToAlpha(o, so);
         sl = symbolTable[j].label;
-        listFile << "### [" << st << "]->Symbol( " << sk << ", " << so << ", " << sl << " )" << endl;
+        if (j < 10) ls = " "; else ls = "";
+        if (k == ID_EXPR) lt = "     "; else if (k == IDF_EXPR) lt = "    "; else if (k == TEMP_EXPR) lt = "   ";
+        else if (k == TEMPF_EXPR) lt = "  "; else if (k == LITERAL_INT || k == LITERAL_STR) lt = " ";
+        if (o < 10) lo = " +"; else lo = "+";
+        listFile << "###" << ls << " [" << st << "]->Symbol(" << sk << "," << lt << lo << so << ", " << sl << " )" << endl;
     }
     listFile << d << endl << p << endl;
     listFile << "### vector<string> fakeTable" << endl << d << endl;
     sti = fakeTable.size();
     IntToAlpha(sti, st);
     listFile << "### fakeTable.size() = " << st << endl << d << endl;
+
     for (unsigned k = 0; k < sti; k++)
     {
         IntToAlpha(k,st);
@@ -587,14 +595,13 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 	switch(outExpr.kind){
 		case LITERAL_STR:
 		case LITERAL_BOOL:
-		
 			Generate("WRST	", s, "");
 			break;
 		case ID_EXPR:
 		case IDF_EXPR:
 			cout<<"id";
 			id =outExpr.name;
-			for(int i=0; i<symbolTable.size(); i++){
+            for(unsigned i=0; i<symbolTable.size(); i++){
 				if(symbolTable[i].label == id){
 					kind = symbolTable[i].kind;
 				}
@@ -602,17 +609,9 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 			tmp = getOff(id);
 			IntToAlpha(tmp,id);
 			if(kind ==ID_EXPR){
-				Generate("WRI	", "+"+id+"(R15)", "");
-			}else if(kind == IDF_EXPR){
-				Generate("WRF	", "+"+id+"(R14)", "");
-			}else if(kind == IDS_EXPR){
-				//wrong offset
-				Generate("WRST	", "+" + id + "(R13)","");
+				Generate("WRI		", "+"+id+"(R15)", "");
 			}else{
-				//boolean check if 1 or 0
-				//call label yay or nay
-				//if statement
-				//increment jump
+				Generate("WRF		", "+"+id+"(R14)", "");
 			}
 			break;
 		case TEMP_EXPR:
@@ -941,12 +940,12 @@ string CodeGen::GetTempF(){
     t += s;
     ExprRec tmp;
     tmp.kind = TEMPF_EXPR;
-    CheckId(t, tmp.kind);  // forcing TEMP_EXPR for quick fix
+    CheckId(t, tmp.kind);  // forcing TEMPF_EXPR for quick fix
     return t;
 }
 string CodeGen::ExtractOp(const OpRec& o, ExprKind & k){
 	//needs it for floats and floats and ints
-	
+
     switch(k)
     {
         case ID_EXPR:
@@ -981,33 +980,27 @@ string CodeGen::ExtractOp(const OpRec& o, ExprKind & k){
     return "";
 }
 
-void CodeGen::GenInfix( ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& e)
+void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2, ExprRec& e)
 {
     string s;
     string tmp;
-    bool isE1_int = true;  //set these, so no warnings below
-    bool isE2_int = true;
-    bool isFakes = true;
+    int isE1_int = -1;  //set these, so no warnings below
+    int isE2_int = -1;
+    int isFakes = -1;
 
-	for(int i=0; i<symbolTable.size(); i++){
-		if(symbolTable[i].label == e.name)e.kind = symbolTable[i].kind;
-		if(symbolTable[i].label == e1.name)e1.kind = symbolTable[i].kind;
-		if(symbolTable[i].label == e2.name)e2.kind = symbolTable[i].kind;
-	}
-	
-    if (e.kind == LITERAL_INT || e.kind == TEMP_EXPR || e.kind == ID_EXPR) isFakes = false;        //int result
-    else if (e.kind == LITERAL_FAKE || e.kind == TEMPF_EXPR || e.kind == IDF_EXPR) isFakes = true; // fake result
-         else cout << "\nGenInfixError: invalid result type assignment:" << e.name << "\n";        // wth result
+    if (e.kind == TEMP_EXPR || e.kind == ID_EXPR || e.kind == LITERAL_INT)           isFakes = 0;                // int result
+    else if ( e.kind == TEMPF_EXPR || e.kind == IDF_EXPR || e.kind == LITERAL_FAKE)   isFakes = 1;                 // fake result
+         else cout << "\nGenInfixError: invalid result type assignment:" << e.name << "\n"; // wth result
 
     switch(e1.kind)
     {
         case LITERAL_INT:
         case TEMP_EXPR:
         case ID_EXPR:
-        case LITERAL_BOOL:  isE1_int = true; break;
+        case LITERAL_BOOL:  isE1_int = 1; break;
         case LITERAL_FAKE:
         case TEMPF_EXPR:
-        case IDF_EXPR:      isE1_int = false; break;
+        case IDF_EXPR:      isE1_int = 0; break;
     default: cout << "Default-e1.kind\n"; break;
     }
     switch(e2.kind)
@@ -1015,14 +1008,25 @@ void CodeGen::GenInfix( ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& 
         case LITERAL_INT:
         case TEMP_EXPR:
         case ID_EXPR:
-        case LITERAL_BOOL:  isE2_int = true; break;
+        case LITERAL_BOOL:  isE2_int = 1; break;
         case LITERAL_FAKE:
         case TEMPF_EXPR:
-        case IDF_EXPR:      isE2_int = false; break;
+        case IDF_EXPR:      isE2_int = 0; break;
     case LITERAL_STR: break;
     default: cout << "Default-e2.kind\n"; break;
     }
 
+//--- START temp cout
+    string sf, se1, se2;
+    IntToAlpha(isFakes, sf);
+    IntToAlpha(isE1_int, se1);
+    IntToAlpha(isE2_int, se2);
+    cout << "\nGenInfix{isFakes=" << sf << "; isE1_int=" << se1 << "; isE2_int=" << se2 << "}\n";
+    sf = kindtoStr(e.kind);
+    se1 = kindtoStr(e1.kind);
+    se2 = kindtoStr(e2.kind);
+    cout << "GenInfix{e.kind=" << sf << "; e1.kind=" << se1 << "; e2.kind=" << se2 << ";}\n";
+//--- END temp cout
 
     if ((e1.kind == LITERAL_INT && e2.kind == LITERAL_INT) || (e1.kind == LITERAL_FAKE && e2.kind == LITERAL_FAKE))
     {
@@ -1048,7 +1052,7 @@ void CodeGen::GenInfix( ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& 
     } //-- END of PURE LITERALS
     else{
 
-        if (!isFakes)  //--- All INTS
+        if (isFakes == 0)  //--- All INTS
         {
             e.kind = TEMP_EXPR;
             e.name = GetTemp();
@@ -1077,37 +1081,69 @@ void CodeGen::GenInfix( ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& 
             ExtractExpr(e, s);
 			//string id;
 			//int off;
-			id =e1.name;
+            id =e1.name;
 			off = getOff(id);
 			IntToAlpha(off,id);
 			Generate("STO		", "R0", "+"+id+"(R15)");
 			Generate("%comment	","break","");
             //Generate("STO		", "R0", s);
         }
-        else //--- Doing Fakes: All Combo's with INT TO FAKE Conversions
+        else if (isFakes == 1)//--- Doing Fakes: All Combo's with INT TO FAKE Conversions
         {
+            int foff;
+            string fid;
+
             e.kind = TEMPF_EXPR;
             e.name = GetTempF();
 
             ExtractExpr(e1,s);
-            Generate("LD		", "R0", s);
-            if (isE1_int){
-				Generate("%		","e1","");
-                Generate("FLT     ", "R0", s);
-			}
+
+            if (isE1_int == 1)  //WIP do int to float conversion for e1
+            {
+                Generate("e1:FLT     ", "R0", s);
+            }
+            else // double load from R14
+            {
+                fid = e1.name;
+                foff = getOff(fid);
+                IntToAlpha(foff, fid);
+                Generate("LD        ", "R0", "+" + fid + "(R14)");
+                foff += 2;
+                IntToAlpha(foff, fid);
+                Generate("LD        ", "R1", "+" + fid + "(R14)");
+            }
+            // need extra for e1 Literal_Fake in R11 here or in else above
+
+
             ExtractExpr(e2,s);
-			
-            if (isE2_int){
-				Generate("%		","e2","");
-                Generate("FLT     ", "R0", s);  //needs to be different reg?
-			}
-            Generate(ExtractOp(op, e.kind), "R0", s);
+
+            if (isE2_int == 1) //WIP do int to float conversion for e2 and store it in R2
+            {
+                Generate("e2:FLT     ", "R2", s);  //needs to be different reg?
+            }
+            else // double load from R14 put in R2 & R3
+            {
+                fid = e2.name;
+                foff = getOff(fid);
+                Generate("LD        ", "R2", "+" + fid + "(R14)");
+                foff += 2;
+                IntToAlpha(foff, fid);
+                Generate("LD        ", "R3", "+" + fid + "(R14)");
+
+            }
+            // need extra for e2 Literal_Fake in R11 here or in else above
+
+            Generate(ExtractOp(op, e.kind), "R0", "R2");
             ExtractExpr(e, s);
 
 
-            Generate("STO		", "R0", s);
+            Generate("STO       ", "R0", s);  //STORE reult in R14
 
           }
+
+          if (isFakes == -1) cout << "!Error: GenInfix result exp is INT or FAKE not defined!";
+          if (isE1_int == -1) cout << "!Error: GenInfix e1 is INT or FAKE not defined!";
+          if (isE2_int == -1) cout << "!Error: GenInfix e2 is INT or FAKE not defined!";
 
 
 
@@ -1123,9 +1159,27 @@ void CodeGen::ProcessMulOp()
 }
 void CodeGen::ProcessId(ExprRec& e)
 {
+	//switching literal to id breaks
 	//assignments and calling
     CheckId(scan.tokenBuffer,e.kind);
 
+//--- START-temp-cout
+    string i = kindtoStr(e.kind);
+    cout << "\nProcessId{e.kind=" << i << "}\n";
+//--- END-temp-cout
+
+    switch(e.kind){
+		case LITERAL_INT:
+			//e.kind = ID_EXPR;
+			break;
+		case LITERAL_FAKE:
+			//e.kind = IDF_EXPR;
+			break;
+        default: break;
+	}
+	//e.kind = ID_EXPR;
+	//cout << scan.tokenBuffer;
+	//e.name = scan.tokenBuffer;
 }
 void CodeGen::ProcessLiteralInit(ExprRec& e)
 {
