@@ -28,6 +28,10 @@ string CodeGen::kindtoStr(const ExprKind& t){
 			return "ID_Expr";
 		case IDF_EXPR:
 			return "IDF_EXPR";
+		case IDB_EXPR:
+			return "IDB_Expr";
+		case IDS_EXPR:
+			return "IDS_EXPR";
 		case LITERAL_INT:
 			return "LITERAL_INT";
 		case TEMP_EXPR:
@@ -67,16 +71,18 @@ void CodeGen::Enter(const string & s, ExprKind & t )
 			break;
 		case IDF_EXPR:
 		//case LITERAL_FAKE:
-			//fakeTable.push_back("0.0");
 			thisSym.off = fakoff;
 			fakoff +=4;
 			break;
-		case LITERAL_BOOL:
+		case IDB_EXPR:
 			thisSym.off = booloff;
 			booloff +=2;
 			break;
-		case LITERAL_STR:
+		case IDS_EXPR:
+			//WIP never called
+
 			thisSym.off = stroff;
+			cout<<"here";
 			stroff+= StringSamDistance(stringTable.size()-1);
             break;
         default: 
@@ -158,26 +164,19 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 	string t;
     int k, n;
 	//cout<< kindtoStr(e.kind);
-
+	n=0;
 	switch (e.kind)
 	{
 	case ID_EXPR:
-		//cout<<"id expr";
 	case TEMP_EXPR:  // operand form: +k(R15)
-		
 		s = e.name;
-		n = 0;
-		//cout<<"temp";
         while (symbolTable[n].label != s) n++;
-        //k = 2 * n;
-		//IntToAlpha(k,t);
 		IntToAlpha(symbolTable[n].off, t); // offset: 2 bytes per variable
 		s = "+" + t + "(R15)";
 		break;
 	case IDF_EXPR:
     case TEMPF_EXPR:  // operand form +k(R14)
         s = e.name;
-        n = 0;
         while(symbolTable[n].label != s) n++;
         //k = 2 * n;
 		k = symbolTable[n].off;
@@ -185,19 +184,22 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 		//IntToAlpha(symbolTable[n].off, t);
         s = "+" + t + "(R14)";
         break;
+	case IDB_EXPR:
+		while(symbolTable[n].label != s) n++;
+		k = symbolTable[n].off;
+		IntToAlpha(k,t);
+		s = "+" + t + "(R12)";
+		break;
+	case IDS_EXPR:
+		while(symbolTable[n].label != s) n++;
+		k = symbolTable[n].off;
+		IntToAlpha(k,t);
+		s = "+" + t + "(R12)";
+		break;
 	case LITERAL_INT:
-		cout <<"lit int\n";
-		n=0;
-		while(symbolTable[n].label!=e.name)n++;
-		//keeps getting last var as e.name
-		//while(symbolTable[++n].label!=e.name);
-		//cout<< symbolTable[--n].off<<endl;
-		//IntToAlpha(symbolTable[--n].off,t);
-		//IntToAlpha(e.val, t);
-		
+		//cout <<"lit int\n";
 		IntToAlpha(e.val,s);
 		s = "#" + s;
-		//s = "+" + t+"(R15)";
 		break;
 	case LITERAL_STR:
 		s ="+" + to_string(StringSamDistance(stringTable.size()-1)) +"(R13)";
@@ -211,13 +213,9 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 		s = "#" + t;
         break;
     case LITERAL_FAKE:
-        cout << "---literal fake\n";
-		n = 0;
-		while(symbolTable[n].label!=e.name)n++;
-		
-		IntToAlpha(symbolTable[n].off,s);
-		
-        s = "+" + s + "(R14)";
+        //cout << "---literal fake\n";
+		IntToAlpha((fakeTable.size()-1)*4,s);
+        s = "+" + s + "(R11)";
         break;
 	default:
 		cout<<"--Default";
@@ -324,7 +322,11 @@ void CodeGen::Finish()
 		cout<<ConvertToSam(stringTable[i]);
 		Generate("STRING	",ConvertToSam(stringTable[i]),"");
 	}
-
+	//boolean labels
+	Generate("LABEL	","YAY","");
+	Generate("STRING	","\"YAY\"","");
+	Generate("LABEL	","NAY","");
+	Generate("STRING	","\"NAY\"","");
 	outFile.close();
     for(unsigned i =0; i <symbolTable.size(); i++){
 		cout<<symbolTable[i].label<<symbolTable[i].off<<endl;
@@ -585,6 +587,7 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 	switch(outExpr.kind){
 		case LITERAL_STR:
 		case LITERAL_BOOL:
+		
 			Generate("WRST	", s, "");
 			break;
 		case ID_EXPR:
@@ -599,9 +602,17 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 			tmp = getOff(id);
 			IntToAlpha(tmp,id);
 			if(kind ==ID_EXPR){
-				Generate("WRI		", "+"+id+"(R15)", "");
+				Generate("WRI	", "+"+id+"(R15)", "");
+			}else if(kind == IDF_EXPR){
+				Generate("WRF	", "+"+id+"(R14)", "");
+			}else if(kind == IDS_EXPR){
+				//wrong offset
+				Generate("WRST	", "+" + id + "(R13)","");
 			}else{
-				Generate("WRF		", "+"+id+"(R14)", "");
+				//boolean check if 1 or 0
+				//call label yay or nay
+				//if statement
+				//increment jump
 			}
 			break;
 		case TEMP_EXPR:
@@ -1112,22 +1123,9 @@ void CodeGen::ProcessMulOp()
 }
 void CodeGen::ProcessId(ExprRec& e)
 {
-	//switching literal to id breaks
 	//assignments and calling
     CheckId(scan.tokenBuffer,e.kind);
 
-	switch(e.kind){
-		case LITERAL_INT:
-			//e.kind = ID_EXPR;
-			break;
-		case LITERAL_FAKE:
-			//e.kind = IDF_EXPR;
-			break;
-        default: break;
-	}
-	//e.kind = ID_EXPR;
-	//cout << scan.tokenBuffer;
-	//e.name = scan.tokenBuffer;
 }
 void CodeGen::ProcessLiteralInit(ExprRec& e)
 {

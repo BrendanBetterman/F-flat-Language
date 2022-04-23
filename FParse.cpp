@@ -164,7 +164,7 @@ void Parser::Type(ExprRec& expr)
 		break;
 	case BOOL_SYM:
 		Match(BOOL_SYM);
-		expr.kind = LITERAL_BOOL;
+		expr.kind = IDB_EXPR;//LITERAL_BOOL;
 		break;
 	case FAKE_SYM:
 		Match(FAKE_SYM);
@@ -172,7 +172,7 @@ void Parser::Type(ExprRec& expr)
 		break;
 	case STR_SYM:
 		Match(STR_SYM);
-		expr.kind = LITERAL_STR;
+		expr.kind = IDS_EXPR;//LITERAL_STR;
 		break;
 	default:
 		SyntaxError(NextToken(), "");

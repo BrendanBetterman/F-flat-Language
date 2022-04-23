@@ -16,7 +16,9 @@ struct OpRec // information about an operator
 {
 	OpKind op; // operator type
 };
-enum ExprKind { ID_EXPR, IDF_EXPR, LITERAL_INT, TEMP_EXPR, TEMPF_EXPR, LITERAL_STR, LITERAL_FAKE, LITERAL_BOOL };
+enum ExprKind { ID_EXPR, IDF_EXPR, IDB_EXPR,IDS_EXPR,
+        TEMP_EXPR, TEMPF_EXPR,
+        LITERAL_INT, LITERAL_FAKE,LITERAL_BOOL, LITERAL_STR};
 
 struct ExprRec // information about a constant, variable, or
                // an intermediate (temporary) result
