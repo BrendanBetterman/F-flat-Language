@@ -47,7 +47,7 @@ private:
 
 	void Literal(ExprRec& expr);
 
-	void MultOp();
+	void MultOp(OpRec& op);
 
 	void FactorTail();
 

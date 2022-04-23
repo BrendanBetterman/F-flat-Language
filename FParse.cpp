@@ -185,30 +185,44 @@ void Parser::Literal(ExprRec& expr)
 	{
 	case INT_LITERAL:
 		Match(INT_LITERAL);
+		expr.kind = LITERAL_INT;
 		break;
 	case BOOL_LITERAL:
 		Match(BOOL_LITERAL);
+		expr.kind = LITERAL_BOOL;
 		break;
 	case FAKE_LITERAL:
 		Match(FAKE_LITERAL);
+		expr.kind = LITERAL_FAKE;
 		break;
 	case STR_LITERAL:
 		Match(STR_LITERAL);
+		expr.kind = LITERAL_STR;
+		break;
+	case ID:
+		Match(ID);
+		expr.kind = ID_EXPR;
+		expr.name = scan.tokenBuffer;//get scanner data
+		cout<< "ID to id\n";
 		break;
 	default:
 		SyntaxError(NextToken(), "");
 	}
 }
 
-void Parser::MultOp()
+void Parser::MultOp(OpRec& op)
 {
 	switch (NextToken())
 	{
 	case MUL_OP:
 		Match(MUL_OP);
+		op.op = MULT;
+		code.ProcessOp(op);
 		break;
 	case DIV_OP:
 		Match(DIV_OP);
+		op.op = DIV;
+		code.ProcessOp(op);
 		break;
 	default:
 		SyntaxError(NextToken(), "");
@@ -218,11 +232,12 @@ void Parser::MultOp()
 void Parser::FactorTail()
 {
 	ExprRec expr;
+	OpRec op;
 	switch (NextToken())
 	{
 	case MUL_OP:
 	case DIV_OP: //Real Div
-		MultOp();
+		MultOp(op);
 		Primary(expr);
 		// code.GenInfix();
 		cout << "Mul or div\n";
@@ -280,7 +295,9 @@ void Parser::Primary(ExprRec& result)
 		cout << "Process Literal Bool\n";
 		break;
 	case ID:
-		Variable(result);
+		//Literal(result);
+		
+		Variable(result); //for arrays
 		break;
 	case LPAREN:
 		Match(LPAREN);
@@ -306,6 +323,7 @@ void Parser::AddOp(OpRec& op)
 		op.op = MINUS;
 		code.ProcessOp(op);
 		break;
+	
 	default:
 		SyntaxError(NextToken(), "");
 	}
@@ -318,6 +336,7 @@ void Parser::ExprTail()
 	{
 	case ADD_OP:
 	case SUB_OP:
+	case MUL_OP:
 		AddOp(op);
 		Factor();
 		ExprTail();
@@ -480,7 +499,7 @@ void Parser::VarInit()
 	{
 	case INT_SYM:
 		Match(INT_SYM);
-		expr.kind = ID_EXPR;//should be id_expr
+		expr.kind = ID_EXPR;
 		Match(ID);
 		expr.name = scan.tokenBuffer;
 		code.ProcessId(expr);
@@ -651,11 +670,12 @@ void Parser::VariableTail(ExprRec& expr)
 		Expression(expr);
 		Match(RSTAPLE);
 		break;
+	case SEMICOLON:
+		
 	case AND_SYM:
 	case NOT_SYM:
 	case RSTAPLE:
 	case RPAREN:
-	case SEMICOLON:
 	case COMMA:
 	case ASSIGN_OP:
 	case ADD_OP:
@@ -710,16 +730,30 @@ void Parser::Expression(ExprRec& result)//
 
 	Primary(result);
 	for (;;){
-		if(NextToken() == ADD_OP || NextToken()== SUB_OP){
-			leftOperand.kind = result.kind;
-			leftOperand.val = result.val;
-			leftOperand.name = result.name;
-			AddOp(op);
-			Primary(rightOperand);
-			code.GenInfix(leftOperand, op, rightOperand, result);
-		}else{
-			return;
+		switch(NextToken()){
+			case ADD_OP:
+			case SUB_OP:
+				leftOperand.kind = result.kind;
+				leftOperand.val = result.val;
+				leftOperand.name = result.name;
+				AddOp(op);
+				Primary(rightOperand);
+				code.GenInfix(leftOperand, op, rightOperand, result);
+				break;
+			case DIV_OP:
+			case MUL_OP:
+				leftOperand.kind = result.kind;
+				leftOperand.val = result.val;
+				leftOperand.name = result.name;
+				MultOp(op);
+				Primary(rightOperand);
+				code.GenInfix(leftOperand, op, rightOperand, result);
+				break;
+			
+			default:
+				return;
 		}
+		
 	}
 	Factor();
 	ExprTail();
@@ -730,6 +764,7 @@ void Parser::Variable(ExprRec& expr)
 	
 	Match(ID);
 	expr.name = scan.tokenBuffer;
+	expr.kind = ID_EXPR;//should check idf or id
 	VariableTail(expr);
 }
 
@@ -768,6 +803,7 @@ void Parser::AssignStmt(ExprRec& expr)
 	Variable(expr);
 	Match(ASSIGN_OP);
 	Expression(identifier);
+
 	//identifier.kind = expr.kind;
 	//cout<<expr.valF;
 	code.Assign( expr,identifier);

@@ -449,9 +449,10 @@ void CodeGen::Finish()
 void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 {
 //needs to check if its an int fake boolean or string
-	string s,id;
+	string s,id,id1;
 	int tmp;
 	string s2;
+	ExprKind sKind,tKind;
 	switch(source.kind){
 		case LITERAL_INT:
 			cout<< "assign int";
@@ -465,13 +466,17 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 			Generate("STO		", "R0", "+"+id+"(R15)");
 			break;
 		case LITERAL_FAKE:
+			//broken, first part being to rand mem
 			cout<<"assign fake";
 			ExtractExpr(source, s);
 			//s = "+" + s + "(R14)";
 			Generate("LD		", "R0", s);
 			ExtractExpr(target, s);
 			//IntToAlpha(s,s);
-			//s = "+" + s + "(R14)";
+			id =source.name;
+			tmp = getOff(id);
+			IntToAlpha(tmp,id);
+			s = "+" + id + "(R14)";
 			Generate("STO		", "R0", s);
 
 			break;
@@ -484,6 +489,36 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 			IntToAlpha(tmp,id);
 			cout << tmp;
 			Generate("STO		", "R0", "+"+id+"(R12)");
+			break;
+		case ID_EXPR:
+			//should check actual type.
+			
+			for(int i=0; i<symbolTable.size();i++ ){
+				if(symbolTable[i].label == source.name){
+					sKind = symbolTable[i].kind;
+				}
+				if(symbolTable[i].label == target.name){
+					tKind = symbolTable[i].kind;
+				}
+			}
+			id = source.name;
+			tmp = getOff(id);
+			IntToAlpha(tmp,id);
+			id1 =target.name;
+			tmp = getOff(id1);
+			IntToAlpha(tmp,id1);
+			if(sKind ==tKind){
+				if(sKind ==ID_EXPR){
+					Generate("LD		", "R0", "+"+id+"(R15)");
+					Generate("STO		", "R0", "+"+id1+"(R15)");
+				}else if(sKind ==IDF_EXPR){
+					Generate("LD		", "R0", "+"+id+"(R14)");
+					Generate("STO		", "R0", "+"+id1+"(R14)");
+				}
+			}
+			//ExtractExpr(source, s);
+			//ExtractExpr(target, s);
+			
 			break;
     default: break;
 	}
@@ -1118,7 +1153,7 @@ void CodeGen::ProcessLiteral(ExprRec& e)
 			
             cout << scan.tokenBuffer.data();
 			break;
-	
+		
 		case TEMP_EXPR:
             cout << "TEMP expr";
 			break;
