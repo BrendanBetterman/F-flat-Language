@@ -80,8 +80,11 @@ void CodeGen::Enter(const string & s, ExprKind & t )
 			booloff +=2;
 			break;
 		case IDS_EXPR:
+		case LITERAL_STR:
+			//cerr<<"here ids expr" << stringTable[0];
 			thisSym.off = stroff;
-			stroff+= StringSamDistance(stringTable.size()-1);
+			stroff += 34;
+			//stroff+= StringSamDistance(stringTable.size());
             break;
         default: 
 			cout<<"here";
@@ -204,8 +207,9 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 		s = "#" + s;
 		break;
 	case LITERAL_STR:
-		s ="+" + to_string(StringSamDistance(stringTable.size()-1)) +"(R13)";
+		//s ="+" + to_string(StringSamDistance(stringTable.size()-1)) +"(R13)";
 		//cout<<"str";
+		s = "+" + to_string(StringSamDistance(stringTable.size()-1)) + "(R10)";
 		break;
 		//s = "+" + to_string(StringSamDistance(stringTable.size()-1))+ "(R14)";
 		//s ="+" + to_string(StringSamDistance(stringTable.size()-1)) +"(R14)";
@@ -277,6 +281,7 @@ void CodeGen::Start()
 	Generate("LDA		", "R14", "FAKES");
 	Generate("LDA		", "R11", "FAKELIT");
 	Generate("LDA		", "R13", "STRS");
+	Generate("LDA		", "R10", "STRLIT");
 	Generate("LDA		", "R12", "BOOLS");
 	//WIP
 	//Generate load address for STRS BOOLS fakes
@@ -318,8 +323,14 @@ void CodeGen::Finish()
 	}
     IntToAlpha(int(4*(tmpSize)),s);
     Generate("SKIP	", s, "");
-	
 	Generate("LABEL	", "STRS", "");
+	tmpSize =0;
+    for(unsigned i=0; i< symbolTable.size(); i++){
+		if(symbolTable[i].kind == IDS_EXPR) tmpSize +=1;
+	}
+    IntToAlpha(int(34*(tmpSize)),s);
+    Generate("SKIP	", s, "");
+	Generate("LABEL	", "STRLIT", "");
     //IntToAlpha(int(4*(fakeTable.size()+1)),s);
     //for loop for stings
     for(unsigned i=0; i< stringTable.size(); i++){
@@ -491,7 +502,19 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 			IntToAlpha(tmp,id);
 			s = "+" + id + "(R14)";
 			Generate("STO		", "R0", s);
-
+			break;
+		case LITERAL_STR:
+		//buggy random mem for r10
+			ExtractExpr(source, s);
+			//IntToAlpha(source.val,s);
+			//s = "+" + s + "(R10)";
+			
+			Generate("LD		", "R0", s);
+			id =target.name;
+			tmp = getOff(id);
+			IntToAlpha(tmp,id);
+			s = "+" + id + "(R13)";
+			Generate("STO		", "R0", s);
 			break;
 		case LITERAL_BOOL:
 			ExtractExpr(source, s);
@@ -527,6 +550,9 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 				}else if(sKind ==IDF_EXPR){
 					Generate("LD		", "R0", "+"+id+"(R14)");
 					Generate("STO		", "R0", "+"+id1+"(R14)");
+				}else if(sKind == IDS_EXPR){
+					Generate("LD		", "R0", "+"+id+"(R10)");
+					Generate("STO		", "R0", "+"+id1+"(R13)");
 				}
 			}
 			//ExtractExpr(source, s);
@@ -1201,9 +1227,13 @@ void CodeGen::ProcessLiteral(ExprRec& e)
 			//cout << e.val;
 			break;
 		case LITERAL_STR:
+		//case IDS_EXPR:
 			//push to string table.
+			cerr << "process lit str"<<e.name;
 			e.kind = LITERAL_STR;
+
 			stringTable.push_back(scan.tokenBuffer.data());
+			 
 			//ExtractExpr(e,s);
 			//Generate("WRST	", s,"");
 			break;
@@ -1221,8 +1251,8 @@ void CodeGen::ProcessLiteral(ExprRec& e)
 			e.valF = std::stof(scan.tokenBuffer.data());
             //e.valF = atoi(scan.tokenBuffer.data());
 			//e.kind = LITERAL_FAKE;
-			
-			fakeTable.push_back(scan.tokenBuffer.data());
+			fakeTable.push_back(to_string(e.valF));
+			//fakeTable.push_back(scan.tokenBuffer.data());
 			e.val = (fakeTable.size()-1)*4;
 			
             cout << scan.tokenBuffer.data();
