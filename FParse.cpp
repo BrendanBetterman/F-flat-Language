@@ -741,6 +741,7 @@ void Parser::Expression(ExprRec& result)//
 				AddOp(op);
 				Primary(rightOperand);
 				code.GenInfix(leftOperand, op, rightOperand, result);
+				cerr<<result.name<<"\n";
 				break;
 			case DIV_OP:
 			case MUL_OP:
@@ -810,8 +811,9 @@ void Parser::AssignStmt(ExprRec& expr)
 	
 	Expression(identifier);
 	//WIP identifier should be the tmp var
-	identifier.name = expr.name;
-	cout<<identifier.name<<expr.name;
+	//identifier.name = expr.name;
+	cout<<identifier.name<<expr.name<<"\n";
+	//identifier.name ="Temp";
 	code.Assign( expr,identifier);
 	
 	cout << "Assignment op\n";

@@ -535,6 +535,7 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 			Generate("STO		", "R0", "+"+id+"(R12)");
 			break;
 		case ID_EXPR:
+		case TEMP_EXPR:
 			//should check actual type.
 			Generate("%",target.name,"id assigned");
 			for(int i=0; i<symbolTable.size();i++ ){
@@ -1109,6 +1110,13 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
 			//WIP gettemp not getting the right address
             //e.name = GetTemp();
 			//tmp fix to not include it;
+			//Symbol temp;
+			//temp.kind = TEMP_EXPR;
+			//temp.label="Temp";
+			//temp.off = intoff;
+			//intoff+=2;
+			//symbolTable.push_back(temp);
+			//e.name = temp.label;
 			
             ExtractExpr(e1,s);
 
