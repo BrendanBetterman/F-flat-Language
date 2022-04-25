@@ -482,10 +482,11 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 	switch(source.kind){
 		case LITERAL_INT:
 			cout<< "assign int";
+			Generate("%",target.name,"assign");
 			ExtractExpr(source, s);
 			Generate("LD		", "R0", s);
 			ExtractExpr(target, s);
-			id =source.name;
+			id =target.name;
 			tmp = getOff(id);
 			IntToAlpha(tmp,id);
 			cout << tmp;
@@ -512,7 +513,7 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 			Generate("LD		", "R0", "R10");
 			//add starting point of str
 			
-			IntToAlpha(StringSamDistance(stringTable.size()-2),s);
+			IntToAlpha(StringSamDistance(stringTable.size()-1),s);
 			Generate("IA		", "R0","#"+s);
 			//set length of string
 			IntToAlpha(stringTable.back().size(),s);
@@ -535,7 +536,7 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 			break;
 		case ID_EXPR:
 			//should check actual type.
-			
+			Generate("%",target.name,"id assigned");
 			for(int i=0; i<symbolTable.size();i++ ){
 				if(symbolTable[i].label == source.name){
 					sKind = symbolTable[i].kind;
@@ -977,6 +978,7 @@ string CodeGen::GetTemp(){
 	t += s;
 	ExprRec tmp;
 	tmp.kind = TEMP_EXPR;
+	
     CheckId(t, tmp.kind);  // forcing TEMP_EXPR for quick fix
 	return t;
 }
@@ -1035,7 +1037,8 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
     int isE1_int = -1;  //set these, so no warnings below
     int isE2_int = -1;
     int isFakes = -1;
-
+	
+	cout<<e1.name<<e2.name<<e.name;
     if (e.kind == TEMP_EXPR || e.kind == ID_EXPR || e.kind == LITERAL_INT)           isFakes = 0;                // int result
     else if ( e.kind == TEMPF_EXPR || e.kind == IDF_EXPR || e.kind == LITERAL_FAKE)   isFakes = 1;                 // fake result
          else cout << "\nGenInfixError: invalid result type assignment:" << e.name << "\n"; // wth result
@@ -1103,7 +1106,10 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
         if (isFakes == 0)  //--- All INTS
         {
             e.kind = TEMP_EXPR;
-            e.name = GetTemp();
+			//WIP gettemp not getting the right address
+            //e.name = GetTemp();
+			//tmp fix to not include it;
+			
             ExtractExpr(e1,s);
 
 			string id;
@@ -1129,7 +1135,8 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
             ExtractExpr(e, s);
 			//string id;
 			//int off;
-            id =e1.name;
+            id =e.name;
+			
 			off = getOff(id);
 			IntToAlpha(off,id);
 			Generate("STO		", "R0", "+"+id+"(R15)");
@@ -1184,7 +1191,7 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
             Generate(ExtractOp(op, e.kind), "R0", "R2");
             ExtractExpr(e, s);
 
-
+			
             Generate("STO       ", "R0", s);  //STORE reult in R14
 
           }

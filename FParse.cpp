@@ -728,29 +728,32 @@ void Parser::Expression(ExprRec& result)//
 	ExprRec leftOperand, rightOperand;
 	OpRec op;
 
-	Primary(result);
+	//Primary(result);
+	Primary(leftOperand);
 	for (;;){
 		switch(NextToken()){
 			case ADD_OP:
 			case SUB_OP:
-				leftOperand.kind = result.kind;
-				leftOperand.val = result.val;
-				leftOperand.name = result.name;
+				//leftOperand.kind = result.kind;
+				//leftOperand.val = result.val;
+				//leftOperand.name = result.name;
+
 				AddOp(op);
 				Primary(rightOperand);
 				code.GenInfix(leftOperand, op, rightOperand, result);
 				break;
 			case DIV_OP:
 			case MUL_OP:
-				leftOperand.kind = result.kind;
-				leftOperand.val = result.val;
-				leftOperand.name = result.name;
+				//leftOperand.kind = result.kind;
+				//leftOperand.val = result.val;
+				//leftOperand.name = result.name;
 				MultOp(op);
 				Primary(rightOperand);
 				code.GenInfix(leftOperand, op, rightOperand, result);
 				break;
 			
 			default:
+				result = leftOperand;
 				return;
 		}
 		
@@ -802,10 +805,13 @@ void Parser::AssignStmt(ExprRec& expr)
 	ExprRec identifier;
 	Variable(expr);
 	Match(ASSIGN_OP);
+	identifier.kind = expr.kind;
+	identifier.name = expr.name;
+	
 	Expression(identifier);
-
-	//identifier.kind = expr.kind;
-	//cout<<expr.valF;
+	//WIP identifier should be the tmp var
+	identifier.name = expr.name;
+	cout<<identifier.name<<expr.name;
 	code.Assign( expr,identifier);
 	
 	cout << "Assignment op\n";
