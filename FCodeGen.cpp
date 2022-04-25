@@ -509,12 +509,19 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 			//IntToAlpha(source.val,s);
 			//s = "+" + s + "(R10)";
 			
-			Generate("LD		", "R0", s);
+			Generate("LD		", "R0", "R10");
+			//add starting point of str
+			
+			IntToAlpha(StringSamDistance(stringTable.size()-2),s);
+			Generate("IA		", "R0","#"+s);
+			//set length of string
+			IntToAlpha(stringTable.back().size(),s);
+			Generate("LD		","R1","#"+s);
 			id =target.name;
 			tmp = getOff(id);
 			IntToAlpha(tmp,id);
 			s = "+" + id + "(R13)";
-			Generate("STO		", "R0", s);
+			Generate("BKT		", "R0", s);
 			break;
 		case LITERAL_BOOL:
 			ExtractExpr(source, s);
@@ -594,7 +601,10 @@ void CodeGen::ReadValue(const ExprRec & InVal)
 		case LITERAL_STR:
 		case IDS_EXPR:
 			ExtractExpr(InVal, s);
-			Generate("RDST	", s, "");
+			id =InVal.name;
+			tmp = getOff(id);
+			IntToAlpha(tmp,id);
+			Generate("RDST	", "+"+id+"(R13)", "");
 			break;
 		case LITERAL_BOOL:
 		case IDB_EXPR:

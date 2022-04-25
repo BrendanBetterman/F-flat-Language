@@ -936,6 +936,7 @@ void Parser::Program()
 	
 	code.Start();
 	cout << "Started\n";
+	
 	Match(BEGIN_SYM);
 	ExprRec expr;
 	StmtList(expr);
