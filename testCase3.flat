@@ -11,4 +11,5 @@ fake z = 0.625;
 fake w;
 fake x = 1.414;
 w = z + x;
+fout(w);
 EOF

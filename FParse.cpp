@@ -332,13 +332,14 @@ void Parser::AddOp(OpRec& op)
 void Parser::ExprTail()
 {
 	OpRec op;
+	ExprRec expr;
 	switch (NextToken())
 	{
 	case ADD_OP:
 	case SUB_OP:
 	case MUL_OP:
 		AddOp(op);
-		Factor();
+		Factor(expr);
 		ExprTail();
 		break;
 	case AND_SYM:
@@ -359,9 +360,8 @@ void Parser::ExprTail()
 	}
 }
 
-void Parser::Factor()
-{
-	ExprRec expr;
+void Parser::Factor(ExprRec& expr)
+{	
 	Primary(expr);
 	//code.GenInfix(expr);
 	cout << "Get infix\n";
@@ -734,20 +734,14 @@ void Parser::Expression(ExprRec& result)//
 		switch(NextToken()){
 			case ADD_OP:
 			case SUB_OP:
-				//leftOperand.kind = result.kind;
-				//leftOperand.val = result.val;
-				//leftOperand.name = result.name;
-
 				AddOp(op);
 				Primary(rightOperand);
 				code.GenInfix(leftOperand, op, rightOperand, result);
 				cerr<<result.name<<"\n";
+				//wip temp fix
 				break;
 			case DIV_OP:
 			case MUL_OP:
-				//leftOperand.kind = result.kind;
-				//leftOperand.val = result.val;
-				//leftOperand.name = result.name;
 				MultOp(op);
 				Primary(rightOperand);
 				code.GenInfix(leftOperand, op, rightOperand, result);
@@ -759,7 +753,7 @@ void Parser::Expression(ExprRec& result)//
 		}
 		
 	}
-	Factor();
+	Factor(result);
 	ExprTail();
 }
 
@@ -813,7 +807,7 @@ void Parser::AssignStmt(ExprRec& expr)
 	//WIP identifier should be the tmp var
 	//identifier.name = expr.name;
 	cout<<identifier.name<<expr.name<<"\n";
-	//identifier.name ="Temp";
+	identifier.name ="Temp";
 	code.Assign( expr,identifier);
 	
 	cout << "Assignment op\n";

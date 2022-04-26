@@ -23,7 +23,8 @@ public:
 	void SystemGoal();
 
 private:
-
+	//Math stack
+	vector<Math> Equation; 
 	Token savedToken;
 	bool  tokenAvailable;
 
@@ -57,7 +58,7 @@ private:
 
 	void ExprTail();
 
-	void Factor();
+	void Factor(ExprRec& expr);
 
 	void RelOp(ConRec& con);
 

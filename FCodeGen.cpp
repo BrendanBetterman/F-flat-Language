@@ -180,6 +180,7 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
 	case TEMP_EXPR:  // operand form: +k(R15)
         while (symbolTable[n].label != s) n++;
 		IntToAlpha(symbolTable[n].off, t); // offset: 2 bytes per variable
+		
 		s = "+" + t + "(R15)";
 		break;
 	case IDF_EXPR:
@@ -484,6 +485,7 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 			cout<< "assign int";
 			Generate("%",target.name,"assign");
 			ExtractExpr(source, s);
+
 			Generate("LD		", "R0", s);
 			ExtractExpr(target, s);
 			id =target.name;
@@ -563,6 +565,9 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 					Generate("LD		", "R0", "+"+id+"(R10)");
 					Generate("STO		", "R0", "+"+id1+"(R13)");
 				}
+			}else if(sKind == TEMP_EXPR && tKind == ID_EXPR){
+				Generate("LD		", "R0", "+"+id+"(R15)");
+				Generate("STO		", "R0", "+"+id1+"(R15)");
 			}
 			//ExtractExpr(source, s);
 			//ExtractExpr(target, s);
@@ -1031,7 +1036,7 @@ string CodeGen::ExtractOp(const OpRec& o, ExprKind & k){
     return "";
 }
 
-void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2, ExprRec& e)
+void CodeGen::GenInfix(ExprRec & e1, const OpRec & op, const ExprRec & e2, ExprRec& e)
 {
     string s;
     string tmp;
@@ -1110,13 +1115,13 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
 			//WIP gettemp not getting the right address
             //e.name = GetTemp();
 			//tmp fix to not include it;
-			//Symbol temp;
-			//temp.kind = TEMP_EXPR;
-			//temp.label="Temp";
-			//temp.off = intoff;
-			//intoff+=2;
-			//symbolTable.push_back(temp);
-			//e.name = temp.label;
+			Symbol temp;
+			temp.kind = TEMP_EXPR;
+			temp.label="Temp";
+			temp.off = intoff;
+			intoff+=2;
+			symbolTable.push_back(temp);
+			e.name = temp.label;
 			
             ExtractExpr(e1,s);
 
@@ -1148,7 +1153,10 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, const ExprRec & e2,
 			off = getOff(id);
 			IntToAlpha(off,id);
 			Generate("STO		", "R0", "+"+id+"(R15)");
-			Generate("%comment	","break","");
+			//Generate("%comment	","break","");
+			//changes the left side to temp.
+			e1.kind = TEMP_EXPR;
+			e1.name = "Temp";
             //Generate("STO		", "R0", s);
         }
         else if (isFakes == 1)//--- Doing Fakes: All Combo's with INT TO FAKE Conversions
