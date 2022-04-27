@@ -114,7 +114,7 @@ bool CodeGen::LookUp(const string & s, ExprKind & t)
 					t = ID_EXPR;
 					break;
 				case LITERAL_FAKE:
-					t=IDF_EXPR;
+                    t = IDF_EXPR;
 					break;
 				case LITERAL_BOOL:
 					t = IDB_EXPR;
@@ -540,7 +540,7 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 		case TEMP_EXPR:
 			//should check actual type.
 			Generate("%",target.name,"id assigned");
-			for(int i=0; i<symbolTable.size();i++ ){
+            for(unsigned i=0; i<symbolTable.size();i++ ){
 				if(symbolTable[i].label == source.name){
 					sKind = symbolTable[i].kind;
 				}
@@ -1022,14 +1022,17 @@ string CodeGen::ExtractOp(const OpRec& o, ExprKind & k){
         case LITERAL_FAKE:
             switch(o.op)
             {
-                case PLUS:  return "FA      ";
-                case MINUS: return "FS      ";
-                case MULT:  return "FM      ";
-                case DIV:   return "FD      ";
+                case PLUS:  return "FA        ";
+                case MINUS: return "FS        ";
+                case MULT:  return "FM        ";
+                case DIV:   return "FD        ";
                 default:    return "Default FA      "; //--- TEMP default FA
             }
-        case LITERAL_BOOL:  return "";
-        case LITERAL_STR:   return "";
+        case LITERAL_BOOL:
+        case IDB_EXPR:
+        case LITERAL_STR:
+        case IDS_EXPR:      return "";
+
 
     }
 
@@ -1117,7 +1120,7 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op, const ExprRec & e2, ExprR
 			//tmp fix to not include it;
 			Symbol temp;
 			temp.kind = TEMP_EXPR;
-			temp.label="Temp";
+            temp.label="temp";
 			temp.off = intoff;
 			intoff+=2;
 			symbolTable.push_back(temp);
@@ -1171,7 +1174,7 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op, const ExprRec & e2, ExprR
 
             if (isE1_int == 1)  //WIP do int to float conversion for e1
             {
-                Generate("e1:FLT     ", "R0", s);
+                Generate("FLT     ", "R0", s);
             }
             else // double load from R14
             {
@@ -1190,12 +1193,13 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op, const ExprRec & e2, ExprR
 
             if (isE2_int == 1) //WIP do int to float conversion for e2 and store it in R2
             {
-                Generate("e2:FLT     ", "R2", s);  //needs to be different reg?
+                Generate("FLT     ", "R2", s);  //needs to be different reg?
             }
             else // double load from R14 put in R2 & R3
             {
                 fid = e2.name;
                 foff = getOff(fid);
+                IntToAlpha(foff, fid);
                 Generate("LD        ", "R2", "+" + fid + "(R14)");
                 foff += 2;
                 IntToAlpha(foff, fid);
@@ -1207,14 +1211,21 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op, const ExprRec & e2, ExprR
             Generate(ExtractOp(op, e.kind), "R0", "R2");
             ExtractExpr(e, s);
 
-			
-            Generate("STO       ", "R0", s);  //STORE reult in R14
+            cout << "GenInfix->FloatMath->ExtractExpr->s=" << s << "\n";
+
+            fid = e.name;
+            foff = getOff(fid);
+            IntToAlpha(foff, fid);
+            Generate("STO       ", "R0", "+" + fid + "(R14)");  //STORE reult in R14 offset + 0
+            foff += 2;
+            IntToAlpha(foff, fid);
+            Generate("STO       ", "R1", "+" + fid + "(R14)");   //STORE 2nd half of float in R14 offset +2
 
           }
 
-          if (isFakes == -1) cout << "!Error: GenInfix result exp is INT or FAKE not defined!";
-          if (isE1_int == -1) cout << "!Error: GenInfix e1 is INT or FAKE not defined!";
-          if (isE2_int == -1) cout << "!Error: GenInfix e2 is INT or FAKE not defined!";
+          if (isFakes == -1) cout << "\n!Error: GenInfix result exp is INT or FAKE not defined!";
+          if (isE1_int == -1) cout << "\n!Error: GenInfix e1 is INT or FAKE not defined!";
+          if (isE2_int == -1) cout << "\n!Error: GenInfix e2 is INT or FAKE not defined!";
 
 
 

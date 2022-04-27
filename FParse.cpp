@@ -522,6 +522,7 @@ void Parser::VarInit()
 				code.Assign(expr,source);
 				
 				break;
+            default: break;
 		}
 		//Variable(expr);
 		Match(SEMICOLON);
@@ -762,7 +763,12 @@ void Parser::Variable(ExprRec& expr)
 	
 	Match(ID);
 	expr.name = scan.tokenBuffer;
-	expr.kind = ID_EXPR;//should check idf or id
+
+    string st = std::to_string(expr.kind);
+    cout << "\nVariable(expr.kind)=" << st << "\n";
+
+
+    //expr.kind = ID_EXPR;//should check idf or id
 	VariableTail(expr);
 }
 
@@ -821,7 +827,8 @@ void Parser::Declaration(ExprRec& expr)
 	expr.name = scan.tokenBuffer;
 	code.ProcessId(expr);
 	DecTail(expr);
-	cout << "Processed ID\n";
+    string st = std::to_string(expr.kind);
+    cout << "Processed ID->expr.kind=" << st << "\n";
 	Match(SEMICOLON);
 }
 
