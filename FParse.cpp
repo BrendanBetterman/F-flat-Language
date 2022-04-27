@@ -362,7 +362,8 @@ void Parser::ExprTail()
 
 void Parser::Factor(ExprRec& expr)
 {	
-	Primary(expr);
+	Primary(expr);// leftside
+	
 	//code.GenInfix(expr);
 	cout << "Get infix\n";
 	FactorTail();
@@ -728,8 +729,11 @@ void Parser::Expression(ExprRec& result)//
 {
 	ExprRec leftOperand, rightOperand;
 	OpRec op;
+	
 
+	//old non order
 	//Primary(result);
+	/*
 	Primary(leftOperand);
 	for (;;){
 		switch(NextToken()){
@@ -752,8 +756,7 @@ void Parser::Expression(ExprRec& result)//
 				result = leftOperand;
 				return;
 		}
-		
-	}
+	}*/
 	Factor(result);
 	ExprTail();
 }
@@ -813,7 +816,14 @@ void Parser::AssignStmt(ExprRec& expr)
 	//WIP identifier should be the tmp var
 	//identifier.name = expr.name;
 	cout<<identifier.name<<expr.name<<"\n";
-	identifier.name ="Temp";
+	if(identifier.kind ==ID_EXPR){
+		identifier.name ="Temp";
+	}else if(identifier.kind ==IDF_EXPR){
+		identifier.name = "TempF";
+	}else{
+		
+		identifier.name ="Temp";
+	}
 	code.Assign( expr,identifier);
 	
 	cout << "Assignment op\n";

@@ -537,6 +537,8 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 			Generate("STO		", "R0", "+"+id+"(R12)");
 			break;
 		case ID_EXPR:
+		case IDF_EXPR:
+		case TEMPF_EXPR:
 		case TEMP_EXPR:
 			//should check actual type.
 			Generate("%",target.name,"id assigned");
@@ -554,6 +556,8 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 			id1 =target.name;
 			tmp = getOff(id1);
 			IntToAlpha(tmp,id1);
+			cerr<<"test id type"<<source.name;
+			cerr<< kindtoStr(sKind)<<kindtoStr(tKind);
 			if(sKind ==tKind){
 				if(sKind ==ID_EXPR){
 					Generate("LD		", "R0", "+"+id+"(R15)");
@@ -568,6 +572,9 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 			}else if(sKind == TEMP_EXPR && tKind == ID_EXPR){
 				Generate("LD		", "R0", "+"+id+"(R15)");
 				Generate("STO		", "R0", "+"+id1+"(R15)");
+			}else if(sKind == TEMPF_EXPR && tKind == IDF_EXPR){
+				Generate("LD		", "R0", "+"+id+"(R14)");
+				Generate("STO		", "R0", "+"+id1+"(R14)");
 			}
 			//ExtractExpr(source, s);
 			//ExtractExpr(target, s);
@@ -1046,6 +1053,17 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op, const ExprRec & e2, ExprR
     int isE1_int = -1;  //set these, so no warnings below
     int isE2_int = -1;
     int isFakes = -1;
+	for(unsigned i=0; i<symbolTable.size(); i++){
+		if(symbolTable[i].label == e.name){
+			e.kind = symbolTable[i].kind;
+		}
+		if(symbolTable[i].label == e1.name){
+			e1.kind = symbolTable[i].kind;
+		}
+		if(symbolTable[i].label == e2.name){
+			e2.kind = symbolTable[i].kind;
+		}
+	}
 	
 	cout<<e1.name<<e2.name<<e.name;
     if (e.kind == TEMP_EXPR || e.kind == ID_EXPR || e.kind == LITERAL_INT)           isFakes = 0;                // int result
@@ -1170,6 +1188,16 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op, const ExprRec & e2, ExprR
             e.kind = TEMPF_EXPR;
             e.name = GetTempF();
 
+			//make tempf mem
+			Symbol temp;
+			temp.kind = TEMPF_EXPR;
+			temp.label="TempF";
+			temp.off = fakoff;
+			fakoff+=4;
+			symbolTable.push_back(temp);
+			e.name = temp.label;
+
+
             ExtractExpr(e1,s);
 
             if (isE1_int == 1)  //WIP do int to float conversion for e1
@@ -1199,7 +1227,11 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op, const ExprRec & e2, ExprR
             {
                 fid = e2.name;
                 foff = getOff(fid);
+<<<<<<< Updated upstream
                 IntToAlpha(foff, fid);
+=======
+				IntToAlpha(foff,fid);
+>>>>>>> Stashed changes
                 Generate("LD        ", "R2", "+" + fid + "(R14)");
                 foff += 2;
                 IntToAlpha(foff, fid);
