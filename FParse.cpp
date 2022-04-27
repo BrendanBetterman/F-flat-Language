@@ -733,7 +733,7 @@ void Parser::Expression(ExprRec& result)//
 
 	//old non order
 	//Primary(result);
-	/*
+	
 	Primary(leftOperand);
 	for (;;){
 		switch(NextToken()){
@@ -756,7 +756,7 @@ void Parser::Expression(ExprRec& result)//
 				result = leftOperand;
 				return;
 		}
-	}*/
+	}
 	Factor(result);
 	ExprTail();
 }
@@ -771,7 +771,7 @@ void Parser::Variable(ExprRec& expr)
     cout << "\nVariable(expr.kind)=" << st << "\n";
 
 
-    //expr.kind = ID_EXPR;//should check idf or id
+    expr.kind = ID_EXPR;//should check idf or id
 	VariableTail(expr);
 }
 

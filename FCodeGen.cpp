@@ -1046,7 +1046,7 @@ string CodeGen::ExtractOp(const OpRec& o, ExprKind & k){
     return "";
 }
 
-void CodeGen::GenInfix(ExprRec & e1, const OpRec & op, const ExprRec & e2, ExprRec& e)
+void CodeGen::GenInfix(ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& e)
 {
     string s;
     string tmp;
@@ -1227,11 +1227,7 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op, const ExprRec & e2, ExprR
             {
                 fid = e2.name;
                 foff = getOff(fid);
-<<<<<<< Updated upstream
                 IntToAlpha(foff, fid);
-=======
-				IntToAlpha(foff,fid);
->>>>>>> Stashed changes
                 Generate("LD        ", "R2", "+" + fid + "(R14)");
                 foff += 2;
                 IntToAlpha(foff, fid);
