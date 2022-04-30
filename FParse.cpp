@@ -346,8 +346,8 @@ void Parser::ExprTail(ExprRec& expr)
 		AddOp(op);
 		cerr<<"add op \n";
 		Factor(right);
-		
-		code.GenInfix(expr,op,right,expr);
+		result.kind = TEMP_EXPR;//tmp
+		code.GenInfix(expr,op,right,result);
 		ExprTail(expr);
 		
 		break;
@@ -827,15 +827,8 @@ void Parser::AssignStmt(ExprRec& expr)
 	Expression(identifier);
 	//WIP identifier should be the tmp var
 	//identifier.name = expr.name;
-	cout<<identifier.name<<expr.name<<"\n";
-	if(identifier.kind ==ID_EXPR){
-		identifier.name ="Temp";
-	}else if(identifier.kind ==IDF_EXPR){
-		identifier.name = "TempF";
-	}else{
-		
-		identifier.name ="Temp";
-	}
+	cout<<"assigning "<<identifier.name<<expr.name<<"\n";
+	
 	code.Assign( expr,identifier);
 	
 	cout << "Assignment op\n";
