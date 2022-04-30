@@ -1150,16 +1150,9 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& e
 
         if (isFakes == 0)  //--- All INTS
         {
-			//WIP gettemp not getting the right address
-            //e.name = GetTemp();
-			//tmp fix to not include it;
-			Symbol temp;
-			temp.kind = TEMP_EXPR;
-            temp.label=GetTemp();
-			//symbolTable.push_back(temp);
+            e.name = GetTemp();
             e.kind = TEMP_EXPR;
-			e.name = temp.label;
-			
+
             ExtractExpr(e1,s);
 
 			string id;
@@ -1192,8 +1185,8 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& e
 			Generate("STO		", "R0", "+"+id+"(R15)");
 			//Generate("%comment	","break","");
 			//changes the left side to temp.
-			e1.kind = TEMP_EXPR;
-			e1.name = temp.label;//GetTemp();
+        //	e1.kind = TEMP_EXPR;
+        //	e1.name = temp.label;//GetTemp();
             //Generate("STO		", "R0", s);
         }
         else if (isFakes == 1)//--- Doing Fakes: All Combo's with INT TO FAKE Conversions
@@ -1201,11 +1194,9 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& e
             int foff;
             string fid;
 			//make tempf mem
-			Symbol temp;
-			temp.kind = TEMPF_EXPR;
-			temp.label=GetTempF();
-			e.kind = temp.kind;
-			e.name = temp.label;
+            e.name = GetTempF();
+            e.kind = TEMPF_EXPR;
+
 
 
             ExtractExpr(e1,s);
