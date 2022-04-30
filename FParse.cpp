@@ -346,7 +346,10 @@ void Parser::ExprTail(ExprRec& expr)
 	//case MUL_OP:
 		AddOp(op);
 		cerr<<"add op \n";
-		Factor(right);
+        cout <<"Before Parser::ExprTail->Factor(right)\n";
+        Factor(right);
+        cout <<"After  Parser::ExprTail->Factor(right)\n";
+
 		//result.kind = TEMP_EXPR;//tmp
 		result.kind = right.kind;
 		//if(right.kind == TEMP_EXPR || right.kind == TEMPF_EXPR){
