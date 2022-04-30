@@ -229,19 +229,24 @@ void Parser::MultOp(OpRec& op)
 	}
 }
 
-void Parser::FactorTail()
+void Parser::FactorTail(ExprRec& left)
 {
-	ExprRec expr;
+	ExprRec right,result;
 	OpRec op;
 	switch (NextToken())
 	{
 	case MUL_OP:
 	case DIV_OP: //Real Div
 		MultOp(op);
-		Primary(expr);
-		// code.GenInfix();
+		Primary(right);
 		cout << "Mul or div\n";
-		FactorTail();
+		FactorTail(right);
+		result.kind = left.kind;
+		code.GenInfix(left,op,right,result);
+		cerr<<"right "<<right.name<<"\n";
+		left.name=result.name;
+		left.kind=result.kind;
+
 		break;
 	case AND_SYM:
 	case NOT_SYM:
@@ -329,18 +334,22 @@ void Parser::AddOp(OpRec& op)
 	}
 }
 
-void Parser::ExprTail()
+void Parser::ExprTail(ExprRec& expr)
 {
 	OpRec op;
-	ExprRec expr;
+	ExprRec right,result;
 	switch (NextToken())
 	{
 	case ADD_OP:
 	case SUB_OP:
-	case MUL_OP:
+	//case MUL_OP:
 		AddOp(op);
-		Factor(expr);
-		ExprTail();
+		cerr<<"add op \n";
+		Factor(right);
+		
+		code.GenInfix(expr,op,right,expr);
+		ExprTail(expr);
+		
 		break;
 	case AND_SYM:
 	case NOT_SYM:
@@ -363,10 +372,10 @@ void Parser::ExprTail()
 void Parser::Factor(ExprRec& expr)
 {	
 	Primary(expr);// leftside
-	
+	FactorTail(expr);
 	//code.GenInfix(expr);
+	cerr<<"left "<<expr.name<<"\n";
 	cout << "Get infix\n";
-	FactorTail();
 }
 
 void Parser::RelOp(ConRec& con)
@@ -733,7 +742,7 @@ void Parser::Expression(ExprRec& result)//
 
 	//old non order
 	//Primary(result);
-	
+	/*
 	Primary(leftOperand);
 	for (;;){
 		switch(NextToken()){
@@ -757,8 +766,11 @@ void Parser::Expression(ExprRec& result)//
 				return;
 		}
 	}
+	*/
+	cerr<<"Begin Equation\n";
 	Factor(result);
-	ExprTail();
+	ExprTail(result);
+	cerr<<kindToStr(result.kind)<<result.name<<"result type \n";
 }
 
 void Parser::Variable(ExprRec& expr)

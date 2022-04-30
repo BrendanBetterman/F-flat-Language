@@ -50,13 +50,13 @@ private:
 
 	void MultOp(OpRec& op);
 
-	void FactorTail();
+	void FactorTail(ExprRec& left);
 
 	void Primary(ExprRec& result);
 
 	void AddOp(OpRec& op);
 
-	void ExprTail();
+	void ExprTail(ExprRec& expr);
 
 	void Factor(ExprRec& expr);
 
