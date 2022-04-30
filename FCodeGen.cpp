@@ -756,8 +756,10 @@ void CodeGen::Condition(ExprRec& expr,ConRec& con,ExprRec& expr2){
 	}else if(isFake(expr.kind) && isFake(expr2.kind)){
 		//second fake not offsetting properly
 		Generate("LD		","R0",s);
+        Generate("LD		","R1",s); //--- WIP needs to load offset + 2, not offset
 		ExtractExpr(expr2,s);
 		Generate("LD		","R2",s);
+        Generate("LD		","R3",s); //--- WIP needs to load offset + 2, not offset
 		Generate("FC		","R0","R2");
 	}else{
 		cout<<"\n"<< kindtoStr(expr.kind)<<"\n";
