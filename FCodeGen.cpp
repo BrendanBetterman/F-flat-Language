@@ -502,11 +502,17 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 			IntToAlpha(source.val,s);
 			s = "+" + s + "(R11)";
 			Generate("LD		", "R0", s);
-			id =target.name;
+            IntToAlpha(source.val+2,s);
+            s = "+" + s + "(R11)";
+            Generate("LD		", "R1", s);
+            id =target.name;
 			tmp = getOff(id);
 			IntToAlpha(tmp,id);
 			s = "+" + id + "(R14)";
 			Generate("STO		", "R0", s);
+            IntToAlpha(tmp+2,id);
+            s = "+" + id + "(R14)";
+            Generate("STO		", "R1", s);
 			break;
 		case LITERAL_STR:
 		//buggy random mem for r10
