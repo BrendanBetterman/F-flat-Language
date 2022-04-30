@@ -349,7 +349,14 @@ void Parser::ExprTail(ExprRec& expr)
 		Factor(right);
 		//result.kind = TEMP_EXPR;//tmp
 		result.kind = right.kind;
+		//if(right.kind == TEMP_EXPR || right.kind == TEMPF_EXPR){
+		//	result.kind = right.kind;
+		//}else{
+		//	result.kind = expr.kind;
+		//}
 		code.GenInfix(expr,op,right,result);
+		expr.kind = result.kind;
+		expr.name = result.name;
 		ExprTail(expr);
 		
 		break;

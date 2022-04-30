@@ -478,7 +478,7 @@ void CodeGen::Finish()
 void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 {
 //needs to check if its an int fake boolean or string
-	string s,id,id1;
+	string s,id,id1,id2,id3;
 	int tmp;
 	string s2;
 	ExprKind sKind,tKind;
@@ -562,9 +562,11 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 			id = source.name;
 			tmp = getOff(id);
 			IntToAlpha(tmp,id);
+			IntToAlpha(tmp,id2);
 			id1 =target.name;
 			tmp = getOff(id1);
 			IntToAlpha(tmp,id1);
+			IntToAlpha(tmp,id3);
 			cerr<<"test id type"<<source.name;
 			cerr<< kindtoStr(sKind)<<" | "<<kindtoStr(tKind)<<"\n";
 			if(sKind ==tKind){
@@ -584,7 +586,9 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 				Generate("STO		", "R0", "+"+id1+"(R15)");
 			}else if(sKind == TEMPF_EXPR && tKind == IDF_EXPR){
 				Generate("LD		", "R0", "+"+id+"(R14)");
+				Generate("LD		", "R0", "+"+id2+"(R14)");
 				Generate("STO		", "R0", "+"+id1+"(R14)");
+				Generate("STO		", "R0", "+"+id3+"(R14)");
 			}else{
 				cerr<<(sKind)<<" | "<<kindtoStr(tKind)<<"\n";
 
