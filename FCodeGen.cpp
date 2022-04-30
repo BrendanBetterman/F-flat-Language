@@ -560,7 +560,7 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 			tmp = getOff(id1);
 			IntToAlpha(tmp,id1);
 			cerr<<"test id type"<<source.name;
-			cerr<< (sKind)<<" | "<<kindtoStr(tKind)<<"\n";
+			cerr<< kindtoStr(sKind)<<" | "<<kindtoStr(tKind)<<"\n";
 			if(sKind ==tKind){
 				if(sKind ==ID_EXPR){
 					
@@ -1061,9 +1061,9 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& e
     int isE2_int = -1;
     int isFakes = -1;
 	for(unsigned i=0; i<symbolTable.size(); i++){
-		if(symbolTable[i].label == e.name){
-			e.kind = symbolTable[i].kind;
-		}
+		//if(symbolTable[i].label == e.name){
+		//	e.kind = symbolTable[i].kind;
+		//}
 		if(symbolTable[i].label == e1.name){
 			e1.kind = symbolTable[i].kind;
 		}
@@ -1071,7 +1071,18 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& e
 			e2.kind = symbolTable[i].kind;
 		}
 	}
-	
+	switch(e.kind){
+		case ID_EXPR:
+		case LITERAL_INT:
+			e.kind = TEMP_EXPR;
+			break;
+		case IDF_EXPR:
+		case LITERAL_FAKE:
+			e.kind = TEMPF_EXPR;
+			break;
+		default:
+		break;
+	}
 	cout<<e1.name<<e2.name<<e.name;
     if (e.kind == TEMP_EXPR || e.kind == ID_EXPR || e.kind == LITERAL_INT)           isFakes = 0;                // int result
     else if ( e.kind == TEMPF_EXPR || e.kind == IDF_EXPR || e.kind == LITERAL_FAKE)   isFakes = 1;                 // fake result
@@ -1139,7 +1150,6 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& e
 
         if (isFakes == 0)  //--- All INTS
         {
-            e.kind = TEMP_EXPR;
 			//WIP gettemp not getting the right address
             //e.name = GetTemp();
 			//tmp fix to not include it;
@@ -1147,6 +1157,7 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& e
 			temp.kind = TEMP_EXPR;
             temp.label=GetTemp();
 			//symbolTable.push_back(temp);
+            e.kind = TEMP_EXPR;
 			e.name = temp.label;
 			
             ExtractExpr(e1,s);
@@ -1189,17 +1200,11 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& e
         {
             int foff;
             string fid;
-
-            e.kind = TEMPF_EXPR;
-            e.name = GetTempF();
-
 			//make tempf mem
 			Symbol temp;
 			temp.kind = TEMPF_EXPR;
-			temp.label="TempF";
-			temp.off = fakoff;
-			fakoff+=4;
-			symbolTable.push_back(temp);
+			temp.label=GetTempF();
+			e.kind = temp.kind;
 			e.name = temp.label;
 
 
@@ -1254,6 +1259,7 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& e
             IntToAlpha(foff, fid);
             Generate("STO       ", "R1", "+" + fid + "(R14)");   //STORE 2nd half of float in R14 offset +2
 
+			
           }
 
           if (isFakes == -1) cout << "\n!Error: GenInfix result exp is INT or FAKE not defined!";

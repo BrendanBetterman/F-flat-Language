@@ -347,6 +347,7 @@ void Parser::ExprTail(ExprRec& expr)
 		cerr<<"add op \n";
 		Factor(right);
 		result.kind = TEMP_EXPR;//tmp
+		
 		code.GenInfix(expr,op,right,result);
 		ExprTail(expr);
 		
