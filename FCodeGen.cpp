@@ -1357,3 +1357,19 @@ void CodeGen::ProcessStringLiteral(ExprRec& e)
 
 }
 */
+ExprKind CodeGen::GetSymbolTableKind(string & s)
+{
+    ExprKind thisK;
+    bool found = false;
+    for (unsigned i = 0; i < symbolTable.size(); i++)
+    {
+        if ( symbolTable[i].label == s)
+        {
+            found = true;
+            thisK = symbolTable[i].kind;
+        }
+    }
+    if (found) return thisK;
+
+
+}

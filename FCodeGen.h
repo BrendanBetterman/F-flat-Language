@@ -85,6 +85,8 @@ public:
     void ProcessLiteralInit(ExprRec& e);
     void ProcessLiteral(ExprRec& e);
 
+    ExprKind GetSymbolTableKind(string & s);
+
     //void ProcessLitFake(ExprRec& e);
     //void ProcessStringLiteral(ExprRec& e);
 

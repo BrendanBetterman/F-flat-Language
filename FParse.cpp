@@ -201,9 +201,10 @@ void Parser::Literal(ExprRec& expr)
 		break;
 	case ID:
 		Match(ID);
-		expr.kind = ID_EXPR;
+        //expr.kind = ID_EXPR;
 		expr.name = scan.tokenBuffer;//get scanner data
-		cout<< "ID to id\n";
+
+        cout<< "ID to id\n";
 		break;
 	default:
 		SyntaxError(NextToken(), "");
@@ -780,11 +781,19 @@ void Parser::Variable(ExprRec& expr)
 	Match(ID);
 	expr.name = scan.tokenBuffer;
 
+
     string st = std::to_string(expr.kind);
     cout << "\nVariable(expr.kind)=" << st << "\n";
+    st = expr.name;
+
+    ExprKind k;
+    k = code.GetSymbolTableKind(st);
+
+    st = std::to_string(k);
+    cout << "GetSymbolTableKind=" <<  k << "\n";
 
 
-    expr.kind = ID_EXPR;//should check idf or id
+    expr.kind = k;//should check idf or id
 	VariableTail(expr);
 }
 
