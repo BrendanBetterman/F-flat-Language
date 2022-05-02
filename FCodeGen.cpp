@@ -759,7 +759,8 @@ bool CodeGen::isInt(ExprKind& kind){
 	}
 }
 void CodeGen::Condition(ExprRec& expr,ConRec& con,ExprRec& expr2){
-	string s;
+	string s, sTemp;
+	int o;
 	LookUp(expr.name,expr.kind);
 	LookUp(expr2.name,expr2.kind);
 	ExtractExpr(expr,s);
@@ -772,10 +773,18 @@ void CodeGen::Condition(ExprRec& expr,ConRec& con,ExprRec& expr2){
 	}else if(isFake(expr.kind) && isFake(expr2.kind)){
 		//second fake not offsetting properly
 		Generate("LD		","R0",s);
-        Generate("LD		","R1",s); //--- WIP needs to load offset + 2, not offset
+		o = getOff(expr.name);  //---  load offset + 2, not offset
+		o = o +2;
+		IntToAlpha(o, sTemp);
+		s = "+" + sTemp + "(R14)";
+        Generate("LD		","R1",s); 
 		ExtractExpr(expr2,s);
 		Generate("LD		","R2",s);
-        Generate("LD		","R3",s); //--- WIP needs to load offset + 2, not offset
+		o = getOff(expr2.name);  //--- load offset + 2, not offset
+		o = o + 2;
+		IntToAlpha(o, sTemp);
+		s = "+" + sTemp + "(R14)";
+        Generate("LD		","R3",s); 
 		Generate("FC		","R0","R2");
 	}else{
 		cout<<"\n"<< kindtoStr(expr.kind)<<"\n";
