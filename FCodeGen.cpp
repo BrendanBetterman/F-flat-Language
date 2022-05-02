@@ -760,7 +760,7 @@ bool CodeGen::isInt(ExprKind& kind){
 	}
 }
 void CodeGen::Condition(ExprRec& expr,ConRec& con,ExprRec& expr2){
-	string s, sTemp;
+	string s;
 	int o;
 	LookUp(expr.name,expr.kind);
 	LookUp(expr2.name,expr2.kind);
@@ -776,15 +776,15 @@ void CodeGen::Condition(ExprRec& expr,ConRec& con,ExprRec& expr2){
 		Generate("LD		","R0",s);
 		o = getOff(expr.name);  //---  load offset + 2, not offset
 		o = o +2;
-		IntToAlpha(o, sTemp);
-		s = "+" + sTemp + "(R14)";
+		IntToAlpha(o, s);
+		s = "+" + s + "(R14)";
         Generate("LD		","R1",s); 
 		ExtractExpr(expr2,s);
 		Generate("LD		","R2",s);
 		o = getOff(expr2.name);  //--- load offset + 2, not offset
 		o = o + 2;
-		IntToAlpha(o, sTemp);
-		s = "+" + sTemp + "(R14)";
+		IntToAlpha(o, s);
+		s = "+" + s + "(R14)";
         Generate("LD		","R3",s); 
 		Generate("FC		","R0","R2");
 	}else{
