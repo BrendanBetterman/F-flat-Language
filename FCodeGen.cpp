@@ -645,6 +645,22 @@ void CodeGen::ReadValue(const ExprRec & InVal)
 			// convert to int zero or one.
 			//sto conversion.
 			break;
+		case ARRAY_EXPR:
+			cerr <<"array read";
+			ExtractExpr(InVal,s);
+			id = InVal.name;
+			tmp = getOff(id);
+			IntToAlpha(tmp,id);
+			//should check the type based on name
+			Generate("LD		", "R0","(R15)");
+			Generate("IA		", "R0",id);
+			IntToAlpha(InVal.val,s);
+			Generate("IA		", "R0", s);
+			Generate("RDI		", "R0","");
+
+			Generate("STO		","R0","+"+s+"(R15)");
+
+			break;
 		default:
 			break;
 	}
@@ -1358,12 +1374,19 @@ void CodeGen::ProcessLiteral(ExprRec& e)
 	}
 	
 }
-/*
-void CodeGen::ProcessStringLiteral(ExprRec& e)
-{
-
+void CodeGen::ArrayInit(const ExprKind& kind,int size){
+	switch(kind){
+		case ID_EXPR:
+			intoff += size*2;
+			break;
+		case IDF_EXPR:
+			fakoff += size*4;
+			break;
+		default:
+			//should syntaxerror
+			break;
+	}
 }
-*/
 ExprKind CodeGen::GetSymbolTableKind(string & s)
 {
     ExprKind thisK;

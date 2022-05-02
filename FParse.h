@@ -40,7 +40,7 @@ private:
 	string kindToStr(ExprKind& k);
 	void VarDecListTail(ExprKind& expr);
 
-	void VarDecTail();
+	void VarDecTail(const ExprKind& expr);
 
 	void DecTail(ExprRec& expr);
 

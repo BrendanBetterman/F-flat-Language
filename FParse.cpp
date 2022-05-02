@@ -85,7 +85,7 @@ void Parser::VarDec(ExprKind& kind)
 	Match(ID);
 	expr.name = scan.tokenBuffer;//new 4-20
 	code.ProcessId(expr);
-	VarDecTail();
+	VarDecTail(kind);
 }
 
 void Parser::VarDecList(ExprKind& kind)
@@ -110,13 +110,17 @@ void Parser::VarDecListTail(ExprKind& kind)
 	}
 }
 
-void Parser::VarDecTail()
+void Parser::VarDecTail(const ExprKind& kind)
 {
+	
 	switch (NextToken())
 	{
 	case LSTAPLE:
 		Match(LSTAPLE);
 		Match(INT_LITERAL);
+		//Make extra mem
+		cerr<<"\n\narray\n\n";
+		code.ArrayInit(kind,stoi(scan.tokenBuffer));
 		Match(RSTAPLE);
 		break;
 	case SEMICOLON:
@@ -129,23 +133,29 @@ void Parser::VarDecTail()
 
 void Parser::DecTail(ExprRec& expr)
 {
-	ExprRec source;
+	ExprRec source,temp;
 	switch (NextToken())
 	{
 	case ASSIGN_OP:
 		Match(ASSIGN_OP);
-		Literal(source);
-		
-		code.ProcessLiteral(source);
-		cout << "Assign OP\n";
 
-		code.Assign(expr,source);
+		//expression for int i = k+1; works
+		temp.name = expr.name;
+		temp.kind = expr.kind;
+		Expression(expr);
+		code.Assign( temp,expr);
+
+		//Literal(source);
+		//code.ProcessLiteral(source);
+		//cout << "Assign OP\n";
+		//code.Assign(expr,source);
+
 		//cout << scan.tokenBuffer;
 		break;
 	case LSTAPLE:
 	case SEMICOLON:
 	case COMMA:
-		VarDecTail();
+		VarDecTail(expr.kind);
 		VarDecListTail(expr.kind);
 		break;
 	default:
@@ -515,7 +525,7 @@ void Parser::AndCond()
 
 void Parser::VarInit()
 {
-	ExprRec expr,source;
+	ExprRec expr,source,temp;
 	
 	switch (NextToken())
 	{
@@ -527,9 +537,16 @@ void Parser::VarInit()
 		code.ProcessId(expr);
 		NextToken();
 		Match(ASSIGN_OP);
-		Literal(expr);
-		code.ProcessLiteral(expr);
-		code.Assign(expr,expr);
+		//new expression in forloops
+		temp.name = expr.name;
+		temp.kind = expr.kind;
+		Expression(expr);
+		code.Assign( temp,expr);
+		//old only took literals
+		//Expression(expr);
+		//Literal(expr); //old
+		//code.ProcessLiteral(expr);
+		//code.Assign(expr,expr);
 		Match(SEMICOLON);
 		break;
 	case ID:
@@ -576,9 +593,12 @@ void Parser::Condition(ExprRec& Lexpr,ConRec& con, ExprRec& Rexpr)
 	cout << "Condition";
 	//Variable(expr);
 	
-	Primary(Lexpr);
+	//Primary(Lexpr);
+
+	Expression(Lexpr);
 	RelOp(con);
-	Primary(Rexpr);
+	Expression(Rexpr);
+	//Primary(Rexpr);
 	
 		
 	AndCond();
@@ -587,7 +607,7 @@ void Parser::Condition(ExprRec& Lexpr,ConRec& con, ExprRec& Rexpr)
 
 void Parser::ForStmt()
 {
-	ExprRec Lexpr,Rexpr;
+	ExprRec Lexpr,Rexpr,temp;
 	ConRec con;
 	Match(FOR_SYM);
 	Match(LPAREN);
@@ -604,7 +624,10 @@ void Parser::ForStmt()
 	Match(SEMICOLON);
 	Variable(Lexpr);
 	Match(ASSIGN_OP);
+	temp.name = Lexpr.name;
+	temp.kind = Lexpr.kind;
 	Expression(Lexpr);
+	code.Assign( temp,Lexpr);
 	code.LoopUpdate();
 	Match(RPAREN);
 	StmtList(Lexpr);
@@ -690,7 +713,12 @@ void Parser::VariableTail(ExprRec& expr)
 	{
 	case LSTAPLE:
 		Match(LSTAPLE);
+		cerr<<"array name"<< expr.name;
 		Expression(expr);
+		expr.kind = ARRAY_EXPR;
+		
+		//expr is offset of the offset
+		
 		Match(RSTAPLE);
 		break;
 	case SEMICOLON:

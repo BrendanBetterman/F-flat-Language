@@ -19,7 +19,7 @@ struct OpRec // information about an operator
 enum ExprKind { 
  LITERAL_INT, LITERAL_FAKE, LITERAL_BOOL, LITERAL_STR,
  ID_EXPR, IDF_EXPR, IDB_EXPR, IDS_EXPR,
- TEMP_EXPR,TEMPF_EXPR };
+ TEMP_EXPR,TEMPF_EXPR,ARRAY_EXPR };
 
 struct ExprRec // information about a constant, variable, or
                // an intermediate (temporary) result
@@ -84,6 +84,8 @@ public:
     void ProcessId(ExprRec& e);
     void ProcessLiteralInit(ExprRec& e);
     void ProcessLiteral(ExprRec& e);
+
+    void ArrayInit(const ExprKind& kind,int size);
 
     ExprKind GetSymbolTableKind(string & s);
 
