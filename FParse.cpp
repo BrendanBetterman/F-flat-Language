@@ -394,6 +394,7 @@ void Parser::ExprTail(ExprRec& expr)
 void Parser::Factor(ExprRec& expr)
 {	
 	Primary(expr);// leftside
+	
 	FactorTail(expr);
 	//code.GenInfix(expr);
 	cerr<<"left "<<expr.name<<"\n";
@@ -778,35 +779,6 @@ void Parser::Expression(ExprRec& result)//
 {
 	ExprRec leftOperand, rightOperand;
 	OpRec op;
-	
-
-	//old non order
-	//Primary(result);
-	/*
-	Primary(leftOperand);
-	for (;;){
-		switch(NextToken()){
-			case ADD_OP:
-			case SUB_OP:
-				AddOp(op);
-				Primary(rightOperand);
-				code.GenInfix(leftOperand, op, rightOperand, result);
-				cerr<<result.name<<"\n";
-				//wip temp fix
-				break;
-			case DIV_OP:
-			case MUL_OP:
-				MultOp(op);
-				Primary(rightOperand);
-				code.GenInfix(leftOperand, op, rightOperand, result);
-				break;
-			
-			default:
-				result = leftOperand;
-				return;
-		}
-	}
-	*/
 	cerr<<"Begin Equation\n";
 	Factor(result);
 	ExprTail(result);
@@ -818,7 +790,7 @@ void Parser::Variable(ExprRec& expr)
 	
 	Match(ID);
 	expr.name = scan.tokenBuffer;
-
+	//expr.kind = ID_EXPR;
 
     string st = std::to_string(expr.kind);
     cout << "\nVariable(expr.kind)=" << st << "\n";

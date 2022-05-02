@@ -688,6 +688,7 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 			break;
 		case ID_EXPR:
 		case IDF_EXPR:
+		case IDS_EXPR:
 			cout<<"id";
 			id =outExpr.name;
             for(unsigned i=0; i<symbolTable.size(); i++){
@@ -1381,6 +1382,9 @@ void CodeGen::ArrayInit(const ExprKind& kind,int size){
 			break;
 		case IDF_EXPR:
 			fakoff += size*4;
+			break;
+		case IDS_EXPR:
+			stroff += size*2;
 			break;
 		default:
 			//should syntaxerror

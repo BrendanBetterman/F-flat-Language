@@ -109,6 +109,8 @@ Token Scanner::GetNextToken(){
     {
 		
         /* code either switch statment or if wall */
+		
+		
 		while(isspace(currentChar)){
 			currentChar = NextChar();
 		}
@@ -118,6 +120,16 @@ Token Scanner::GetNextToken(){
 		
 		while(currentChar =='\n'){
 			currentChar = NextChar();
+		}
+		if(currentChar == '/' && sourceFile.peek() == '*'){
+			NextChar();
+			currentChar = NextChar();
+			while(currentChar != '*' && sourceFile.peek() != '/'){
+				currentChar = NextChar();
+			}
+			NextChar();
+			currentChar = NextChar();
+			cerr<<currentChar;
 		}
 		switch(currentChar){
 			case '(':
@@ -151,15 +163,14 @@ Token Scanner::GetNextToken(){
 				}else if(c=='*'){
 					//multiLine
 					cout<<"multi";
-					//currentChar=NextChar();
-					do{
+					currentChar=NextChar();
+					while(currentChar != '*' && sourceFile.peek() != '/'){
 						currentChar = NextChar();
-						//cout << currentChar;
-					}while (currentChar != '*' && sourceFile.peek() != '/');
-					currentChar = NextChar();//ignores *
-					currentChar = NextChar();//ignores / 
-					currentChar = NextChar();//ignores \n
-					//needs to return no op
+					}
+					cerr<<currentChar;
+					currentChar = NextChar();
+					currentChar = NextChar();
+					
 					break;
 				}else{
 					return DIV_OP;
