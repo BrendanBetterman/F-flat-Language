@@ -19,7 +19,6 @@ Parser::Parser()
 {
 	tokenAvailable = false;
 }
-
 void Parser::SyntaxError(Token t, string msg)
 {
 	cout << endl<<"line #" <<scan.lineNumber+1;
@@ -29,7 +28,6 @@ void Parser::SyntaxError(Token t, string msg)
 	cout << "Syntax Error: " + msg << endl;
 	exit(1); // abort on any syntax error
 }
-
 Token Parser::NextToken()
 {
 	if (!tokenAvailable)
@@ -41,7 +39,6 @@ Token Parser::NextToken()
 	}
 	return savedToken;
 }
-
 void Parser::Match(Token t)
 {
 	
@@ -74,10 +71,9 @@ string Parser::kindToStr(ExprKind& k){
 		case IDF_EXPR:
 			return "idf expr";
 		default:
-			return "default";
+            return "kindToStr-default\n";
 	}
 }
-
 void Parser::VarDec(ExprKind& kind)
 {
 	ExprRec expr;//should get type from previous
@@ -87,13 +83,11 @@ void Parser::VarDec(ExprKind& kind)
 	code.ProcessId(expr);
 	VarDecTail(kind);
 }
-
 void Parser::VarDecList(ExprKind& kind)
 {
 	VarDec(kind);
 	VarDecListTail(kind);
 }
-
 void Parser::VarDecListTail(ExprKind& kind)
 {
 	switch (NextToken())
@@ -109,7 +103,6 @@ void Parser::VarDecListTail(ExprKind& kind)
 		SyntaxError(NextToken(), "");
 	}
 }
-
 void Parser::VarDecTail(const ExprKind& kind)
 {
 	
@@ -130,7 +123,6 @@ void Parser::VarDecTail(const ExprKind& kind)
 		SyntaxError(NextToken(), "");
 	}
 }
-
 void Parser::DecTail(ExprRec& expr)
 {
 	ExprRec source,temp;
@@ -162,7 +154,6 @@ void Parser::DecTail(ExprRec& expr)
 		SyntaxError(NextToken(), "");
 	}
 }
-
 void Parser::Type(ExprRec& expr)
 {
 	switch (NextToken())
@@ -188,7 +179,6 @@ void Parser::Type(ExprRec& expr)
 		SyntaxError(NextToken(), "");
 	}
 }
-
 void Parser::Literal(ExprRec& expr)
 {
 	switch (NextToken())
@@ -220,7 +210,6 @@ void Parser::Literal(ExprRec& expr)
 		SyntaxError(NextToken(), "");
 	}
 }
-
 void Parser::MultOp(OpRec& op)
 {
 	switch (NextToken())
@@ -239,20 +228,19 @@ void Parser::MultOp(OpRec& op)
 		SyntaxError(NextToken(), "");
 	}
 }
-
 void Parser::FactorTail(ExprRec& left)
 {
 	ExprRec right,result;
 	OpRec op;
 	switch (NextToken())
 	{
-	case MUL_OP:
+    case MUL_OP:
 	case DIV_OP: //Real Div
 		MultOp(op);
 		Primary(right);
 		cout << "Mul or div\n";
 		FactorTail(right);
-		result.kind = left.kind;
+        result.kind = left.kind;
 		code.GenInfix(left,op,right,result);
 		cerr<<"right "<<right.name<<"\n";
 		left.name=result.name;
@@ -265,8 +253,8 @@ void Parser::FactorTail(ExprRec& left)
 	case RPAREN:
 	case SEMICOLON:
 	case COMMA:
-	case ADD_OP:
-	case SUB_OP:
+    case ADD_OP:
+    case SUB_OP:
 	case LT_OP:
 	case LE_OP:
 	case GT_OP:
@@ -278,7 +266,6 @@ void Parser::FactorTail(ExprRec& left)
 		SyntaxError(NextToken(), "");
 	}
 }
-
 void Parser::Primary(ExprRec& result)
 {
 	ExprRec identifier;
@@ -324,7 +311,6 @@ void Parser::Primary(ExprRec& result)
 		SyntaxError(NextToken(), "");
 	}
 }
-
 void Parser::AddOp(OpRec& op)
 {
 	switch (NextToken())
@@ -344,7 +330,6 @@ void Parser::AddOp(OpRec& op)
 		SyntaxError(NextToken(), "");
 	}
 }
-
 void Parser::ExprTail(ExprRec& expr)
 {
 	OpRec op;
@@ -361,11 +346,11 @@ void Parser::ExprTail(ExprRec& expr)
         cout <<"After  Parser::ExprTail->Factor(right)\n";
 
 		//result.kind = TEMP_EXPR;//tmp
-		result.kind = right.kind;
+        result.kind = right.kind;
 		//if(right.kind == TEMP_EXPR || right.kind == TEMPF_EXPR){
 		//	result.kind = right.kind;
 		//}else{
-		//	result.kind = expr.kind;
+        //    result.kind = expr.kind;
 		//}
 		code.GenInfix(expr,op,right,result);
 		expr.kind = result.kind;
@@ -390,17 +375,19 @@ void Parser::ExprTail(ExprRec& expr)
 		SyntaxError(NextToken(), "");
 	}
 }
-
 void Parser::Factor(ExprRec& expr)
 {	
 	Primary(expr);// leftside
-	
+    string st = std::to_string(expr.kind);
+    cerr<<"Before Parser::Expression->Factor->FactorTail(expr); Expr.kind=" << st << "\n";
 	FactorTail(expr);
+    st = std::to_string(expr.kind);
+    cerr<<"After Parser::Expression->Factor->FactorTail(expr); Expr.kind=" << st << "\n";
+
 	//code.GenInfix(expr);
 	cerr<<"left "<<expr.name<<"\n";
 	cout << "Get infix\n";
 }
-
 void Parser::RelOp(ConRec& con)
 {
 	switch (NextToken())
@@ -433,7 +420,6 @@ void Parser::RelOp(ConRec& con)
 		SyntaxError(NextToken(), "");
 	}
 }
-
 void Parser::RelTail()
 {
 	ExprRec expr;
@@ -458,14 +444,12 @@ void Parser::RelTail()
 		SyntaxError(NextToken(), "");
 	}
 }
-
 void Parser::Relational()
 {
 	ExprRec expr;
 	Expression(expr);
 	RelTail();
 }
-
 void Parser::AndTail()
 {
 	switch (NextToken())
@@ -483,7 +467,6 @@ void Parser::AndTail()
 		SyntaxError(NextToken(), "");
 	}
 }
-
 void Parser::Negation()
 {
 	switch (NextToken())
@@ -501,7 +484,6 @@ void Parser::Negation()
 		SyntaxError(NextToken(), "");
 	}
 }
-
 void Parser::CondTail()
 {
 	switch (NextToken())
@@ -517,13 +499,11 @@ void Parser::CondTail()
 		SyntaxError(NextToken(), "");
 	}
 }
-
 void Parser::AndCond()
 {
 	Negation();
 	AndTail();
 }
-
 void Parser::VarInit()
 {
 	ExprRec expr,source,temp;
@@ -558,7 +538,9 @@ void Parser::VarInit()
 				//assign;
 				Match(ASSIGN_OP);
 				Literal(source);
-				code.ProcessLiteral(source);
+        //---
+                cout << "Parser::VarInit->Before ProcessLiteral(source)\n";
+                code.ProcessLiteral(source);
 				code.Assign(expr,source);
 				
 				break;
@@ -571,7 +553,6 @@ void Parser::VarInit()
 		SyntaxError(NextToken(), "");
 	}
 }
-
 void Parser::FelseClause()
 {
 	ExprRec expr;
@@ -588,7 +569,6 @@ void Parser::FelseClause()
 		SyntaxError(NextToken(), "");
 	}
 }
-
 void Parser::Condition(ExprRec& Lexpr,ConRec& con, ExprRec& Rexpr)
 {
 	cout << "Condition";
@@ -605,7 +585,6 @@ void Parser::Condition(ExprRec& Lexpr,ConRec& con, ExprRec& Rexpr)
 	AndCond();
 	CondTail();
 }
-
 void Parser::ForStmt()
 {
 	ExprRec Lexpr,Rexpr,temp;
@@ -636,7 +615,6 @@ void Parser::ForStmt()
 	Match(ENDFOR_SYM);
 	code.ProcessEndFor();
 }
-
 void Parser::DoFwhileStmt()
 {
 	ExprRec expr,Lexpr,Rexpr;
@@ -650,7 +628,6 @@ void Parser::DoFwhileStmt()
 	Match(RPAREN);
 	code.ProcessEndFwhile(Lexpr,con,Rexpr);
 }
-
 void Parser::WhileStmt()
 {
 	ExprRec Lexpr,Rexpr;
@@ -664,7 +641,6 @@ void Parser::WhileStmt()
 	Match(ENDWHILE_SYM);
 	code.ProcessEndWhile();
 }
-
 void Parser::FifStmt()
 {
 	ExprRec Lexpr,Rexpr;
@@ -679,7 +655,6 @@ void Parser::FifStmt()
 	Match(FENDIF_SYM);
 	code.ProcessEndIf();
 }
-
 void Parser::ItemListTail()
 {
 	ExprRec expr;
@@ -698,7 +673,6 @@ void Parser::ItemListTail()
 		SyntaxError(NextToken(), "");
 	}
 }
-
 void Parser::ItemList(ExprRec& expr)
 {
 
@@ -707,7 +681,6 @@ void Parser::ItemList(ExprRec& expr)
 	code.WriteExpr(expr);
 	ItemListTail();
 }
-
 void Parser::VariableTail(ExprRec& expr)
 {
 	switch (NextToken())
@@ -747,7 +720,6 @@ void Parser::VariableTail(ExprRec& expr)
 		SyntaxError(NextToken(), "");
 	}
 }
-
 void Parser::VarListTail(ExprRec& expr)
 {
 	switch (NextToken())
@@ -766,7 +738,6 @@ void Parser::VarListTail(ExprRec& expr)
 		SyntaxError(NextToken(), "");
 	}
 }
-
 void Parser::VarList(ExprRec& expr)
 {
 	Variable(expr);
@@ -774,17 +745,23 @@ void Parser::VarList(ExprRec& expr)
 	cout << "Read Value\n";
 	VarListTail(expr);
 }
-
 void Parser::Expression(ExprRec& result)//
 {
 	ExprRec leftOperand, rightOperand;
 	OpRec op;
-	cerr<<"Begin Equation\n";
-	Factor(result);
-	ExprTail(result);
-	cerr<<kindToStr(result.kind)<<result.name<<"result type \n";
-}
 
+
+	cerr<<"Begin Equation\n";
+    cerr <<"Before Parser::Expression->Factor(leftOperand);\n";
+    //Factor(result);
+    Factor(leftOperand);
+    cerr<<"After Parser::Expression->Factor(leftOperand);\n";
+    //ExprTail(result);
+    ExprTail(leftOperand);
+    result = leftOperand;
+    cerr<<kindToStr(result.kind)<<result.name<<"-result-type \n";
+    //cerr<<kindToStr(leftOperand.kind)<<leftOperand.name<<"-result-type \n";
+}
 void Parser::Variable(ExprRec& expr)
 {
 	
@@ -803,10 +780,9 @@ void Parser::Variable(ExprRec& expr)
     cout << "GetSymbolTableKind=" <<  k << "\n";
 
 
-    expr.kind = k;//should check idf or id
+    expr.kind = k;// set idf or id
 	VariableTail(expr);
 }
-
 void Parser::FoutlnStmt(ExprRec& expr)
 {
 	Match(FOUTLN_SYM);
@@ -817,7 +793,6 @@ void Parser::FoutlnStmt(ExprRec& expr)
 	Match(RPAREN);
 	Match(SEMICOLON);
 }
-
 void Parser::FoutStmt(ExprRec& expr)
 {
 	Match(FOUT_SYM);
@@ -826,7 +801,6 @@ void Parser::FoutStmt(ExprRec& expr)
 	Match(RPAREN);
 	Match(SEMICOLON);
 }
-
 void Parser::FinStmt(ExprRec& expr)
 {
 	Match(FIN_SYM);
@@ -835,7 +809,6 @@ void Parser::FinStmt(ExprRec& expr)
 	Match(RPAREN);
 	Match(SEMICOLON);
 }
-
 void Parser::AssignStmt(ExprRec& expr)
 {
 	ExprRec identifier;
@@ -863,10 +836,9 @@ void Parser::Declaration(ExprRec& expr)
 	code.ProcessId(expr);
 	DecTail(expr);
     string st = std::to_string(expr.kind);
-    cout << "Processed ID->expr.kind=" << st << "\n";
+    cout << "After Parser::Declaration->Processed ID->expr.kind=" << st << "\n";
 	Match(SEMICOLON);
 }
-
 void Parser::StructStmt()
 {
 	switch (NextToken())
@@ -887,7 +859,6 @@ void Parser::StructStmt()
 		SyntaxError(NextToken(), "");
 	}
 }
-
 void Parser::SimpleStmt(ExprRec& expr)
 {
 	switch (NextToken())
@@ -908,7 +879,6 @@ void Parser::SimpleStmt(ExprRec& expr)
 		SyntaxError(NextToken(), "");
 	}
 }
-
 void Parser::StmtTail(ExprRec& expr)
 {
 	switch (NextToken())
@@ -939,7 +909,6 @@ void Parser::StmtTail(ExprRec& expr)
 		SyntaxError(NextToken(), "");
 	}
 }
-
 void Parser::Statement(ExprRec& expr)
 {
 	cout << "statement\n";
@@ -968,13 +937,11 @@ void Parser::Statement(ExprRec& expr)
 		SyntaxError(NextToken(), "");
 	}
 }
-
 void Parser::StmtList(ExprRec& expr)
 {
 	Statement(expr);
 	StmtTail(expr);
 }
-
 void Parser::Program()
 {
 	
@@ -987,7 +954,6 @@ void Parser::Program()
 	Match(END_SYM);
 	
 }
-
 void Parser::SystemGoal()
 {
 	Program();
