@@ -224,7 +224,9 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s){
     case LITERAL_FAKE:
         //cout << "---literal fake\n";
 		//while(symbolTable[n].label!=e.name)n++;
-		IntToAlpha(symbolTable[n].off,s);
+
+        // look through fakeTable for
+        IntToAlpha(symbolTable[n].off,s);
         s = "+" + s + "(R11)";
         break;
 	default:
@@ -291,7 +293,6 @@ void CodeGen::Start()
 	//R14 , R13, R12
 }
 void CodeGen::Finish()
-
 {
 	string s;
 	listFile.width(6);
@@ -322,7 +323,7 @@ void CodeGen::Finish()
 	Generate("LABEL	", "FAKES", "");
 	tmpSize =0;
     for(unsigned i=0; i< symbolTable.size(); i++){
-		if(symbolTable[i].kind == IDF_EXPR) tmpSize +=1;
+        if(symbolTable[i].kind == IDF_EXPR || symbolTable[i].kind == TEMPF_EXPR) tmpSize += 1;
 	}
     IntToAlpha(int(4*(tmpSize)),s);
     Generate("SKIP	", s, "");
@@ -698,7 +699,7 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 			}
 			tmp = getOff(id);
 			IntToAlpha(tmp,id);
-			if(kind ==ID_EXPR){
+            if(kind == ID_EXPR){
 				Generate("WRI		", "+"+id+"(R15)", "");
 			}else if(kind == IDF_EXPR){
 				Generate("WRF		", "+"+id+"(R14)", "");
@@ -1110,7 +1111,7 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& e
 			e2.kind = symbolTable[i].kind;
 		}
 	}
-	switch(e.kind){
+    switch(e.kind){
 		case ID_EXPR:
 		case LITERAL_INT:
 			e.kind = TEMP_EXPR;
@@ -1122,6 +1123,8 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& e
 		default:
 		break;
 	}
+    if (e2.kind == LITERAL_INT && ( e1.kind == TEMPF_EXPR || e1.kind == IDF_EXPR || e1.kind == LITERAL_FAKE)) e.kind = TEMPF_EXPR;  // rightOp is literalInt in Fake Math
+
 	cout<<e1.name<<e2.name<<e.name;
     if (e.kind == TEMP_EXPR || e.kind == ID_EXPR || e.kind == LITERAL_INT)           isFakes = 0;                // int result
     else if ( e.kind == TEMPF_EXPR || e.kind == IDF_EXPR || e.kind == LITERAL_FAKE)   isFakes = 1;                 // fake result
@@ -1174,6 +1177,14 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& e
                 case DIV:   e.val = e1.val / e2.val; break;
                 case MOD:   e.val = e1.val % e2.val; break;
             }
+            e.name = GetTemp();
+            e.kind = TEMP_EXPR;
+            IntToAlpha(e.val, s);
+            Generate("LD        ", "R0", "#" + s);
+            ExtractExpr(e,s);
+            Generate("STO       ", "R0", s);
+
+
         } else if(e1.kind == LITERAL_FAKE && e2.kind == LITERAL_FAKE){
             e.kind = LITERAL_FAKE;
             switch(op.op){
@@ -1183,6 +1194,31 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& e
                 case DIV:   e.valF = e1.valF / e2.valF; break;
                 default: break;
             }
+
+            int symOff, fTabO;
+            string strO;
+            e.name = GetTempF();
+
+            symOff = GetSymbolTableIndex(e.name);
+            e.val = symbolTable[symOff].off;
+            e.kind = TEMPF_EXPR;
+            FakeToAlpha(e.valF, s);
+            fakeTable.push_back(s);
+            fTabO = (fakeTable.size()-1)*4;
+            IntToAlpha(fTabO, strO);
+
+            Generate("LD        ", "R0", "+" + strO + "(R11)");  //do LD R11, here
+            fTabO += 2;
+            IntToAlpha(fTabO, strO);
+            Generate("LD        ", "R1", "+" + strO + "(R11)");
+            fTabO = symbolTable[symOff].off;
+            IntToAlpha(fTabO, strO);
+            Generate("STO       ", "R0", "+" + strO + "(R14)");  //put R11 to R14 in symbolTable order
+            fTabO += 2;
+            IntToAlpha(fTabO, strO);
+            Generate("STO       ", "R1", "+" + strO + "(R14)");
+
+
         }
     } //-- END of PURE LITERALS
     else{
@@ -1193,36 +1229,23 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& e
             e.kind = TEMP_EXPR;
 
             ExtractExpr(e1,s);
+            Generate("LD		","R0", s);
 
-			string id;
-			int off;
-			id =e1.name;
-			off = getOff(id);
-			IntToAlpha(off,id);
-
-            Generate("LD		","R0","+"+id+"(R15)");
             switch(op.op){
-                case PLUS:
-                    cout<<"GenInfixPLUS-"; break;
-                case MINUS:
-                    cout<<"GenInfixMIN-"; break;
-                default:
-                    cout<<"GenInfixDefaultOP"; break;
+                case PLUS:  cout<<"GenInfixPLUS-"; break;
+                case MINUS: cout<<"GenInfixMIN-"; break;
+                default:    cout<<"GenInfixDefaultOP"; break;
             }
+
             ExtractExpr(e2, s);
             tmp = ExtractOp(op, e.kind);
-            cout<< tmp<<"here\n";
-
             Generate(tmp, "R0", s);
+
             ExtractExpr(e, s);
-			//string id;
-			//int off;
-            id =e.name;
-			
-			off = getOff(id);
-			IntToAlpha(off,id);
-			Generate("STO		", "R0", "+"+id+"(R15)");
-			//Generate("%comment	","break","");
+            Generate("STO		", "R0", s);
+
+
+            //Generate("%comment	","break","");
 			//changes the left side to temp.
         //	e1.kind = TEMP_EXPR;
         //	e1.name = temp.label;//GetTemp();
@@ -1246,13 +1269,41 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& e
             }
             else // double load from R14
             {
-                fid = e1.name;
-                foff = getOff(fid);
-                IntToAlpha(foff, fid);
-                Generate("LD        ", "R0", "+" + fid + "(R14)");
-                foff += 2;
-                IntToAlpha(foff, fid);
-                Generate("LD        ", "R1", "+" + fid + "(R14)");
+                if (e1.kind != LITERAL_FAKE)
+                {
+                    fid = e1.name;
+                    foff = getOff(fid);
+                    IntToAlpha(foff, fid);
+                    Generate("LD        ", "R0", "+" + fid + "(R14)");
+                    foff += 2;
+                    IntToAlpha(foff, fid);
+                    Generate("LD        ", "R1", "+" + fid + "(R14)");
+                }
+                else
+                {
+                    int symOff, fTabO;
+                    string strO;
+                    e1.name = GetTempF();
+
+                    symOff = GetSymbolTableIndex(e1.name);
+                    e1.val = symbolTable[symOff].off;
+                    e1.kind = TEMPF_EXPR;
+                    FakeToAlpha(e1.valF, s);
+                    //fakeTable.push_back(s);
+                    fTabO = (fakeTable.size()-1)*4;
+                    IntToAlpha(fTabO, strO);
+
+                    Generate("LD        ", "R0", "+" + strO + "(R11)");  //do LD R11, here
+                    fTabO += 2;
+                    IntToAlpha(fTabO, strO);
+                    Generate("LD        ", "R1", "+" + strO + "(R11)");
+                    fTabO = symbolTable[symOff].off;
+                    IntToAlpha(fTabO, strO);
+                    Generate("STO       ", "R0", "+" + strO + "(R14)");  //put R11 to R14 in symbolTable order
+                    fTabO += 2;
+                    IntToAlpha(fTabO, strO);
+                    Generate("STO       ", "R1", "+" + strO + "(R14)");
+                }
             }
             // need extra for e1 Literal_Fake in R11 here or in else above
 
@@ -1265,13 +1316,43 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& e
             }
             else // double load from R14 put in R2 & R3
             {
-                fid = e2.name;
-                foff = getOff(fid);
-                IntToAlpha(foff, fid);
-                Generate("LD        ", "R2", "+" + fid + "(R14)");
-                foff += 2;
-                IntToAlpha(foff, fid);
-                Generate("LD        ", "R3", "+" + fid + "(R14)");
+                if ( e2.kind != LITERAL_FAKE)
+                {
+
+                    fid = e2.name;
+                    foff = getOff(fid);
+                    IntToAlpha(foff, fid);
+                    Generate("LD        ", "R2", "+" + fid + "(R14)");
+                    foff += 2;
+                    IntToAlpha(foff, fid);
+                    Generate("LD        ", "R3", "+" + fid + "(R14)");
+                 }
+                 else
+                 {
+                    int symOff, fTabO;
+                    string strO;
+                    e2.name = GetTempF();
+
+                    symOff = GetSymbolTableIndex(e.name);
+                    e2.val = symbolTable[symOff].off;
+                    e2.kind = TEMPF_EXPR;
+                    FakeToAlpha(e2.valF, s);
+                    //fakeTable.push_back(s);
+                    fTabO = (fakeTable.size()-1)*4;
+                    IntToAlpha(fTabO, strO);
+
+                    Generate("LD        ", "R2", "+" + strO + "(R11)");  //do LD R11, here
+                    fTabO += 2;
+                    IntToAlpha(fTabO, strO);
+                    Generate("LD        ", "R3", "+" + strO + "(R11)");
+                    fTabO = symbolTable[symOff].off;
+                    IntToAlpha(fTabO, strO);
+                    Generate("STO       ", "R2", "+" + strO + "(R14)");  //put R11 to R14 in symbolTable order
+                    fTabO += 2;
+                    IntToAlpha(fTabO, strO);
+                    Generate("STO       ", "R3", "+" + strO + "(R14)");
+
+                 }
 
             }
             // need extra for e2 Literal_Fake in R11 here or in else above
@@ -1404,15 +1485,30 @@ ExprKind CodeGen::GetSymbolTableKind(string & s)
 {
     ExprKind thisK;
     bool found = false;
+
     for (unsigned i = 0; i < symbolTable.size(); i++)
     {
         if ( symbolTable[i].label == s)
         {
-            found = true;
             thisK = symbolTable[i].kind;
+            found = true;
         }
     }
-    if (found) return thisK;
+    if ( found == true)
+        return thisK;
 
 
+}
+int CodeGen::GetSymbolTableIndex(string & s)
+{
+    int i = -1;
+    for (unsigned j = 0; j < symbolTable.size(); j++)
+    {
+         if ( symbolTable[j].label == s)
+         {
+             i = j;
+             return i;
+         }
+    }
+    return i;
 }

@@ -89,6 +89,7 @@ public:
 
     ExprKind GetSymbolTableKind(string & s);
 
+
     //void ProcessLitFake(ExprRec& e);
     //void ProcessStringLiteral(ExprRec& e);
 
@@ -123,6 +124,7 @@ private:
     bool isFake(ExprKind& kind);
     bool isInt(ExprKind& kind);
     int getOff(string& s);
+    int GetSymbolTableIndex(string & s);
 
     void Condition(ExprRec& expr,ConRec& con,ExprRec& expr2);
     void Jump(ConRec& con,string& label);
