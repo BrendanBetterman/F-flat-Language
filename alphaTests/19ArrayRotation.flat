@@ -1,0 +1,49 @@
+/* CS 4298: Compiler Construction (Spring 2022)
+
+	ArrayRotation.flat
+
+	Left Circular Rotation of Values in an Array of Integers
+
+	M. J. Wolf
+	May 3, 2022
+*/
+
+BOF
+	int n, k, save;
+	int info[10];
+	n = 10; k = 5;
+
+	// Fill the Array info with the 10 consecutive odd positive integers
+	// starting at 5.
+	while (k < 15)
+		info[k-5] = 2 * k + 1;
+		k = k + 1;
+	endwhile
+	foutln( "\nArray Rotation\n",
+	      "\nFirst line are the Array values in original order.",
+	      "\nEach line after that shows the values after one",
+	      "\ncircular rotation.\n\n");
+	
+	do
+	    // Display the list values in increasing index order.
+		for (k = 0; k < 10; k = k + 1)
+			foutln( info[k]);
+		endfor
+		foutln( "\n");
+		// Perform a left circular rotation of the list values.
+		k = 0;
+		save = info[0];
+		while (k <= 8)
+			info[k] = info[k+1];
+			k = k + 1;
+		endwhile
+		info[9] = save;
+		n = n - 1;
+	while (n != 0)
+	
+	// Display the list values in increasing index order one more time.
+	for (k = 0; k < 10; k = k + 1)
+		foutln( info[k]);
+	endfor
+	foutln( "\n\n"); 
+EOF

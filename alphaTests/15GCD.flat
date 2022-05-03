@@ -1,0 +1,43 @@
+/* CS 4298: Compiler Construction (Spring 2022)
+
+	15GCD.flat
+
+	Finds the Greatest Common Divisor of Two Integers
+
+	M. J. Wolf
+	May 3, 2022
+*/
+
+BOF
+	int  num1, num2, num3;
+	str response;
+
+
+	foutln( "\nGreatest Common Divisor");
+	do
+		foutln( "\n\nEnter two integers (not both 0): ");
+		fin( num1, num2);
+		foutln( "\nGCD(", num1, ",", num2, ") is"); 
+		while (num2 != 0)
+			num3 = num1 - (num1 / num2) * num2;
+			num1 = num2;
+			num2 = num3;
+		endwhile
+		fif (num1 > 0)
+			foutln( num1);
+		felse
+			foutln( 0-num1); // make GCD positive		
+		fendif
+		foutln( "");
+		foutln( "Again? (Y or N) ");
+		fin( response[0]);
+	        while (response[0] != "N" f|
+			response[0] != "n" f|
+			response[0] != "Y" f|
+			response[0] != "y") 
+			foutln( "Invalid response!";
+		        foutln( "Again? (Y or N) ");
+		        fin( response[0]);
+		endwhile
+	while (response[0] == "y" f| response[0] == "Y")
+EOF

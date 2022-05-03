@@ -1,0 +1,36 @@
+/* CS 4298: Compiler Construction (Spring 2022)
+
+	08TempConvert.flat
+
+	Conversion Between Fahrenheit and Celsius
+
+	M. J. Wolf
+	May 3, 2022
+*/
+
+BOF
+	fake degrees;
+	str scale;
+
+	fout( "\nFahrenheit/Celsius Temperature Converter\n\n",
+	      "Fahrenheit scale indicators: f or F\n",
+	      "   Celsius scale indicators: c or C\n");
+	fout( "\nEnter a temperature (e.g., 62.5): ");
+	fin(degrees);
+	fout( "\nEnter a scale indicator (e.g., f): ");
+	fin(scale);
+	fif (scale == "F") scale = "f"; fendif
+	fif (scale == "C") scale = "c"; fendif
+	fif (scale == "f")
+	   fout( "\n", degrees, " degrees Fahrenheit is",
+	          5.0/9.0 * (degrees - 32.0), " degrees Celsius.");
+	felse
+		if (scale == "c")
+			fout( "\n", degrees, " degrees Celsius is",
+					1.8 * degrees + 32.0, " degrees Fahrenheit.");
+		felse
+			fout( "\nInvalid temperature scale.");
+		fendif
+	fendif
+	foutln("");
+EOF

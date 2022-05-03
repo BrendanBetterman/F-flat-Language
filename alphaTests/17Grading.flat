@@ -1,0 +1,60 @@
+/* CS 4298: Compiler Construction (Spring 2022)
+
+	17Grading.flat
+
+	Uses Nested if Statements to Process Test Scores
+
+	M. J. Wolf
+	May 3, 2022
+*/
+
+BOF
+	int  score, count = 0;
+	int  average, total;
+	fake favg;
+	str eol; // end-of-line character, linefeed
+	str tab;
+
+	eol = '\010'; 
+	tab = "          ";
+
+	foutln( eol, "If you enter a test score between 0 and 100. The letter",
+	      eol, "grade associated with the score is displayed. Entering",
+	      eol, "a score that is negative or greater than 100 stops the",
+	      eol, "program.\n\n");
+        foutln( "Score? ");
+	fin( score); 
+	while (score >= 0 f& score <= 100)
+		count = count + 1;
+		total = total + score;
+		foutln( tab, score);
+		fif (score >= 72)
+			fif (score >= 85)
+				fif (score >= 93)
+					foutln( " is an A");
+				felse
+					foutln( " is a B");
+				fendif
+			felse
+				foutln( " is a C");
+			fendif
+		felse
+			fif (score >= 65)
+				foutln( " is a D");
+			felse
+				foutln( " is an F");
+			fendif
+		fendif
+		foutln( "Score? ");
+		fin( score); 
+	endwhile
+	foutln( eol, eol);
+	fif (count > 0)
+		average = total / count;
+		foutln( "The integer average of the", count, 
+				" scores entered is", average, '.', eol);
+		favg = total / count;
+		foutln( "The real average of the", count, 
+				" scores entered is", favg, '.', eol);
+	fendif
+	foutln( eol, "End of grading.", eol);

@@ -1,0 +1,60 @@
+/* CS 4298: Compiler Construction (Spring 2022)
+
+	18SimpleArrays.flat
+
+	Simple Array Declaration, Component Storage, and Output
+
+	M. J. Wolf
+	May 3, 2022
+*/
+
+BOF
+	int list[8] ;
+	fake num[5];
+	int val[6];
+EOF
+
+	val[0] = 8;
+	val[1] = 20;
+	val[2] = 62;
+	val[3] = 33;
+	foutln( "\nSimple Arrays\n";
+	
+	list[0] = 77;
+	list[1] = 33;
+	list[2] = 11;
+	list[3] = 55;
+	list[4] = 22;
+	list[5] = 88;
+	list[6] = 66;
+	list[7] = 44;
+	foutln( "\nlist[2]:", list[2],
+		  "\nlist[4]:", list[4], 
+		  "\nlist[1]:", list[1], 
+		  "\nlist[7]:", list[7], 
+		  "\nlist[3]:", list[3], 
+		  "\nlist[6]:", list[6], 
+		  "\nlist[0]:", list[0],
+		  "\nlist[5]:", list[5]);
+	foutln( "");
+		   
+	num[0] = 45.6;
+	num[1] = 189.25;
+	num[2] = 3.522e+5;
+	num[3] = 2.77e-3;
+	num[4] = 1234.56789;
+	foutln( "\nnum[3]:", num[3],
+		  "\nnum[0]:", num[0], 
+		  "\nnum[1]:", num[1], 
+		  "\nnum[4]:", num[4], 
+		  "\nnum[2]:", num[2]);
+	foutln( ""); 
+			
+	foutln( "\nval[0]:", val[0],
+		  "\nval[1]:", val[1], 
+		  "\nval[2]:", val[2],
+		  "\nval[3]:", val[3], 
+		  "\nval[4]:", val[4], 
+		  "\nval[5]:", val[5]);
+	foutln( ""); 
+EOF

@@ -1,0 +1,34 @@
+/* CS 4298: Compiler Construction (Spring 2022)
+
+	04RealExpr.flat
+
+	Real Expression Evaluation
+
+	M. J. Wolf
+	May 3, 2022
+*/
+
+BOF
+	fake: w, x, y, z, result;
+	
+
+	fout( "\nReal Arithmetic Expressions\n\n");
+	fout( "float w = "); fin(w); 
+	fout( "float x = "); fin(x);
+	fout( "float y = "); fin(y);
+	fout( "float z = "); fin(z);
+	foutln("");
+	result = (w + x) * (y - z);
+	fout( "(w + x) * (y - z) =", result); foutln("");
+	result = w + (x * y - z) / x;
+	fout( "w + (x * y - z) / x =", result); foutln("");
+	result = w * (x * (y - z) / 3.0);
+	fout( "w * (x * (y - z) / 3.0) =", result); foutln("");
+	result = (w * (w - 2.7) + x / y) + 62.5;
+	fout( "(w * (w - 2.7) + x / y) + 62.5 =", result); foutln("");
+	result = w / (x + 2e+2 * y) * (z - 10.0e-1);
+	fout( "w / (x + 2e+2 * y) * (z - 10.0e-1) =", result); foutln("");
+	result = (((w + x) * 5.35) / (0.02 - y)) * z;
+	fout( "(((w + x) * 5.35) / (0.02 - y)) * z =", result); 
+	foutln("");
+EOF

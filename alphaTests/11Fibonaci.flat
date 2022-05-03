@@ -1,0 +1,34 @@
+/* CS 4298: Compiler Construction (Spring 2022)
+
+	Fibonacci1.flat
+
+	Generates Fibonacci Numbers
+
+	M. J. Wolf
+	May 3, 2022
+*/
+
+BOF
+	int  fib1, fib2, nextFib, n, k;
+	fib1 = 1; fib2 = 1;
+	
+
+	fout( "\nFibonacci Numbers");
+	fout( "\nHow many Fibonacci numbers? ");
+	fin(n);
+	foutln("");
+	fif (n == 1)
+		fout( 1) ; 
+	felse
+		fout( 1, 1) ;
+	fendif
+	k = 3;
+	while (k <= n)
+		nextFib = fib1 + fib2;
+		fout( nextFib);
+		fib1 = fib2;
+		fib2 = nextFib;
+		k = k + 1; 
+	endwhile
+	fout( "\n");
+EOF
