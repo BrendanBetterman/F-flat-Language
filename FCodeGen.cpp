@@ -1290,7 +1290,7 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& e
                     e1.val = symbolTable[symOff].off;
                     e1.kind = TEMPF_EXPR;
                     FakeToAlpha(e1.valF, s);
-                    fakeTable.push_back(s);
+                    //fakeTable.push_back(s);
                     fTabO = (fakeTable.size()-1)*4;
                     IntToAlpha(fTabO, strO);
 
@@ -1338,7 +1338,7 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& e
                     e2.val = symbolTable[symOff].off;
                     e2.kind = TEMPF_EXPR;
                     FakeToAlpha(e2.valF, s);
-                    fakeTable.push_back(s);
+                    //fakeTable.push_back(s);
                     fTabO = (fakeTable.size()-1)*4;
                     IntToAlpha(fTabO, strO);
 
