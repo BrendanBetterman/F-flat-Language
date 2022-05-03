@@ -1,0 +1,37 @@
+/* CS 4298: Compiler Construction (Spring 2022)
+
+	05IOSimple.flat
+
+	Reading Values for Variables and Writing values for Variables and Constants
+	
+	M. J. Wolf
+	May 3, 2022
+*/
+
+BOF
+	int iVal1, iVal2;
+	fake rVal1, rVal2;
+	str cVal1, cVal2;
+	str string;
+	
+	string = "Happy Cinco de Mayo!";
+
+	fout( "\nReading and Writing Variables and Constants\n\n");
+	fout( "Enter two integers: ");
+	fin(iVal1, iVal2);
+	fout( "\n==> ", iVal1, ",", iVal2);
+	
+	fout( "\n\nEnter two float numbers: ");
+	fin(rVal1, rVal2);
+	fout( "\n==> ", rVal1, ",", rVal2);
+	
+	fout( "\n\nEnter two characters: ");
+	fin(cVal1, cVal2);
+	fout( "\n==> ", cVal1, ",", cVal2);
+
+	fout( "\n\nint constants: ", 37, 7805, 685); 
+	fout( "\nfloat constants: ", 3.8405, "  ", 3.8405e+2, "  ", 3.8405e-3); 
+	fout( "\n\nchar constants: ", "H", "2", "O");
+	
+	fout( "\n\nstring variable: ", string, "\n\n");
+EOF

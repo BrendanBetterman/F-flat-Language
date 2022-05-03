@@ -1,0 +1,39 @@
+/* CS 4298: Compiler Construction (Spring 2022)
+
+	03IntExpr.flat
+
+	Integer Expression Evaluation
+
+	M. J. Wolf
+	May 3, 2022
+*/
+
+BOF
+	int a, b, c, d, val;
+	
+
+	fout( "\nInteger Arithmetic Expressions\n\n");
+	fout( "integer a = "); fin(a);
+	fout( "integer b = "); fin(b);
+	fout( "integer c = "); fin(c);
+	fout( "integer d = "); fin(d);
+	foutln("");
+	val = (a + b) * (c - d);
+	fout( "(a + b) * (c - d) =", val, "\n");
+	val = a + (b * c - d) / 2;
+	fout( "a + (b * c - d) / 2 =", val, "\n");
+	val = a + (b * c - d) // 2;
+	fout( "a + (b * c - d) // 2 =", val, "\n");
+	val = a * (b * (c - d) / 3);
+	fout( "a * (b * (c - d) / 3) =", val, "\n");
+	val = (a * (a - 2) + b / c) + 100;
+	fout( "(a * (a - 2) + b / c) + 100 =", val, "\n");
+	val = a / (b + 2 * c) * (d - 10);
+	fout( "a / (b + 2 * c) * (d - 10) =", val, "\n");
+	val = (((a + b) * 5) / (10 - c)) * d;
+	fout( "(((a + b) * 5) / (10 - c)) * d =", val);
+	fout( "\n");
+	val = (((a + b) * 5) // (10 - c)) * d;
+	fout( "(((a + b) * 5) // (10 - c)) * d =", val);
+	fout( "\n");
+EOF

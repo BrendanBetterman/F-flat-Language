@@ -1,0 +1,48 @@
+/* CS 4298: Compiler Construction (Spring 2022)
+
+	10Palindrome.flat
+
+	Checks for Palindromes
+	
+	M. J. Wolf
+	May 3, 2022
+*/
+
+BOF
+	str string;
+	int len, i;
+	bool not_palindrome;
+	str null_string;
+
+	null_string = "";
+	fout( "\nPalindromes");
+	fout( "\nThis program checks strings to see if they are palindromes.");
+	fout( "Press Enter without entering a string to end the program.");
+	do
+		fout( "\nEnter a string: ");
+		fin(string);
+	    fif (string != null_string) 
+		len = 0;
+		while (string[len] != "\000")
+			len = len + 1;
+		endwhile
+		fout( "\nlength =", len);
+
+		not_palindrome = nay ; //FALSE
+		i = 0;
+		do
+			fif (string[i] != string[len - 1 - i])
+				not_palindrome = yay; //TRUE
+			fendif
+			i = i + 1;
+		while ( i <= len - 1 -i )
+		foutln("");
+		fout("The string ", string, " is ");
+		fif (not_palindrome)
+			fout( "not ");
+		fendif
+		foutln( "a palindrome.");
+	    fendif
+	while ( string != null_string )
+	fout( "\nEnd of palidrome testing.");
+EOF

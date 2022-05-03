@@ -1,0 +1,7 @@
+alpha tests by the end of the day, May 3.
+Peculiar misreporting? of syntax errror in 03IntExpr.flat line 21, pos 14
+Peculiar misreporting? of syntax errror in 04RealExpr.flat line 21, pos 17
+Peculiar misreporting? of syntax errror in 06MixedExpr.flat line 23, pos 17
+Peculiar misreporting? of syntax errror in 07TempConvert.flat line 25, pos 37
+Peculiar misreporting? of syntax errror in 08TempConvert.flat line 26, pos 37
+Other mysterious syntax errors are reported in conjunction with foutln in some files

@@ -1,0 +1,61 @@
+/*  CS 4298: Compiler Construction (Spring 2022)
+
+	01Basics.flat
+
+	Simple Variable Declarations, Initializations, Assignments, and Output.
+
+	M. J. Wolf
+	May 3, 2018
+*/
+
+BOF
+	int red, gold;
+	fake gopher, beaver;
+	str null, ch1, ch2, ch3;
+	int iTemp;
+	fake rTemp;
+	str cTemp;
+	
+	gold = 77;
+	gopher = 8.35;
+	ch1 = "B"; 
+	ch2 = "S"; ch3 = "U";
+
+	// Display initial variable values
+	foutln("");
+	fout( "Initial Variable Values"); 
+	foutln("");
+	fout( "red =", red, "  gold =", gold.);
+	foutln("");
+	fout( "gopher =", gopher, "   beaver =", beaver, "\n");
+	fout( null, ch1, ch2, ch3);
+	fout( "\n");
+	
+	// Assign new values.
+	red = 122; gold = 3000; 
+	gopher = 67.2; beaver = 288.75; 
+	ch1 = "P"; ch2 = "O"; ch3 = "W";
+	
+	// Display the variables again.
+	fout( "Variable Values After New Assignments");
+	foutln("");
+	fout( "red =", red, "  gold =", gold);
+	foutln("");
+	fout( "gopher =", gopher, "   beaver =", beaver, "\n");
+	fout( null, ch1, ch2, ch3);
+	fout( "\n");
+	
+	// Swap variable values
+	iTemp = red; red = gold; gold = iTemp;
+	rTemp = gopher; gopher = beaver; beaver = rTemp;
+	cTemp = ch1; ch1 = ch2; ch2 = ch3; ch3 = cTemp;
+	
+	// Display the variables one more time.
+	fout( "Variable Values After Swapping");
+	foutln("");
+	fout( "red =", red, "  gold =", gold);
+	foutln("");
+	fout( "gopher =", gopher, "   beaver =", beaver, "\n");
+	fout( null, ch1, ch2, ch3);
+	fout( "\n");
+EOF

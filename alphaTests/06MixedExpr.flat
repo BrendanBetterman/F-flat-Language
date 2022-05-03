@@ -1,0 +1,36 @@
+/* CS 4298: Compiler Construction (Spring 2022)
+
+	06MixedExpr.flat
+
+	Mixed Mode Expression Evaluation
+
+	M. J. Wolf
+	May 3, 2022
+
+*/
+
+BOF
+	int  n, m; 
+	fake y, z, result;
+	
+
+	fout( "\nMixed Mode Arithmetic Expressions\n\n");
+	fout( "int n = "); fin(n); 
+	fout( "int m = "); fin(m); 
+	fout( "float y = "); fin(y); 
+	fout( "float z = "); fin(z); 
+	foutln("");
+	result = (n + m) * (y - z);
+	fout( "(n + m) * (y - z) =", result); foutln("");
+	result = n + (m * y - z) / m;
+	fout( "n + (m * y - z) / m =", result); foutln("");
+	result = n * (m * (y - z) / 3.0);
+	fout( "n * (m * (y - z) / 3.0) =", result); foutln("");
+	result = (n * (n - 2.7) + m / y) + 62.5;
+	fout( "(n * (n - 2.7) + m / y) + 62.5 =", result); foutln("");
+	result = n / (m + 2e+2 * y) * (z - 10.0e-1);
+	fout( "n / (m + 2e+2 * y) * (z - 10.0e-1) =", result); foutln("");
+	result = (((n / m) * 5.35) / (0.02 - y)) * z;
+	fout( "(((n / m) * 5.35) / (0.02 - y)) * z =", result); 
+	foutln("");
+EOF

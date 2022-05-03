@@ -1,0 +1,67 @@
+/* CS 4298: Compiler Construction (Spring 2016)
+
+	Counting.mnc
+
+	Counting with While and do...Until and for.
+
+	M. J. Wolf
+	April 27, 2016
+*/
+
+BOF
+	int  i, first, last, inc;
+
+
+	foutln( "\nCounting with Loops\n\n");
+	foutln( "Count up from 1 to 10 using while: ");
+	i = 1;
+	while (i <= 10)
+		foutln( i);
+		i = i + 1;
+	endwhile
+	foutln( "\n");
+	
+	foutln( "Count down from 10 to 1 using while: ");
+	i = 10;
+	while (i > 0)
+		foutln( i);
+		i = i - 1;
+	endwhile
+	foutln( "\n");
+
+	foutln( "Count up from 1 to 10 using for: ");
+	for (i = 1; i <= 10; i = i + 1)
+		foutln( i);
+	endfor
+	foutln( "\n");
+	
+	foutln( "Count down from 10 to 1 using for: ");
+	for (i = 10; i > 0; i = i - 1)
+		foutln( i);
+	endfor
+	
+	foutln( "You repeatedly supply the first, last and increment values.\n",
+	      "Enter 0 as the increment to stop the repetition.";
+	do
+		foutln( "\n    first: "); fin( first);
+		foutln( "     last: "); fin( last);
+		foutln( "increment: "); fin( inc);
+		fif (inc != 0)
+		
+		    foutln( "");
+		    i = first;
+		    fif (inc > 0)
+			while (i <= last)
+				foutln( i);
+				i = i + inc;
+			endwhile
+		    felse
+			while (i >= last)
+				foutln( i);
+				i = i + inc;
+			endwhile
+		    fend
+	        fendif
+	until (inc == 0)
+	foutln( "\n");
+	foutln( "Finished counting.");

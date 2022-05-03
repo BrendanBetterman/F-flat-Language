@@ -1,0 +1,35 @@
+/* CS 4298: Compiler Construction (Spring 2022)
+
+	Triangles.flat
+
+	Draws Triangles Using Nested Loops
+
+	M. J. Wolf
+	May 3, 2022
+*/
+
+BOF
+	int n, m, j;
+	str tab;
+
+	tab = "\009";
+	
+
+	foutln( "The following designs are drawn with nested loops.\n");
+	n = 8;
+	while (n > 0)
+		m = n;
+		do
+		    fout( tab );
+			j = 1;
+			while (j <= m)
+				fout( "*");  
+				j = j + 1;
+			endwhile
+			foutln( "");
+			m = m - 1;
+		while (m >= 0)
+		n = n - 1;
+		foutln ("");
+	endwhile
+EOF

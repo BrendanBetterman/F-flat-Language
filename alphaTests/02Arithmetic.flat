@@ -1,0 +1,49 @@
+/* CS 4298: Compiler Construction (Spring 2022)
+
+	02Arithmetic.flat
+
+	Simple Integer and Real Arithmetic
+
+	M. J. Wolf
+	May 3, 2022
+/:
+
+BOF
+	int n, m, k;
+	fake x, y, z;
+	
+
+	fout( "\nSimple Integer Arithmetic\n");
+	fout( "Enter two integers: ");
+	fin(n); 
+	fin(m);
+	foutln("");
+	k = n + m;
+	fout( n, " +", m, " =", k);
+	k = n - m;
+	fout( n, " -", m, " =", k);
+	k = n * m;
+	fout( n, " *", m, " =", k);
+	k = n / m;
+	fout( n, " /", m, " =", k);
+	foutln("");
+	fout( n + m, ",", n - m, ",", n * m, ",", n / m, ",",  n / m);
+	foutln("");
+	foutln("");
+	
+	fout( "Simple Real Arithmetic\n\n");
+	fout( "Enter two float numbers: ");
+	fin(x);
+	fin(y);
+	foutln("");
+	z = x + y;
+	fout( x, " + ", y, " =", z);
+	z = x - y;
+	fout( x, " - ", y, " =", z);
+	z = x * y;
+	fout( x, " * ", y, " =", z);
+	z = x / y;
+	fout( x, " / ", y, " =", z);
+	foutln("");
+	fout( x + y, ",", x - y, ",", x * y, ",", x / y, "\n");
+EOF

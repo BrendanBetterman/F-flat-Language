@@ -1,0 +1,39 @@
+/* CS 4298: Compiler Construction (Spring 2022)
+
+	17SquareRoot.flat
+
+	Finds the Square Root of a Real Number
+
+	M. J. Wolf
+	May 3, 2022
+*/
+
+BOF
+	fake number, approx1, approx2, tolerance, diff;
+
+	tolerance = 0.00001;
+	
+
+	foutln( "\nSquare Root Approximation",
+	      "\n=========================\n");
+	do
+		foutln( "\nEnter a number whose square root you want (0 to quit): ");
+		fin( number); 
+		fif (number >  0.0)
+		    foutln( "\nEnter an approximation for the square root of",
+			number) ;
+		    fin( approx1); 
+		    do
+			approx2 = (approx1 + number / approx1) / 2.0;
+			diff = approx1 - approx2;
+			fif (diff < 0.0)
+				diff = 0.0 - diff; // absolute value
+			fendif 
+			approx1 = approx2;
+		    while (diff >  tolerance)
+		foutln( "\nThe square root of", number, " is approximately",
+			approx2, "\n\n");
+	while (number >  0.0)
+	foutln( "\nSquare root approximation has ended.\n");
+EOF
+
