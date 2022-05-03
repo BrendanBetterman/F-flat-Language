@@ -293,7 +293,6 @@ void CodeGen::Start()
 	//R14 , R13, R12
 }
 void CodeGen::Finish()
-
 {
 	string s;
 	listFile.width(6);
@@ -324,7 +323,7 @@ void CodeGen::Finish()
 	Generate("LABEL	", "FAKES", "");
 	tmpSize =0;
     for(unsigned i=0; i< symbolTable.size(); i++){
-		if(symbolTable[i].kind == IDF_EXPR) tmpSize +=1;
+        if(symbolTable[i].kind == IDF_EXPR || symbolTable[i].kind == TEMPF_EXPR) tmpSize += 1;
 	}
     IntToAlpha(int(4*(tmpSize)),s);
     Generate("SKIP	", s, "");
