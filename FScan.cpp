@@ -255,6 +255,17 @@ Token Scanner::GetNextToken(){
 							currentChar = NextChar();
 							if(c == '\\' && last != '\\'){
 								//escapes the escape char
+								if( sourceFile.peek() =='n'){
+									BufferChar(currentChar);
+									//BufferChar(NextChar());
+									//if(sourceFile.peek()=='\"'){
+										//new line;
+										
+									//}else{
+									//	LexicalError(currentChar);
+									//}
+								}
+								
 							}else{
 								BufferChar(currentChar);
 							}

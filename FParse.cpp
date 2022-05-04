@@ -288,6 +288,7 @@ void Parser::Primary(ExprRec& result)
 	case STR_LITERAL:
 		result.kind = LITERAL_STR;
 		Literal(result);
+		
 		code.ProcessLiteral(result);
 		cout << "Process Literal STR\n";
 		break;
