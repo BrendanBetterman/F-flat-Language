@@ -247,10 +247,11 @@ void Parser::FactorTail(ExprRec& left)
 		left.kind=result.kind;
 
 		break;
+	case RPAREN:
+		
 	case AND_SYM:
 	case NOT_SYM:
 	case RSTAPLE:
-	case RPAREN:
 	case SEMICOLON:
 	case COMMA:
     case ADD_OP:
@@ -305,7 +306,9 @@ void Parser::Primary(ExprRec& result)
 		break;
 	case LPAREN:
 		Match(LPAREN);
-		Condition(result,con,identifier);
+		Factor(result);
+		ExprTail(result);
+		//Condition(result,con,identifier);
 		Match(RPAREN);
 		break;
 	default:
