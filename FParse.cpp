@@ -112,7 +112,7 @@ void Parser::VarDecTail(const ExprKind& kind)
 		Match(LSTAPLE);
 		Match(INT_LITERAL);
 		//Make extra mem
-		cerr<<"\n\narray\n\n";
+		//cerr<<"\n\narray\n\n";
 		code.ArrayInit(kind,stoi(scan.tokenBuffer));
 		Match(RSTAPLE);
 		break;
@@ -161,7 +161,7 @@ void Parser::Type(ExprRec& expr)
 	case INT_SYM:
 		Match(INT_SYM);
 		expr.kind=ID_EXPR;//was lit int
-		cout<<"type is literal int";
+		//cout<<"type is literal int";
 		break;
 	case BOOL_SYM:
 		Match(BOOL_SYM);
@@ -204,7 +204,7 @@ void Parser::Literal(ExprRec& expr)
         //expr.kind = ID_EXPR;
 		expr.name = scan.tokenBuffer;//get scanner data
 
-        cout<< "ID to id\n";
+        //cout<< "ID to id\n";
 		break;
 	default:
 		SyntaxError(NextToken(), "");
@@ -238,11 +238,11 @@ void Parser::FactorTail(ExprRec& left)
 	case DIV_OP: //Real Div
 		MultOp(op);
 		Primary(right);
-		cout << "Mul or div\n";
+		//cout << "Mul or div\n";
 		FactorTail(right);
         result.kind = left.kind;
 		code.GenInfix(left,op,right,result);
-		cerr<<"right "<<right.name<<"\n";
+		//cerr<<"right "<<right.name<<"\n";
 		left.name=result.name;
 		left.kind=result.kind;
 
@@ -277,27 +277,27 @@ void Parser::Primary(ExprRec& result)
 		result.kind = LITERAL_INT;
 		Literal(result);
 		code.ProcessLiteral(result);
-		cout << "Process Literal INT\n";
+		//cout << "Process Literal INT\n";
 		
 		break;
 	case FAKE_LITERAL:
 		result.kind = LITERAL_FAKE;
 		Literal(result);
 		code.ProcessLiteral(result);
-		cout << "Process Literal Fake\n";
+		//cout << "Process Literal Fake\n";
 		break;
 	case STR_LITERAL:
 		result.kind = LITERAL_STR;
 		Literal(result);
 		
 		code.ProcessLiteral(result);
-		cout << "Process Literal STR\n";
+		//cout << "Process Literal STR\n";
 		break;
 	case BOOL_LITERAL:
 		result.kind = LITERAL_BOOL;
 		Literal(result);
 		code.ProcessLiteral(result);
-		cout << "Process Literal Bool\n";
+		//cout << "Process Literal Bool\n";
 		break;
 	case ID:
 		//Literal(result);
@@ -344,7 +344,7 @@ void Parser::ExprTail(ExprRec& expr)
 	case SUB_OP:
 	//case MUL_OP:
 		AddOp(op);
-		cerr<<"add op \n";
+		//cerr<<"add op \n";
         //cout <<"Before Parser::ExprTail->Factor(right)\n";
         Factor(right);
         //cout <<"After  Parser::ExprTail->Factor(right)\n";
@@ -389,8 +389,8 @@ void Parser::Factor(ExprRec& expr)
     //cerr<<"After Parser::Expression->Factor->FactorTail(expr); Expr.kind=" << st << "\n";
 
 	//code.GenInfix(expr);
-	cerr<<"left "<<expr.name<<"\n";
-	cout << "Get infix\n";
+	//cerr<<"left "<<expr.name<<"\n";
+	//cout << "Get infix\n";
 }
 void Parser::RelOp(ConRec& con)
 {
@@ -543,7 +543,7 @@ void Parser::VarInit()
 				Match(ASSIGN_OP);
 				Literal(source);
         //---
-                cout << "Parser::VarInit->Before ProcessLiteral(source)\n";
+                //cout << "Parser::VarInit->Before ProcessLiteral(source)\n";
                 code.ProcessLiteral(source);
 				code.Assign(expr,source);
 				
@@ -575,7 +575,7 @@ void Parser::FelseClause()
 }
 void Parser::Condition(ExprRec& Lexpr,ConRec& con, ExprRec& Rexpr)
 {
-	cout << "Condition";
+	//cout << "Condition";
 	//Variable(expr);
 	
 	//Primary(Lexpr);
@@ -681,8 +681,9 @@ void Parser::ItemList(ExprRec& expr)
 {
 
 	Expression(expr);
-	
-	code.WriteExpr(expr);
+	//if(scan.tokenBuffer.data() !=""){
+		code.WriteExpr(expr);
+	//}
 	ItemListTail();
 }
 void Parser::VariableTail(ExprRec& expr)
@@ -691,7 +692,7 @@ void Parser::VariableTail(ExprRec& expr)
 	{
 	case LSTAPLE:
 		Match(LSTAPLE);
-		cerr<<"array name"<< expr.name;
+		//cerr<<"array name"<< expr.name;
 		Expression(expr);
 		expr.kind = ARRAY_EXPR;
 		
@@ -731,9 +732,9 @@ void Parser::VarListTail(ExprRec& expr)
 	case COMMA:
 		Match(COMMA);
 		Variable(expr);
-		cout <<"varlisttail" <<expr.name <<endl;
+		//cout <<"varlisttail" <<expr.name <<endl;
 		code.ReadValue(expr);
-		cout << "Read value\n";
+		//cout << "Read value\n";
 		VarListTail(expr);
 		break;
 	case RPAREN:
@@ -746,7 +747,7 @@ void Parser::VarList(ExprRec& expr)
 {
 	Variable(expr);
 	code.ReadValue(expr);
-	cout << "Read Value\n";
+	//cout << "Read Value\n";
 	VarListTail(expr);
 }
 void Parser::Expression(ExprRec& result)//
@@ -755,7 +756,7 @@ void Parser::Expression(ExprRec& result)//
 	OpRec op;
 
 
-	cerr<<"Begin Equation\n";
+	//cerr<<"Begin Equation\n";
     //cerr <<"Before Parser::Expression->Factor(leftOperand);\n";
     //Factor(result);
     Factor(leftOperand);
@@ -763,7 +764,7 @@ void Parser::Expression(ExprRec& result)//
     //ExprTail(result);
     ExprTail(leftOperand);
     result = leftOperand;
-    cerr<<kindToStr(result.kind)<<result.name<<"-result-type \n";
+    //cerr<<kindToStr(result.kind)<<result.name<<"-result-type \n";
     //cerr<<kindToStr(leftOperand.kind)<<leftOperand.name<<"-result-type \n";
 }
 void Parser::Variable(ExprRec& expr)
@@ -774,14 +775,14 @@ void Parser::Variable(ExprRec& expr)
 	//expr.kind = ID_EXPR;
 
     string st = std::to_string(expr.kind);
-    cout << "\nVariable(expr.kind)=" << st << "\n";
+    //cout << "\nVariable(expr.kind)=" << st << "\n";
     st = expr.name;
 
     ExprKind k;
     k = code.GetSymbolTableKind(st);
 
     st = std::to_string(k);
-    cout << "GetSymbolTableKind=" <<  k << "\n";
+    //cout << "GetSymbolTableKind=" <<  k << "\n";
 
 
     expr.kind = k;// set idf or id
@@ -824,11 +825,11 @@ void Parser::AssignStmt(ExprRec& expr)
 	Expression(identifier);
 	//WIP identifier should be the tmp var
 	//identifier.name = expr.name;
-	cout<<"assigning "<<identifier.name<<expr.name<<"\n";
+	//cout<<"assigning "<<identifier.name<<expr.name<<"\n";
 	
 	code.Assign( expr,identifier);
 	
-	cout << "Assignment op\n";
+	//cout << "Assignment op\n";
 	Match(SEMICOLON);
 }
 //get type,match id,set name,code.processid,dectail
@@ -840,7 +841,7 @@ void Parser::Declaration(ExprRec& expr)
 	code.ProcessId(expr);
 	DecTail(expr);
     string st = std::to_string(expr.kind);
-    cout << "After Parser::Declaration->Processed ID->expr.kind=" << st << "\n";
+    //cout << "After Parser::Declaration->Processed ID->expr.kind=" << st << "\n";
 	Match(SEMICOLON);
 }
 void Parser::StructStmt()
@@ -915,7 +916,7 @@ void Parser::StmtTail(ExprRec& expr)
 }
 void Parser::Statement(ExprRec& expr)
 {
-	cout << "statement\n";
+	//cout << "statement\n";
 	switch (NextToken())
 	{
 	case FIN_SYM:
