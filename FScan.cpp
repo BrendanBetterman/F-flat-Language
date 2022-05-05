@@ -306,7 +306,7 @@ Token Scanner::GetNextToken(){
 								currentChar = NextChar();
 								BufferChar(currentChar);
 								c= sourceFile.peek();
-								if(c=='-' || c=='+'){
+								if(c=='-'){
 									currentChar = NextChar();
 									BufferChar(currentChar);
 									c= sourceFile.peek();
