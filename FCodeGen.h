@@ -108,14 +108,13 @@ private:
     //loop stacks
     int fifId;
     int whlId;
-
+    
 
     vector<Symbol> symbolTable;
     vector<Symbol> intTable;
     vector<Symbol> boolTable;
     vector<string> fakeTable;
     vector<StringSymbol> stringTable;
-    vector<string> tempStringTable;
     //loop stacks
     vector<string> fifStack;
     vector<string> whileStack;

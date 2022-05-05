@@ -29,7 +29,7 @@ void Scanner::BufferChar(char c){
 }
 
 Token Scanner::CheckReserved(){
-	//cout << tokenBuffer<<"\n";
+	cout << tokenBuffer<<"\n";
     if(tokenBuffer == "BOF") return BEGIN_SYM;
 	if (tokenBuffer == "EOF") return END_SYM;//END_SYM
 	if (tokenBuffer == "fin") return FIN_SYM;
@@ -49,7 +49,7 @@ Token Scanner::CheckReserved(){
 	if(tokenBuffer == "do") return DO_SYM;
 	if(tokenBuffer == "endfor") return ENDFOR_SYM;
 	if(tokenBuffer == "fwhile") return FWHILE_SYM;
-	if(tokenBuffer == "endwhile") return ENDWHILE_SYM;
+	if(tokenBuffer == "endWhile") return ENDWHILE_SYM;
 	if(tokenBuffer == "while") return WHILE_SYM;
 	
 	if(tokenBuffer == "f!") return NOT_SYM;
@@ -243,12 +243,7 @@ Token Scanner::GetNextToken(){
 					//Reasoning: SAM has a different escape char.
 					c = sourceFile.peek();
 					char last = '"';
-					if(c == '"'){
-						currentChar = NextChar();
-						//BufferChar('\\');
-						//BufferChar('b');
-						return STR_LITERAL;
-					}
+					
 					while (!(c == '"') || (last == '\\')){
 						if (c == '\n'){
 							lineNumber++;
