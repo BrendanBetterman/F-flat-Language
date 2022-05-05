@@ -345,9 +345,9 @@ void Parser::ExprTail(ExprRec& expr)
 	//case MUL_OP:
 		AddOp(op);
 		cerr<<"add op \n";
-        cout <<"Before Parser::ExprTail->Factor(right)\n";
+        //cout <<"Before Parser::ExprTail->Factor(right)\n";
         Factor(right);
-        cout <<"After  Parser::ExprTail->Factor(right)\n";
+        //cout <<"After  Parser::ExprTail->Factor(right)\n";
 
 		//result.kind = TEMP_EXPR;//tmp
         result.kind = right.kind;
@@ -383,10 +383,10 @@ void Parser::Factor(ExprRec& expr)
 {	
 	Primary(expr);// leftside
     string st = std::to_string(expr.kind);
-    cerr<<"Before Parser::Expression->Factor->FactorTail(expr); Expr.kind=" << st << "\n";
+    //cerr<<"Before Parser::Expression->Factor->FactorTail(expr); Expr.kind=" << st << "\n";
 	FactorTail(expr);
     st = std::to_string(expr.kind);
-    cerr<<"After Parser::Expression->Factor->FactorTail(expr); Expr.kind=" << st << "\n";
+    //cerr<<"After Parser::Expression->Factor->FactorTail(expr); Expr.kind=" << st << "\n";
 
 	//code.GenInfix(expr);
 	cerr<<"left "<<expr.name<<"\n";
@@ -756,10 +756,10 @@ void Parser::Expression(ExprRec& result)//
 
 
 	cerr<<"Begin Equation\n";
-    cerr <<"Before Parser::Expression->Factor(leftOperand);\n";
+    //cerr <<"Before Parser::Expression->Factor(leftOperand);\n";
     //Factor(result);
     Factor(leftOperand);
-    cerr<<"After Parser::Expression->Factor(leftOperand);\n";
+    //cerr<<"After Parser::Expression->Factor(leftOperand);\n";
     //ExprTail(result);
     ExprTail(leftOperand);
     result = leftOperand;

@@ -36,6 +36,11 @@ struct Symbol{
     int off;
     string label;
 };
+struct StringSymbol{
+    string name;
+    string str;
+    int offset;
+};
 //for parse gen math equations
 struct Math{
     ExprRec expr;
@@ -103,12 +108,13 @@ private:
     //loop stacks
     int fifId;
     int whlId;
+    
 
     vector<Symbol> symbolTable;
     vector<Symbol> intTable;
     vector<Symbol> boolTable;
     vector<string> fakeTable;
-    vector<string> stringTable;
+    vector<StringSymbol> stringTable;
     //loop stacks
     vector<string> fifStack;
     vector<string> whileStack;

@@ -269,7 +269,7 @@ int CodeGen::StringSamDistance(int index){
 	}
 	int tmp =0;
 	for(int i=0; i<index; i++){
-		tmp += stringTable[i].length();
+		tmp += stringTable[i].str.length();
 		if(tmp%2==0){
 			tmp+=2;
 		}else{
@@ -338,8 +338,8 @@ void CodeGen::Finish()
     //IntToAlpha(int(4*(fakeTable.size()+1)),s);
     //for loop for stings
     for(unsigned i=0; i< stringTable.size(); i++){
-		cout<<ConvertToSam(stringTable[i]);
-		Generate("STRING	",ConvertToSam(stringTable[i]),"");
+		cout<<ConvertToSam(stringTable[i].str);
+		Generate("STRING	",ConvertToSam(stringTable[i].str),"");
 	}
 	Generate("LABEL	","YAY","");
 	Generate("STRING	","\"YAY\"","");
@@ -465,7 +465,7 @@ void CodeGen::Finish()
     for (unsigned l = 0; l < sti; l++)
     {
         IntToAlpha(l,st);
-        listFile << "### [" << st << "]->string(\"" << stringTable[l] << "\")" << endl;
+        listFile << "### [" << st << "]->string(\"" << stringTable[l].str << "\")" << endl;
     }
     listFile << d << endl << p << endl;
  //--- END Debug Vectors
@@ -523,11 +523,14 @@ void CodeGen::Assign(const ExprRec & target, const ExprRec & source)
 			
 			Generate("LD		", "R0", "R10");
 			//add starting point of str
+			IntToAlpha(stroff,s);
 			
 			IntToAlpha(StringSamDistance(stringTable.size()-1),s);
+			
+			//IntToAlpha(tmp,s);
 			Generate("IA		", "R0","#"+s);
 			//set length of string
-			IntToAlpha(stringTable.back().size(),s);
+			IntToAlpha(stringTable.back().str.size(),s);
 			Generate("LD		","R1","#"+s);
 			id =target.name;
 			tmp = getOff(id);
@@ -681,11 +684,11 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 	ExprKind kind;
 	ExtractExpr(outExpr,s);
 	//LookUp(outExpr.name,kind);
-	
+	bool first = false;
 	switch(outExpr.kind){
 		case LITERAL_STR:
 		case LITERAL_BOOL:
-			
+			Generate("test","","");
 			Generate("WRST	", s, "");
 			break;
 		case ID_EXPR:
@@ -705,7 +708,18 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 			}else if(kind == IDF_EXPR){
 				Generate("WRF		", "+"+id+"(R14)", "");
 			}else if(kind == IDS_EXPR){
-				Generate("WRST	", "+" + id + "(R13)","");
+				Generate("WRST		", "+" + id + "(R13)","");
+				for(int i=0; i<stringTable.size(); i++){
+					if(outExpr.name == stringTable[i].name){
+						if(!first){
+							Generate("WRNL		","","");
+							IntToAlpha(stringTable[i].offset,id);
+							Generate("WRST		", "+" + id + "(R13)","");
+						}else{
+							first = true;
+						}
+					}
+				}
 			}else{
 				//boolean check if 1 or 0
 				//call label yay or nay
@@ -1411,6 +1425,8 @@ void CodeGen::ProcessLiteralInit(ExprRec& e)
 void CodeGen::ProcessLiteral(ExprRec& e)
 {
 	string s;
+	StringSymbol sym;
+	int pos =0;
 	switch(e.kind){
 		case LITERAL_INT:
 			cout << "process lit int\n";
@@ -1426,8 +1442,24 @@ void CodeGen::ProcessLiteral(ExprRec& e)
 			//push to string table.
 			cerr << "process lit str"<<e.name;
 			e.kind = LITERAL_STR;
+			cerr<<"herehere "<<e.name;
+			IntToAlpha(stroff,s);
+			sym.name = "str"+s;
+			s = scan.tokenBuffer.data();
+			//breaks string by \n
 
-			stringTable.push_back(scan.tokenBuffer.data());
+			/*while((pos = s.find("\\n",0)) != std::string::npos){
+				sym.str = s.substr(0,pos);
+				sym.offset = StringSamDistance(stringTable.size()-1);
+				stringTable.push_back(sym);
+				s.erase(0,pos+2);
+			}*/
+			//clean up
+			if(s.size() >0){
+				sym.str = s;
+				sym.offset = StringSamDistance(stringTable.size()-1);
+				stringTable.push_back(sym);
+			}
 			 
 			//ExtractExpr(e,s);
 			//Generate("WRST	", s,"");
