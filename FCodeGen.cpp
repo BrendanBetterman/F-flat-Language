@@ -688,7 +688,7 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 	switch(outExpr.kind){
 		case LITERAL_STR:
 		case LITERAL_BOOL:
-			Generate("test","","");
+			
 			Generate("WRST	", s, "");
 			break;
 		case ID_EXPR:
