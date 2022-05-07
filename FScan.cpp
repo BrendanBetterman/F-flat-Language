@@ -49,7 +49,7 @@ Token Scanner::CheckReserved(){
 	if(tokenBuffer == "do") return DO_SYM;
 	if(tokenBuffer == "endfor") return ENDFOR_SYM;
 	if(tokenBuffer == "fwhile") return FWHILE_SYM;
-	if(tokenBuffer == "endWhile") return ENDWHILE_SYM;
+	if(tokenBuffer == "endwhile") return ENDWHILE_SYM;
 	if(tokenBuffer == "while") return WHILE_SYM;
 	
 	if(tokenBuffer == "f!") return NOT_SYM;
@@ -306,7 +306,7 @@ Token Scanner::GetNextToken(){
 								currentChar = NextChar();
 								BufferChar(currentChar);
 								c= sourceFile.peek();
-								if(c=='-'){
+								if(c=='-' || c=='+'){
 									currentChar = NextChar();
 									BufferChar(currentChar);
 									c= sourceFile.peek();

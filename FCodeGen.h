@@ -115,6 +115,7 @@ private:
     vector<Symbol> boolTable;
     vector<string> fakeTable;
     vector<StringSymbol> stringTable;
+    vector<string> tempStringTable;
     //loop stacks
     vector<string> fifStack;
     vector<string> whileStack;

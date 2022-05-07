@@ -687,8 +687,31 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 	bool first = false;
 	switch(outExpr.kind){
 		case LITERAL_STR:
+		tmp = 0;
+			for(int i=0; i<tempStringTable.size(); i++){
+				if(tempStringTable[i] != "\\n"){
+					tmp++;
+					
+				}
+				//cerr<<tempStringTable[i]<<StringSamDistance(tmp)<<" ";
+			}
+			if(tmp ==1)tmp++;
+			for(int i=0; i<tempStringTable.size(); i++){
+				if(tempStringTable[i] == "\\n"){
+					Generate("WRNL		","","");
+				}else if(tempStringTable[i] != ""){
+					
+					IntToAlpha(StringSamDistance(stringTable.size()-tmp),s);
+					Generate("WRST	","+"+s+"(R10)","");
+					tmp-=1;
+				}
+			}
+			for(int i=0; i<tempStringTable.size();i++){
+				tempStringTable.pop_back();
+			}
+			break;
 		case LITERAL_BOOL:
-			Generate("test","","");
+			//Generate("test","","");
 			Generate("WRST	", s, "");
 			break;
 		case ID_EXPR:
@@ -1143,7 +1166,7 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& e
 	cout<<e1.name<<e2.name<<e.name;
     if (e.kind == TEMP_EXPR || e.kind == ID_EXPR || e.kind == LITERAL_INT)           isFakes = 0;                // int result
     else if ( e.kind == TEMPF_EXPR || e.kind == IDF_EXPR || e.kind == LITERAL_FAKE)   isFakes = 1;                 // fake result
-         else cout << "\nGenInfixError: invalid result type assignment:" << e.name << "\n"; // wth result
+         //else cout << "\nGenInfixError: invalid result type assignment:" << e.name << "\n"; // wth result
 
     switch(e1.kind)
     {
@@ -1170,16 +1193,16 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& e
     }
 
 //--- START temp cout
-    string sf, se1, se2;
+ /*   string sf, se1, se2;
     IntToAlpha(isFakes, sf);
     IntToAlpha(isE1_int, se1);
     IntToAlpha(isE2_int, se2);
-    cout << "\nGenInfix{isFakes=" << sf << "; isE1_int=" << se1 << "; isE2_int=" << se2 << "}\n";
+    //cout << "\nGenInfix{isFakes=" << sf << "; isE1_int=" << se1 << "; isE2_int=" << se2 << "}\n";
     sf = kindtoStr(e.kind);
     se1 = kindtoStr(e1.kind);
     se2 = kindtoStr(e2.kind);
-    cout << "GenInfix{e.kind=" << sf << "; e1.kind=" << se1 << "; e2.kind=" << se2 << ";}\n";
-//--- END temp cout
+    //cout << "GenInfix{e.kind=" << sf << "; e1.kind=" << se1 << "; e2.kind=" << se2 << ";}\n";
+//--- END temp cout*/
 
     if ((e1.kind == LITERAL_INT && e2.kind == LITERAL_INT) || (e1.kind == LITERAL_FAKE && e2.kind == LITERAL_FAKE))
     {
@@ -1375,7 +1398,7 @@ void CodeGen::GenInfix(ExprRec & e1, const OpRec & op,  ExprRec & e2, ExprRec& e
             Generate(ExtractOp(op, e.kind), "R0", "R2");
             ExtractExpr(e, s);
 
-            cout << "GenInfix->FloatMath->ExtractExpr->s=" << s << "\n";
+            //cout << "GenInfix->FloatMath->ExtractExpr->s=" << s << "\n";
 
             fid = e.name;
             foff = getOff(fid);
@@ -1448,17 +1471,21 @@ void CodeGen::ProcessLiteral(ExprRec& e)
 			s = scan.tokenBuffer.data();
 			//breaks string by \n
 
-			/*while((pos = s.find("\\n",0)) != std::string::npos){
+			while((pos = s.find("\\n",0)) != std::string::npos){
 				sym.str = s.substr(0,pos);
 				sym.offset = StringSamDistance(stringTable.size()-1);
 				stringTable.push_back(sym);
+				//this table shows all \n's
+				tempStringTable.push_back(s.substr(0,pos));
+				tempStringTable.push_back("\\n");
 				s.erase(0,pos+2);
-			}*/
+			}
 			//clean up
 			if(s.size() >0){
 				sym.str = s;
 				sym.offset = StringSamDistance(stringTable.size()-1);
 				stringTable.push_back(sym);
+				tempStringTable.push_back(s);
 			}
 			 
 			//ExtractExpr(e,s);
